@@ -1,7 +1,10 @@
 # Public Data
 
-Do not place private dataset JSON here.
+Static JSON data used by the analyzer service.
 
-The analyzer service owns dataset JSON under `data/`, not `public/data/`.
+Files:
 
-This folder is only kept for public documentation or frontend-safe files.
+- `heroes.json`
+- `counters.json`
+- `counters/<target-hero-id>.json`
+- `raw/hero-meta-final.json`

@@ -44,7 +44,7 @@ def validate_dataset(data_dir: Path) -> None:
     for relative_file in index.files:
         path = data_dir / relative_file
         if path.resolve().parent != (data_dir / "counters").resolve():
-            errors.append(f"{relative_file} must be inside data/counters")
+            errors.append(f"{relative_file} must be inside {data_dir / 'counters'}")
         if path.suffix != ".json":
             errors.append(f"{relative_file} must be a JSON file")
 

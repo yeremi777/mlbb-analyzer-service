@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     app_name: str = "mlbb-analyzer-service"
-    data_dir: Path = Field(default=Path("data"), validation_alias="DATA_DIR")
+    data_dir: Path = Field(default=Path("public/data"), validation_alias="DATA_DIR")
     frontend_origin: str = Field(
         default="http://localhost:3000",
         validation_alias="FRONTEND_ORIGIN",
@@ -23,4 +23,3 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
-

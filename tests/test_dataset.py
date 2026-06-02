@@ -4,7 +4,7 @@ from app.data.loader import Dataset
 from app.data.validation import validate_dataset
 
 
-DATA_DIR = Path("data")
+DATA_DIR = Path("public/data")
 
 
 def test_dataset_validates() -> None:

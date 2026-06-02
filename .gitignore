@@ -44,8 +44,5 @@ TASKS.md
 .claude/
 .pi/
 
-# Private data exports
-public/data/*.json
-public/data/**/*.json
-data/*.json
-data/**/*.json
+# Static data exports
+public/data/
