@@ -1,0 +1,2 @@
+"""MLBB Analyzer Service."""
+
