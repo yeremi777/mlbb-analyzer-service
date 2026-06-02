@@ -9,8 +9,8 @@ venv/
 env/
 
 # Environment files
+.env*.local
 .env
-.env.*
 
 # Build/package output
 build/

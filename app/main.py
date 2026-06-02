@@ -6,16 +6,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api import analyze, health, heroes
-from app.core.config import get_settings
+from app.core.config import ALLOWED_ORIGINS, DATA_DIR, get_settings
 from app.data.loader import Dataset
 from app.data.validation import validate_dataset
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    settings = get_settings()
-    validate_dataset(settings.data_dir)
-    app.state.dataset = Dataset(settings.data_dir)
+    validate_dataset(DATA_DIR)
+    app.state.dataset = Dataset(DATA_DIR)
     yield
 
 
@@ -42,7 +41,7 @@ def create_app() -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[settings.frontend_origin],
+        allow_origins=ALLOWED_ORIGINS,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

@@ -32,7 +32,7 @@ uv sync --extra dev
 Run the development server:
 
 ```bash
-uv run uvicorn app.main:app --reload
+uv run python -m app.server
 ```
 
 The API runs at:
@@ -40,6 +40,16 @@ The API runs at:
 ```txt
 http://127.0.0.1:8000
 ```
+
+Host, port, and reload behavior can be changed in `.env`:
+
+```txt
+HOST=127.0.0.1
+PORT=8000
+RELOAD=true
+```
+
+Use `RELOAD=true` for local development. Use `RELOAD=false` when running without hot reload.
 
 Swagger docs:
 
