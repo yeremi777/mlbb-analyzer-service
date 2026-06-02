@@ -1,10 +1,6 @@
-from pathlib import Path
-
+from app.core.config import DATA_DIR
 from app.data.loader import Dataset
 from app.data.validation import validate_dataset
-
-
-DATA_DIR = Path("public/data")
 
 
 def test_dataset_validates() -> None:

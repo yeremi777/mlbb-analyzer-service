@@ -98,7 +98,7 @@ curl "http://127.0.0.1:8000/api/heroes?search=tig&role=tank&lane=roam&page=1&siz
 
 `HOST`, `PORT`, and `RELOAD` are for local `uvicorn` only; Vercel does not need them.
 
-The hero dataset lives in `public/data/` and is committed so serverless cold starts can validate and load it.
+The hero dataset lives in `app/data/static/` and is packaged with the FastAPI app so serverless cold starts can validate and load it.
 
 After deploy:
 

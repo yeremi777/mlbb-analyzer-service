@@ -4,7 +4,7 @@ from pathlib import Path
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-DATA_DIR = Path("public/data")
+DATA_DIR = Path(__file__).resolve().parents[1] / "data" / "static"
 LOCAL_DEV_ORIGIN = "http://localhost:3000"
 
 
