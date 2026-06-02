@@ -1,0 +1,97 @@
+[
+  {
+    "targetHeroId": "saber",
+    "counterHeroId": "argus",
+    "reasons": [
+      "Argus can survive Saber's lethal burst with death immunity and punish after Saber's combo is spent."
+    ],
+    "counterTypes": [
+      "death-immunity",
+      "anti-burst"
+    ],
+    "proof": [
+      {
+        "id": "argus-death-immunity-vs-saber-burst",
+        "category": "skill-interaction",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Saber wants instant single-target death, while Argus can survive lethal burst with ultimate death immunity and turn the fight after Saber's combo fails.",
+        "worksBestWhen": [
+          "Argus ultimate is ready.",
+          "Argus reacts before dying.",
+          "Saber commits his full combo into Argus."
+        ],
+        "failureCases": [
+          "Argus ultimate is on cooldown.",
+          "Saber baits Argus ultimate first.",
+          "Argus is chain-controlled after ultimate ends."
+        ]
+      }
+    ],
+    "patchVersion": "manual-proof-v1"
+  },
+  {
+    "targetHeroId": "saber",
+    "counterHeroId": "benedetta",
+    "reasons": [
+      "Benedetta can block damage and gain control immunity with correct timing against Saber's engage."
+    ],
+    "counterTypes": [
+      "timing-dodge",
+      "control-immunity",
+      "damage-block"
+    ],
+    "proof": [
+      {
+        "id": "benedetta-skill-two-vs-saber-ultimate",
+        "category": "skill-interaction",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Saber relies on a predictable burst window, while Benedetta can block damage and gain control immunity with correct Skill 2 timing.",
+        "worksBestWhen": [
+          "Benedetta predicts or reacts to Saber's engage.",
+          "Benedetta saves Skill 2 for Saber's ultimate.",
+          "Benedetta can punish Saber after his combo fails."
+        ],
+        "failureCases": [
+          "Benedetta mistimes Skill 2.",
+          "Saber attacks from fog or bush.",
+          "Benedetta wastes Skill 2 before Saber commits."
+        ]
+      }
+    ],
+    "patchVersion": "manual-proof-v1"
+  },
+  {
+    "targetHeroId": "saber",
+    "counterHeroId": "gatotkaca",
+    "reasons": [
+      "Gatotkaca's physical durability makes him a poor target for Saber's physical burst."
+    ],
+    "counterTypes": [
+      "high-physical-defense",
+      "tank-durability",
+      "anti-burst"
+    ],
+    "proof": [
+      {
+        "id": "gatotkaca-physical-defense-vs-saber-burst",
+        "category": "damage-type-advantage",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Saber deals physical burst, while Gatotkaca can build high Physical Defense and survive the combo Saber wants to spend on squishy heroes.",
+        "worksBestWhen": [
+          "Gatotkaca builds physical defense.",
+          "Gatotkaca absorbs Saber's combo instead of a squishy teammate.",
+          "Team follows up on Saber after his combo is used."
+        ],
+        "failureCases": [
+          "Saber ignores Gatotkaca and targets the backline.",
+          "Gatotkaca is too far to protect teammates.",
+          "Saber snowballs early and kills squishies first."
+        ]
+      }
+    ],
+    "patchVersion": "manual-proof-v1"
+  }
+]

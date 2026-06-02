@@ -43,6 +43,3 @@ TASKS.md
 .agent/
 .claude/
 .pi/
-
-# Static data exports
-public/data/

@@ -85,6 +85,30 @@ Example:
 curl "http://127.0.0.1:8000/api/heroes?search=tig&role=tank&lane=roam&page=1&size=10"
 ```
 
+## Deploy to Vercel
+
+1. Import the GitHub repo in Vercel and choose the **FastAPI** preset.
+2. Set **Install Command** to `uv sync` (no `--extra dev` needed in production).
+3. Add environment variables in the Vercel dashboard:
+
+| Variable | Required | Example |
+|----------|----------|---------|
+| `FRONTEND_ORIGIN` | Yes (production) | `https://your-frontend.vercel.app` |
+| `OPENAI_API_KEY` | No (until AI scoring ships) | `sk-...` |
+
+`HOST`, `PORT`, and `RELOAD` are for local `uvicorn` only; Vercel does not need them.
+
+The hero dataset lives in `public/data/` and is committed so serverless cold starts can validate and load it.
+
+After deploy:
+
+```bash
+curl https://<your-api>.vercel.app/health
+curl "https://<your-api>.vercel.app/api/heroes?page=1&size=5"
+```
+
+Point the frontend at the API with `NEXT_PUBLIC_ANALYZER_API_URL=https://<your-api>.vercel.app`.
+
 ## Status
 
 `POST /api/analyze` currently returns deterministic fallback recommendations. AI scoring will be implemented later.

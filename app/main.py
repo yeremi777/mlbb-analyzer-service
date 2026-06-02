@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api import analyze, health, heroes
-from app.core.config import ALLOWED_ORIGINS, DATA_DIR, get_settings
+from app.core.config import DATA_DIR, get_settings
 from app.data.loader import Dataset
 from app.data.validation import validate_dataset
 
@@ -41,7 +41,7 @@ def create_app() -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=ALLOWED_ORIGINS,
+        allow_origins=settings.allowed_origins(),
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
