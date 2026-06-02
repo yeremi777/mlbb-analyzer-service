@@ -33,7 +33,10 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json",
         openapi_tags=[
             {"name": "health", "description": "Service health endpoints."},
-            {"name": "heroes", "description": "Hero catalog and counter matchup endpoints."},
+            {
+                "name": "heroes",
+                "description": "Hero catalog and counter matchup endpoints.",
+            },
             {"name": "analysis", "description": "Hero counter analysis endpoints."},
         ],
         lifespan=lifespan,
@@ -51,8 +54,14 @@ def create_app() -> FastAPI:
     app.include_router(heroes.router)
     app.include_router(analyze.router)
 
+    @app.get("/", summary="Root")
+    def root() -> str:
+        return "Hello, World!"
+
     @app.exception_handler(HTTPException)
-    async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+    async def http_exception_handler(
+        request: Request, exc: HTTPException
+    ) -> JSONResponse:
         detail = exc.detail
         if isinstance(detail, dict) and "code" in detail and "message" in detail:
             return JSONResponse(status_code=exc.status_code, content={"error": detail})
