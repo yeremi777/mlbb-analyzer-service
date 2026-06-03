@@ -10,7 +10,7 @@ dependencies = [
   "pydantic>=2.8.0",
   "pydantic-settings>=2.4.0",
   "python-dotenv>=1.0.0",
-  "openai>=1.40.0",
+  "openrouter>=0.9.0",
 ]
 
 [project.optional-dependencies]

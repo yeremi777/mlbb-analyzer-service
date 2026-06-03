@@ -3,78 +3,60 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class AnalyzeRequest(BaseModel):
+class AnalyzeScoresRequest(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "targetHeroId": "tigreal",
-                "limit": 5,
                 "language": "en",
             }
         }
     )
 
-    targetHeroId: str = Field(
-        min_length=1,
-        description="Target enemy hero UID from the local dataset.",
-        examples=["tigreal"],
-    )
-    limit: int = Field(
-        default=5,
-        ge=1,
-        le=20,
-        description="Maximum number of counter recommendations to return.",
-    )
-    language: Literal["en", "id"] = Field(
-        default="en",
-        description="Preferred output language. Indonesian support is reserved for a later milestone.",
-    )
+    targetHeroId: str = Field(min_length=1, examples=["tigreal"])
+    language: Literal["en", "id"] = Field(default="en")
 
 
-class Recommendation(BaseModel):
-    rank: int = Field(ge=1, description="Recommendation rank after analyzer ordering.")
-    counterHeroId: str = Field(description="Recommended counter hero UID.")
-    score: int = Field(ge=0, le=100, description="Runtime matchup strength score.")
-    confidence: int = Field(ge=0, le=100, description="Runtime evidence confidence score.")
-    summary: str = Field(description="Concise recommendation explanation.")
-    strengths: list[str] = Field(description="Concrete strengths from provided dataset evidence.")
-    conditions: list[str] = Field(description="Conditions required for the matchup to work well.")
-    failureCases: list[str] = Field(description="Known ways the matchup can fail.")
-    evidenceIds: list[str] = Field(description="Proof IDs used for the recommendation.")
+class ScoreRecommendation(BaseModel):
+    rank: int = Field(ge=1)
+    counterHeroId: str
+    score: int = Field(ge=0, le=100)
+    confidence: int = Field(ge=0, le=100)
 
 
-class AnalyzeResponse(BaseModel):
+class AnalyzeScoresResponse(BaseModel):
+    targetHeroId: str
+    source: Literal["ai"] = "ai"
+    recommendations: list[ScoreRecommendation]
+
+
+class AnalyzeDetailRequest(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "targetHeroId": "tigreal",
-                "source": "fallback",
-                "recommendations": [
-                    {
-                        "rank": 1,
-                        "counterHeroId": "diggie",
-                        "score": 0,
-                        "confidence": 0,
-                        "summary": "Diggie reduces the impact of Tigreal's crowd-control engage.",
-                        "strengths": [
-                            "Diggie reduces the impact of Tigreal's crowd-control engage."
-                        ],
-                        "conditions": [
-                            "Diggie saves ultimate for Tigreal's real engage."
-                        ],
-                        "failureCases": [
-                            "Tigreal baits Diggie's ultimate before committing."
-                        ],
-                        "evidenceIds": ["diggie-time-journey-vs-tigreal-engage"],
-                    }
-                ],
+                "counterHeroId": "diggie",
+                "language": "en",
             }
         }
     )
 
+    targetHeroId: str = Field(min_length=1, examples=["tigreal"])
+    counterHeroId: str = Field(min_length=1, examples=["diggie"])
+    language: Literal["en", "id"] = Field(default="en")
+
+
+class AnalyzeDetailResponse(BaseModel):
     targetHeroId: str
-    source: Literal["ai", "fallback"]
-    recommendations: list[Recommendation]
+    counterHeroId: str
+    source: Literal["ai"] = "ai"
+    score: int = Field(ge=0, le=100)
+    confidence: int = Field(ge=0, le=100)
+    summary: str
+    strengths: list[str]
+    conditions: list[str]
+    failureCases: list[str]
+    evidenceIds: list[str]
 
 
 class ErrorDetail(BaseModel):

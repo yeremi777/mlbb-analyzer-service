@@ -40,7 +40,7 @@ Other heroes can exist as counter heroes, but only these seven target heroes are
 - Validate dataset structure at startup or through a validation command.
 - Build AI prompts from reviewed context only.
 - Produce `score` at runtime, starting from static evidence rather than static score fields.
-- Return deterministic fallback output if AI is disabled or unavailable.
+- Return structured API errors if AI is disabled, unavailable, or not implemented.
 
 ## Frontend Responsibilities
 

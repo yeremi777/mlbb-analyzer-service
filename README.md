@@ -11,7 +11,8 @@ The service loads a local hero and counter dataset, validates it on startup, and
 - Hero counter matchup API
 - Dataset validation at startup
 - Swagger/OpenAPI documentation
-- Placeholder analyze endpoint for future AI scoring
+- Fast AI scoring endpoint for all counters (`POST /api/counters/analyze-score`)
+- On-demand AI detail endpoint per counter card (`POST /api/counters/analyze-detail`)
 
 ## Tech Stack
 
@@ -69,7 +70,8 @@ uv run pytest
 - `GET /api/heroes`
 - `GET /api/heroes/{hero_id}`
 - `GET /api/heroes/{hero_id}/counters`
-- `POST /api/analyze`
+- `POST /api/counters/analyze-score`
+- `POST /api/counters/analyze-detail`
 
 Hero list filters:
 
@@ -94,7 +96,17 @@ curl "http://127.0.0.1:8000/api/heroes?search=tig&role=tank&lane=roam&page=1&siz
 | Variable | Required | Example |
 |----------|----------|---------|
 | `FRONTEND_ORIGIN` | Yes (production) | `https://your-frontend.vercel.app` |
-| `OPENAI_API_KEY` | No (until AI scoring ships) | `sk-...` |
+| `AI_PROVIDER` | Yes (for AI scoring) | `openrouter` |
+| `<AI_PROVIDER>_API_KEY` | Yes (for AI scoring) | `sk-or-...` |
+| `<AI_PROVIDER>_MODEL` | Recommended | `openrouter/free` |
+| `AI_TIMEOUT_SECONDS` | Optional | `20` |
+
+**Provider env naming:** set `AI_PROVIDER` to the provider slug in lowercase (for example `openrouter` or `openai`). Build the other AI variables by uppercasing that slug:
+
+- `AI_PROVIDER=openrouter` → `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`
+- `AI_PROVIDER=openai` → `OPENAI_API_KEY`, `OPENAI_MODEL`
+
+Optional provider-specific settings (see `.env.example`) follow the same uppercase prefix, such as `OPENROUTER_SERVER_URL`.
 
 `HOST`, `PORT`, and `RELOAD` are for local `uvicorn` only; Vercel does not need them.
 
@@ -109,6 +121,18 @@ curl "https://<your-api>.vercel.app/api/heroes?page=1&size=5"
 
 Point the frontend at the API with `NEXT_PUBLIC_ANALYZER_API_URL=https://<your-api>.vercel.app`.
 
-## Status
+## AI scoring
 
-`POST /api/analyze` currently returns deterministic fallback recommendations. AI scoring will be implemented later.
+Copy `.env.example` to `.env`, set `AI_PROVIDER`, then set `<AI_PROVIDER>_API_KEY` in uppercase (for OpenRouter: `OPENROUTER_API_KEY` from [OpenRouter keys](https://openrouter.ai/settings/keys)).
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/counters/analyze-score \
+  -H "Content-Type: application/json" \
+  -d '{"targetHeroId":"tigreal"}'
+
+curl -X POST http://127.0.0.1:8000/api/counters/analyze-detail \
+  -H "Content-Type: application/json" \
+  -d '{"targetHeroId":"tigreal","counterHeroId":"diggie"}'
+```
+
+Without a configured provider, both endpoints return an error JSON payload (no fallback scores).

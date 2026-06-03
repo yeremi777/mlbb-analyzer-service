@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api import analyze, health, heroes
+from app.api import counters, health, heroes
 from app.core.config import DATA_DIR, get_settings
 from app.data.loader import Dataset
 from app.data.validation import validate_dataset
@@ -37,7 +37,10 @@ def create_app() -> FastAPI:
                 "name": "heroes",
                 "description": "Hero catalog and counter matchup endpoints.",
             },
-            {"name": "analysis", "description": "Hero counter analysis endpoints."},
+            {
+                "name": "counters",
+                "description": "AI scoring and detail endpoints for counter matchups.",
+            },
         ],
         lifespan=lifespan,
     )
@@ -52,7 +55,7 @@ def create_app() -> FastAPI:
 
     app.include_router(health.router)
     app.include_router(heroes.router)
-    app.include_router(analyze.router)
+    app.include_router(counters.router)
 
     @app.get("/", summary="Root")
     def root() -> str:

@@ -1,9 +1,11 @@
 # API Contract
 
-## Analyze One Target Hero
+Counter context (`reasons`, `proof`, hero metadata) comes from `GET /api/heroes/{hero_id}/counters`. AI endpoints only add runtime scores and explanations.
+
+## Analyze Score (fast path)
 
 ```http
-POST /api/analyze
+POST /api/counters/analyze-score
 ```
 
 ### Request
@@ -11,18 +13,9 @@ POST /api/analyze
 ```json
 {
   "targetHeroId": "tigreal",
-  "limit": 5,
   "language": "en"
 }
 ```
-
-Fields:
-
-- `targetHeroId`: required hero UID.
-- `limit`: optional number of recommendations to return. Default can be `5`.
-- `language`: optional output language. Start with `en`; later support `id`.
-
-The frontend should not send the full dataset. The Python service owns and loads the dataset.
 
 ### Response
 
@@ -35,46 +28,69 @@ The frontend should not send the full dataset. The Python service owns and loads
       "rank": 1,
       "counterHeroId": "diggie",
       "score": 96,
-      "confidence": 92,
-      "summary": "Diggie directly answers Tigreal's AoE crowd-control engage with team cleanse and control immunity.",
-      "strengths": [
-        "Directly reduces Tigreal's main engage value.",
-        "Protects multiple allies during the setup window."
-      ],
-      "conditions": [
-        "Diggie saves ultimate for Tigreal's real engage.",
-        "Diggie stays close enough to the teammates Tigreal wants to catch."
-      ],
-      "failureCases": [
-        "Tigreal baits Diggie's ultimate first.",
-        "Tigreal catches Diggie away from the team."
-      ],
-      "evidenceIds": [
-        "diggie-time-journey-vs-tigreal-engage"
-      ]
+      "confidence": 92
     }
   ]
 }
 ```
 
-### Error Response
+### Errors
+
+- `404` — target hero or counter data not found
+- `501` — `AI_PROVIDER` is not implemented (for example `openai`)
+- `502` — model call failed or returned invalid JSON
+- `504` — provider is not configured (missing API key) or request timed out
+
+## Analyze Detail (slow path)
+
+```http
+POST /api/counters/analyze-detail
+```
+
+### Request
+
+```json
+{
+  "targetHeroId": "tigreal",
+  "counterHeroId": "diggie",
+  "language": "en"
+}
+```
+
+### Response
+
+```json
+{
+  "targetHeroId": "tigreal",
+  "counterHeroId": "diggie",
+  "source": "ai",
+  "score": 96,
+  "confidence": 92,
+  "summary": "Diggie directly answers Tigreal's AoE crowd-control engage.",
+  "strengths": ["Directly reduces Tigreal's main engage value."],
+  "conditions": ["Diggie saves ultimate for Tigreal's real engage."],
+  "failureCases": ["Tigreal baits Diggie's ultimate first."],
+  "evidenceIds": ["diggie-time-journey-vs-tigreal-engage"]
+}
+```
+
+### Errors
+
+Same AI error codes as analyze-score, plus:
+
+- `404` `counter_hero_not_found`
+- `404` `counter_matchup_not_found`
+
+## Error Response Shape
 
 ```json
 {
   "error": {
-    "code": "target_hero_not_found",
-    "message": "Target hero was not found in the dataset."
+    "code": "ai_provider_error",
+    "message": "OpenRouter returned invalid JSON."
   }
 }
 ```
-
-Suggested status codes:
-
-- `200`: analysis completed.
-- `400`: invalid request.
-- `404`: target hero not found or no counter data.
-- `500`: internal service error.
-- `503`: AI provider unavailable when fallback is disabled.
 
 ## Health Check
 
@@ -87,20 +103,3 @@ GET /health
   "status": "ok"
 }
 ```
-
-## Dataset Summary
-
-```http
-GET /api/dataset/summary
-```
-
-Useful during development.
-
-```json
-{
-  "targetHeroCount": 7,
-  "counterMatchupCount": 33,
-  "readyTargets": ["miya", "balmond", "saber", "alice", "nana", "tigreal", "alucard"]
-}
-```
-

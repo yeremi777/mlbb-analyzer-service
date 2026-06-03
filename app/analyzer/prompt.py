@@ -1,0 +1,143 @@
+import json
+from typing import Any
+
+from app.schemas.counter import CounterMatchup, Proof
+from app.schemas.hero import Hero
+
+SCORING_SYSTEM_INSTRUCTION = """You are scoring Mobile Legends hero counter recommendations.
+
+Use only the provided dataset context.
+Do not invent hero skills, item requirements, patch facts, or matchup facts.
+Do not use outside knowledge unless the caller explicitly includes it.
+
+For each counter in the batch, return:
+- counterHeroId: must match an id from the input
+- score: 0-100 matchup strength
+- confidence: 0-100 evidence confidence
+
+Score guidance:
+- 95-100: hard counter or very direct mechanic counter
+- 85-94: strong and reliable counter
+- 75-84: good counter with meaningful conditions
+- 65-74: situational counter
+- below 65: weak, incomplete, or too conditional
+
+High context increases confidence, not necessarily score.
+Direct skill interactions and direct crowd-control counters should score higher than generic damage or item-dependent counters.
+
+Respond with JSON only in this shape:
+{"recommendations":[{"counterHeroId":"...","score":0,"confidence":0}]}
+Include every counterHeroId from the input exactly once."""
+
+DETAIL_SYSTEM_INSTRUCTION = """You are explaining one Mobile Legends hero counter matchup.
+
+Use only the provided dataset context.
+Do not invent hero skills, item requirements, patch facts, or matchup facts.
+Do not use outside knowledge unless the caller explicitly includes it.
+
+Return JSON only in this shape:
+{
+  "score": 0,
+  "confidence": 0,
+  "summary": "concise explanation",
+  "strengths": ["concrete strengths from provided evidence"],
+  "conditions": ["works-best conditions from provided evidence"],
+  "failureCases": ["failure cases from provided evidence"],
+  "evidenceIds": ["proof ids used"]
+}
+
+Strengths must come from provided reasons and proof.
+Conditions must come from proof.worksBestWhen when available.
+Failure cases must come from proof.failureCases when available.
+evidenceIds must only list proof ids present in the input."""
+
+LANGUAGE_INSTRUCTIONS = {
+    "en": "Write all user-visible text fields in English.",
+    "id": "Write all user-visible text fields in Indonesian.",
+}
+
+
+def _hero_context(hero: Hero) -> dict[str, Any]:
+    return {
+        "uid": hero.uid,
+        "name": hero.name,
+        "roles": hero.roles,
+        "lanes": hero.lanes,
+    }
+
+
+def _proof_context(proof: Proof) -> dict[str, Any]:
+    return {
+        "id": proof.id,
+        "category": proof.category,
+        "priority": proof.priority,
+        "impact": proof.impact,
+        "summary": proof.summary,
+        "worksBestWhen": proof.worksBestWhen,
+        "failureCases": proof.failureCases,
+    }
+
+
+def _matchup_context(
+    matchup: CounterMatchup,
+    counter_hero: Hero | None,
+) -> dict[str, Any]:
+    context: dict[str, Any] = {
+        "counterHeroId": matchup.counterHeroId,
+        "reasons": matchup.reasons,
+        "counterTypes": matchup.counterTypes,
+        "proof": [_proof_context(proof) for proof in matchup.proof],
+        "patchVersion": matchup.patchVersion,
+    }
+    if counter_hero is not None:
+        context["counterHero"] = _hero_context(counter_hero)
+    return context
+
+
+def build_scoring_messages(
+    target_hero: Hero,
+    matchups: list[CounterMatchup],
+    heroes_by_id: dict[str, Hero],
+    language: str,
+) -> list[dict[str, str]]:
+    payload = {
+        "targetHero": _hero_context(target_hero),
+        "matchups": [
+            _matchup_context(matchup, heroes_by_id.get(matchup.counterHeroId))
+            for matchup in matchups
+        ],
+        "outputLanguage": language,
+    }
+    return [
+        {"role": "system", "content": SCORING_SYSTEM_INSTRUCTION},
+        {
+            "role": "user",
+            "content": (
+                f"{LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS['en'])}\n\n"
+                f"Dataset context:\n{json.dumps(payload, indent=2)}"
+            ),
+        },
+    ]
+
+
+def build_detail_messages(
+    target_hero: Hero,
+    matchup: CounterMatchup,
+    counter_hero: Hero,
+    language: str,
+) -> list[dict[str, str]]:
+    payload = {
+        "targetHero": _hero_context(target_hero),
+        "matchup": _matchup_context(matchup, counter_hero),
+        "outputLanguage": language,
+    }
+    return [
+        {"role": "system", "content": DETAIL_SYSTEM_INSTRUCTION},
+        {
+            "role": "user",
+            "content": (
+                f"{LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS['en'])}\n\n"
+                f"Dataset context:\n{json.dumps(payload, indent=2)}"
+            ),
+        },
+    ]

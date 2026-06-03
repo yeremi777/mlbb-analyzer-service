@@ -61,17 +61,33 @@ Direct skill interactions and direct sustain or crowd-control counters should sc
 More context increases confidence, not necessarily score.
 ```
 
-## Runtime Fallback
+## Provider
 
-If AI is unavailable, the service may return deterministic fallback rankings with:
+Providers live under `app/analyzer/providers/`:
 
-```json
-{
-  "source": "fallback",
-  "score": 0,
-  "confidence": 0
-}
-```
+- `base.py` — shared `ChatProvider` protocol, JSON parsing, errors
+- `openrouter.py` — [OpenRouter Python SDK](https://openrouter.ai/sdk)
+- `openai.py` — placeholder for direct OpenAI (not wired yet)
 
-The frontend can still show ranked cards, but should make it clear that AI scoring did not complete.
+`create_chat_provider()` in `providers/__init__.py` selects the implementation from `AI_PROVIDER`.
+
+The service uses OpenRouter when `AI_PROVIDER=openrouter`.
+
+Environment variables:
+
+- `OPENROUTER_API_KEY`
+- `OPENROUTER_MODEL`
+- `OPENROUTER_SERVER_URL`
+- `OPENROUTER_APP_TITLE`
+- `OPENROUTER_HTTP_REFERER`
+- `AI_TIMEOUT_SECONDS`
+
+Scoring and detail are split into two API calls:
+
+- `POST /api/counters/analyze-score` scores every counter matchup in one batch.
+- `POST /api/counters/analyze-detail` explains one target/counter pair on demand.
+
+## Errors (no fallback)
+
+If the provider is missing, not implemented, or the model call fails, the API returns an error response. The frontend should surface `error.message` and keep using dataset context from `GET /api/heroes/{id}/counters`.
 
