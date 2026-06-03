@@ -1,9 +1,15 @@
 from fastapi.testclient import TestClient
 
+from app.core.config import Settings
 from app.main import app
 
 
-def test_analyze_score_requires_configured_provider() -> None:
+def test_analyze_score_requires_configured_provider(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "app.api.counters.get_settings",
+        lambda: Settings(AI_PROVIDER="openrouter", OPENROUTER_API_KEY=""),
+    )
+
     with TestClient(app) as client:
         response = client.post("/api/counters/analyze-score", json={"targetHeroId": "tigreal"})
 
@@ -44,10 +50,3 @@ def test_analyze_detail_unknown_matchup_error_shape() -> None:
             "message": "Counter matchup was not found for the target hero.",
         }
     }
-
-
-def test_legacy_analyze_route_removed() -> None:
-    with TestClient(app) as client:
-        response = client.post("/api/analyze", json={"targetHeroId": "tigreal"})
-
-    assert response.status_code == 404

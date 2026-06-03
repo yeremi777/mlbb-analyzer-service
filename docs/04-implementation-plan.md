@@ -57,7 +57,7 @@ mlbb-analyzer-api/
 3. Add Pydantic schemas for heroes, counters, proof, and analysis response.
 4. Add dataset loader and validation.
 5. Add `GET /health`.
-6. Add `POST /api/analyze` with deterministic fallback only.
+6. Add split counter analysis endpoints.
 7. Add CORS for the frontend dev URL.
 
 ## Second Milestone
@@ -92,4 +92,3 @@ python-dotenv
 ```
 
 Add more dependencies only when needed.
-
