@@ -1,11 +1,34 @@
 {
   "files": [
+    "counters/akai.json",
     "counters/alice.json",
+    "counters/alpha.json",
     "counters/alucard.json",
     "counters/balmond.json",
+    "counters/bane.json",
+    "counters/bruno.json",
+    "counters/chou.json",
+    "counters/clint.json",
+    "counters/eudora.json",
+    "counters/fanny.json",
+    "counters/franco.json",
+    "counters/freya.json",
+    "counters/gord.json",
+    "counters/hayabusa.json",
+    "counters/kagura.json",
+    "counters/karina.json",
+    "counters/layla.json",
+    "counters/lolita.json",
+    "counters/minotaur.json",
     "counters/miya.json",
     "counters/nana.json",
+    "counters/natalia.json",
+    "counters/rafaela.json",
+    "counters/ruby.json",
     "counters/saber.json",
-    "counters/tigreal.json"
+    "counters/sun.json",
+    "counters/tigreal.json",
+    "counters/yi-sun-shin.json",
+    "counters/zilong.json"
   ]
 }
