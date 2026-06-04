@@ -8,7 +8,7 @@
     ],
     "counterTypes": [
       "anti-cc",
-      "disengage",
+      "cleanse",
       "teamfight"
     ],
     "proof": [
@@ -20,29 +20,16 @@
         "summary": "Tigreal's main threat is an AoE crowd-control engage, while Diggie's ultimate gives nearby allies cleanse and control immunity during the engage window.",
         "worksBestWhen": [
           "Diggie saves ultimate for Tigreal's real engage.",
-          "Diggie stays close enough to protect the teammates Tigreal wants to catch."
+          "Diggie stays close enough to protect the teammates Tigreal wants to catch.",
+          "Diggie helps check likely engage paths before the team groups."
         ],
         "failureCases": [
           "Tigreal baits Diggie's ultimate before committing.",
           "Tigreal catches Diggie out of position.",
           "Tigreal engages while Diggie's ultimate is on cooldown."
         ]
-      },
-      {
-        "id": "diggie-bush-control-vs-tigreal-setup",
-        "category": "vision-awareness",
-        "priority": "condition",
-        "impact": "medium",
-        "summary": "Diggie's bombs can help check space and reduce Tigreal's ability to start fights from hidden positions.",
-        "worksBestWhen": [
-          "Diggie uses bombs to scout bushes and likely engage paths before the team groups."
-        ],
-        "failureCases": [
-          "The team walks into Tigreal's engage range without checking vision first."
-        ]
       }
-    ],
-    "patchVersion": "starter-v1"
+    ]
   },
   {
     "targetHeroId": "tigreal",
@@ -53,83 +40,28 @@
     ],
     "counterTypes": [
       "anti-engage",
-      "poke",
-      "knockback"
+      "disengage",
+      "poke"
     ],
     "proof": [
-      {
-        "id": "valir-vengeance-flame-vs-tigreal-cc",
-        "category": "crowd-control-counter",
-        "priority": "primary",
-        "impact": "high",
-        "summary": "Valir can cleanse himself with his ultimate, reducing Tigreal's ability to lock him down during the engage.",
-        "worksBestWhen": [
-          "Valir keeps his ultimate available for Tigreal's commit instead of using it early."
-        ],
-        "failureCases": [
-          "Tigreal catches Valir after Valir's ultimate has already been used.",
-          "Valir is flanked before he can react."
-        ]
-      },
       {
         "id": "valir-knockback-vs-tigreal-engage",
         "category": "skill-interaction",
         "priority": "primary",
-        "impact": "medium",
+        "impact": "high",
         "summary": "Valir's knockback can push Tigreal away and interrupt short-range engage attempts before Tigreal gets an ideal setup.",
         "worksBestWhen": [
-          "Valir maintains spacing and saves knockback for Tigreal's approach."
+          "Valir maintains spacing.",
+          "Valir saves knockback for Tigreal's approach.",
+          "Valir keeps ultimate available for Tigreal's commit."
         ],
         "failureCases": [
           "Valir wastes knockback before Tigreal commits.",
-          "Tigreal reaches Valir from fog or a flank angle."
+          "Tigreal reaches Valir from fog or a flank angle.",
+          "Valir is caught after his ultimate has already been used."
         ]
       }
-    ],
-    "patchVersion": "starter-v1"
-  },
-  {
-    "targetHeroId": "tigreal",
-    "counterHeroId": "karrie",
-    "reasons": [
-      "Karrie can punish durable frontliners with sustained true damage."
-    ],
-    "counterTypes": [
-      "tank-shred",
-      "sustained-damage"
-    ],
-    "proof": [
-      {
-        "id": "karrie-true-damage-vs-tigreal-tank",
-        "category": "damage-type-advantage",
-        "priority": "primary",
-        "impact": "medium",
-        "summary": "Tigreal is a high-HP tank, while Karrie's true damage and Max HP-based damage can melt durable frontliners in extended fights.",
-        "worksBestWhen": [
-          "Karrie attacks safely from the backline.",
-          "Karrie has enough time to apply sustained damage before being controlled."
-        ],
-        "failureCases": [
-          "Tigreal catches Karrie before she can deal sustained damage.",
-          "Karrie is poorly positioned or cannot use Purify at the right time."
-        ]
-      },
-      {
-        "id": "karrie-item-spike-vs-tigreal-frontline",
-        "category": "item-power-spike",
-        "priority": "secondary",
-        "impact": "medium",
-        "summary": "Karrie's tank-shredding pressure becomes more reliable after her core attack-speed and on-hit items are completed.",
-        "worksBestWhen": [
-          "Karrie reaches her core item timing before decisive teamfights."
-        ],
-        "failureCases": [
-          "The game is decided before Karrie reaches her core item spike.",
-          "Tigreal's team forces fights before Karrie has enough damage uptime."
-        ]
-      }
-    ],
-    "patchVersion": "starter-v1"
+    ]
   },
   {
     "targetHeroId": "tigreal",
@@ -160,8 +92,38 @@
           "Akai pushes enemies in the wrong direction."
         ]
       }
+    ]
+  },
+  {
+    "targetHeroId": "tigreal",
+    "counterHeroId": "karrie",
+    "reasons": [
+      "Karrie can punish durable frontliners with sustained true damage."
     ],
-    "patchVersion": "manual-proof-v1"
+    "counterTypes": [
+      "tank-shred",
+      "true-damage",
+      "item-power-spike"
+    ],
+    "proof": [
+      {
+        "id": "karrie-true-damage-vs-tigreal-tank",
+        "category": "damage-type-advantage",
+        "priority": "primary",
+        "impact": "medium",
+        "summary": "Tigreal is a high-HP tank, while Karrie's true damage and Max HP-based damage can melt durable frontliners in extended fights.",
+        "worksBestWhen": [
+          "Karrie attacks safely from the backline.",
+          "Karrie has enough time to apply sustained damage before being controlled.",
+          "Karrie reaches core attack-speed or on-hit item timing."
+        ],
+        "failureCases": [
+          "Tigreal catches Karrie before she can deal sustained damage.",
+          "Karrie is poorly positioned.",
+          "Tigreal's team forces fights before Karrie has enough damage uptime."
+        ]
+      }
+    ]
   },
   {
     "targetHeroId": "tigreal",
@@ -170,9 +132,9 @@
       "Lunox can damage Tigreal's tanky build with magic penetration while using survival tools against engage."
     ],
     "counterTypes": [
-      "magic-penetration",
-      "tank-burst",
-      "escape"
+      "penetration",
+      "burst",
+      "mobility"
     ],
     "proof": [
       {
@@ -192,7 +154,6 @@
           "Tigreal's team follows up immediately."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   }
 ]

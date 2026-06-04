@@ -6,9 +6,9 @@
       "Baxia directly reduces Alice's HP regeneration and sustain value."
     ],
     "counterTypes": [
-      "anti-regen",
       "anti-sustain",
-      "direct-mechanic-counter"
+      "anti-heal",
+      "frontline"
     ],
     "proof": [
       {
@@ -28,8 +28,7 @@
           "Baxia's team does not follow up."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "alice",
@@ -40,7 +39,7 @@
     "counterTypes": [
       "true-damage",
       "max-hp-damage",
-      "tank-melter"
+      "tank-shred"
     ],
     "proof": [
       {
@@ -60,8 +59,7 @@
           "Alice's team zones Karrie away."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "alice",
@@ -70,9 +68,9 @@
       "Lunox can burst durable heroes with magic penetration before Alice drains a long fight."
     ],
     "counterTypes": [
-      "magic-penetration",
-      "tank-burst",
-      "escape"
+      "penetration",
+      "burst",
+      "mobility"
     ],
     "proof": [
       {
@@ -92,8 +90,7 @@
           "Lunox lacks item power."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "alice",
@@ -103,8 +100,8 @@
     ],
     "counterTypes": [
       "true-damage",
-      "sustain-fighter",
-      "anti-durable"
+      "anti-durable",
+      "sustain-fighter"
     ],
     "proof": [
       {
@@ -124,8 +121,7 @@
           "Alice fights with multiple targets around her."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "alice",
@@ -135,7 +131,7 @@
     ],
     "counterTypes": [
       "disengage",
-      "kite",
+      "kiting",
       "anti-close-range"
     ],
     "proof": [
@@ -156,7 +152,6 @@
           "Team groups inside Alice's AoE."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   }
 ]

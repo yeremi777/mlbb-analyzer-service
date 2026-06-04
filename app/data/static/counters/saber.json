@@ -6,8 +6,9 @@
       "Argus can survive Saber's lethal burst with death immunity and punish after Saber's combo is spent."
     ],
     "counterTypes": [
+      "anti-burst",
       "death-immunity",
-      "anti-burst"
+      "cooldown-punish"
     ],
     "proof": [
       {
@@ -27,8 +28,7 @@
           "Argus is chain-controlled after ultimate ends."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "saber",
@@ -37,9 +37,9 @@
       "Benedetta can block damage and gain control immunity with correct timing against Saber's engage."
     ],
     "counterTypes": [
-      "timing-dodge",
       "control-immunity",
-      "damage-block"
+      "damage-block",
+      "execution-dependent"
     ],
     "proof": [
       {
@@ -59,39 +59,99 @@
           "Benedetta wastes Skill 2 before Saber commits."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "saber",
-    "counterHeroId": "gatotkaca",
+    "counterHeroId": "wanwan",
     "reasons": [
-      "Gatotkaca's physical durability makes him a poor target for Saber's physical burst."
+      "Wanwan can remove control effects excluding suppression, making her a strong timing-based answer to Saber's non-suppression pickoff window."
     ],
     "counterTypes": [
-      "high-physical-defense",
-      "tank-durability",
-      "anti-burst"
+      "cleanse",
+      "mobility",
+      "anti-pickoff"
     ],
     "proof": [
       {
-        "id": "gatotkaca-physical-defense-vs-saber-burst",
-        "category": "damage-type-advantage",
+        "id": "wanwan-needles-in-flowers-vs-saber-triple-sweep",
+        "category": "skill-interaction",
         "priority": "primary",
         "impact": "high",
-        "summary": "Saber deals physical burst, while Gatotkaca can build high Physical Defense and survive the combo Saber wants to spend on squishy heroes.",
+        "summary": "Saber wants to lock a fragile backline target with non-suppression crowd control and burst, while Wanwan can remove control effects excluding suppression if she times her Skill 2 correctly.",
         "worksBestWhen": [
-          "Gatotkaca builds physical defense.",
-          "Gatotkaca absorbs Saber's combo instead of a squishy teammate.",
-          "Team follows up on Saber after his combo is used."
+          "Wanwan saves Skill 2 for Saber's engage.",
+          "Wanwan has enough spacing to reposition after cleansing.",
+          "Saber commits without first baiting Wanwan's defensive skill."
         ],
         "failureCases": [
-          "Saber ignores Gatotkaca and targets the backline.",
-          "Gatotkaca is too far to protect teammates.",
-          "Saber snowballs early and kills squishies first."
+          "Wanwan uses Skill 2 before Saber commits.",
+          "Saber attacks from fog and bursts before Wanwan reacts.",
+          "Wanwan is chain-controlled after cleansing."
         ]
       }
+    ]
+  },
+  {
+    "targetHeroId": "saber",
+    "counterHeroId": "diggie",
+    "reasons": [
+      "Diggie can reduce Saber's pickoff value by protecting nearby allies during the airborne burst window."
     ],
-    "patchVersion": "manual-proof-v1"
+    "counterTypes": [
+      "anti-cc",
+      "cleanse",
+      "protect"
+    ],
+    "proof": [
+      {
+        "id": "diggie-time-journey-vs-saber-pickoff",
+        "category": "crowd-control-counter",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Saber wants to lock one target with airborne burst, while Diggie can remove debuffs and give nearby allies control immunity and shield during the engage window.",
+        "worksBestWhen": [
+          "Diggie stays near Saber's likely target.",
+          "Diggie saves ultimate for Saber's real commit.",
+          "The protected ally stays within Diggie's protection range."
+        ],
+        "failureCases": [
+          "Saber catches Diggie first.",
+          "Saber waits out Time Journey.",
+          "Saber attacks from fog before Diggie can react."
+        ]
+      }
+    ]
+  },
+  {
+    "targetHeroId": "saber",
+    "counterHeroId": "khufra",
+    "reasons": [
+      "Khufra can punish Saber's dash-style entry path and protect the backline from clean pickoffs."
+    ],
+    "counterTypes": [
+      "anti-dash",
+      "anti-dive",
+      "frontline"
+    ],
+    "proof": [
+      {
+        "id": "khufra-bouncing-ball-vs-saber-entry",
+        "category": "skill-interaction",
+        "priority": "primary",
+        "impact": "medium",
+        "summary": "Saber needs clean target access, while Khufra's Bouncing Ball punishes enemies trying to use blink skills across him.",
+        "worksBestWhen": [
+          "Khufra positions between Saber and the backline.",
+          "Khufra saves Bouncing Ball for Saber's entry.",
+          "Saber is forced to dive through the frontline."
+        ],
+        "failureCases": [
+          "Saber enters from an angle not covered by Khufra.",
+          "Saber waits until Bouncing Ball ends.",
+          "Khufra is baited away from the carry."
+        ]
+      }
+    ]
   }
 ]

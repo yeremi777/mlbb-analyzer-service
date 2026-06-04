@@ -115,7 +115,6 @@ def list_hero_counters(hero_id: str, request: Request) -> list[CounterHeroMatchu
             reasons=matchup.reasons,
             counterTypes=matchup.counterTypes,
             proof=matchup.proof,
-            patchVersion=matchup.patchVersion,
         )
         for matchup in matchups
     ]

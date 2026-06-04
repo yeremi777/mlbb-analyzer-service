@@ -49,7 +49,6 @@ class CounterMatchup(BaseModel):
     reasons: list[str] = Field(min_length=1)
     counterTypes: list[str] = Field(min_length=1)
     proof: list[Proof] = Field(min_length=1)
-    patchVersion: str = Field(min_length=1)
 
 
 class CounterHeroMatchup(BaseModel):
@@ -78,7 +77,6 @@ class CounterHeroMatchup(BaseModel):
                         "failureCases": ["Tigreal baits Diggie's ultimate before committing."],
                     }
                 ],
-                "patchVersion": "starter-v1",
             }
         }
     )
@@ -88,7 +86,6 @@ class CounterHeroMatchup(BaseModel):
     reasons: list[str]
     counterTypes: list[str]
     proof: list[Proof]
-    patchVersion: str
 
 
 from app.schemas.hero import Hero  # noqa: E402

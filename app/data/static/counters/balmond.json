@@ -8,7 +8,7 @@
     "counterTypes": [
       "true-damage",
       "max-hp-damage",
-      "tank-melter"
+      "tank-shred"
     ],
     "proof": [
       {
@@ -28,8 +28,7 @@
           "Karrie has no frontline protection."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "balmond",
@@ -39,7 +38,7 @@
     ],
     "counterTypes": [
       "defense-reduction",
-      "burst-fighter",
+      "burst",
       "lane-pressure"
     ],
     "proof": [
@@ -60,8 +59,7 @@
           "Dyrroth stays too low for Balmond's execute."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "balmond",
@@ -70,8 +68,8 @@
       "Lunox can punish Balmond's tank build with high magic penetration and burst."
     ],
     "counterTypes": [
-      "magic-penetration",
-      "tank-burst",
+      "penetration",
+      "burst",
       "anti-durable"
     ],
     "proof": [
@@ -92,8 +90,7 @@
           "Balmond's team controls Lunox first."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "balmond",
@@ -102,9 +99,8 @@
       "Valir can slow, push, and kite Balmond before Balmond gets extended close-range value."
     ],
     "counterTypes": [
-      "kite",
-      "slow",
-      "knockback",
+      "kiting",
+      "disengage",
       "anti-melee"
     ],
     "proof": [
@@ -125,8 +121,7 @@
           "Balmond has speed or engage support."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "balmond",
@@ -157,7 +152,6 @@
           "Balmond has strong follow-up from teammates."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   }
 ]

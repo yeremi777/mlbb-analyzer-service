@@ -87,7 +87,6 @@ def _matchup_context(
         "reasons": matchup.reasons,
         "counterTypes": matchup.counterTypes,
         "proof": [_proof_context(proof) for proof in matchup.proof],
-        "patchVersion": matchup.patchVersion,
     }
     if counter_hero is not None:
         context["counterHero"] = _hero_context(counter_hero)

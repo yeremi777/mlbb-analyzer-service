@@ -60,8 +60,7 @@ Static counter records do not include scores. Scores are runtime analyzer output
         "Tigreal baits Diggie's ultimate before committing."
       ]
     }
-  ],
-  "patchVersion": "manual-proof-v1"
+  ]
 }
 ```
 
@@ -112,4 +111,3 @@ Impacts:
 - `high`
 - `medium`
 - `low`
-

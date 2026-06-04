@@ -7,8 +7,8 @@
     ],
     "counterTypes": [
       "suppression",
-      "lockdown",
-      "anti-lifesteal"
+      "pickoff",
+      "anti-dive"
     ],
     "proof": [
       {
@@ -28,8 +28,7 @@
           "Franco has no team follow-up."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "alucard",
@@ -60,8 +59,7 @@
           "Alucard survives the pickoff."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "alucard",
@@ -70,7 +68,7 @@
       "Akai can push Alucard away from targets during the lifesteal window."
     ],
     "counterTypes": [
-      "disruption",
+      "disengage",
       "knockback",
       "anti-melee"
     ],
@@ -92,40 +90,7 @@
           "Alucard waits out Akai ultimate."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
-  },
-  {
-    "targetHeroId": "alucard",
-    "counterHeroId": "karrie",
-    "reasons": [
-      "Karrie can melt Alucard with repeated true damage while using positioning and Wind of Nature."
-    ],
-    "counterTypes": [
-      "true-damage",
-      "dps",
-      "wind-of-nature"
-    ],
-    "proof": [
-      {
-        "id": "karrie-true-damage-vs-alucard-melee-sustain",
-        "category": "damage-type-advantage",
-        "priority": "primary",
-        "impact": "medium",
-        "summary": "Alucard is a melee sustain fighter, while Karrie can deal repeated true damage from range and use positioning or Wind of Nature against his physical burst.",
-        "worksBestWhen": [
-          "Karrie has core attack-speed items.",
-          "Karrie uses Wind of Nature at the correct time.",
-          "Alucard is forced to chase through frontline."
-        ],
-        "failureCases": [
-          "Alucard reaches Karrie before Wind of Nature is used.",
-          "Wind of Nature is on cooldown.",
-          "Karrie has no peel."
-        ]
-      }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "alucard",
@@ -134,9 +99,9 @@
       "Baxia reduces Alucard's lifesteal and sustain value during extended fights."
     ],
     "counterTypes": [
-      "anti-regen",
-      "anti-lifesteal",
-      "tank-pressure"
+      "anti-sustain",
+      "anti-heal",
+      "frontline"
     ],
     "proof": [
       {
@@ -156,7 +121,37 @@
           "Alucard is too fed."
         ]
       }
+    ]
+  },
+  {
+    "targetHeroId": "alucard",
+    "counterHeroId": "karrie",
+    "reasons": [
+      "Karrie can melt Alucard with repeated true damage while using positioning and Wind of Nature."
     ],
-    "patchVersion": "manual-proof-v1"
+    "counterTypes": [
+      "true-damage",
+      "kiting",
+      "item-power-spike"
+    ],
+    "proof": [
+      {
+        "id": "karrie-true-damage-vs-alucard-melee-sustain",
+        "category": "damage-type-advantage",
+        "priority": "primary",
+        "impact": "medium",
+        "summary": "Alucard is a melee sustain fighter, while Karrie can deal repeated true damage from range and use positioning or Wind of Nature against his physical burst.",
+        "worksBestWhen": [
+          "Karrie has core attack-speed items.",
+          "Karrie uses Wind of Nature at the correct time.",
+          "Alucard is forced to chase through frontline."
+        ],
+        "failureCases": [
+          "Alucard reaches Karrie before Wind of Nature is used.",
+          "Wind of Nature is on cooldown.",
+          "Karrie has no peel."
+        ]
+      }
+    ]
   }
 ]

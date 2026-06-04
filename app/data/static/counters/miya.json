@@ -8,8 +8,8 @@
     ],
     "counterTypes": [
       "anti-basic-attack",
-      "reflect-damage",
-      "tank-punish"
+      "item-counter",
+      "frontline"
     ],
     "proof": [
       {
@@ -17,7 +17,7 @@
         "category": "skill-interaction",
         "priority": "primary",
         "impact": "high",
-        "summary": "Miya depends on fast basic attacks and lifesteal, while Belerick punishes repeated incoming damage and can amplify return damage with defensive tools.",
+        "summary": "Miya depends on fast repeated basic attacks, while Belerick punishes continuous incoming damage and can amplify return damage with defensive tools.",
         "worksBestWhen": [
           "Miya keeps attacking Belerick continuously.",
           "Belerick has Blade Armor or Vengeance ready.",
@@ -29,8 +29,7 @@
           "Miya has enough lifesteal, positioning, and team peel."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "miya",
@@ -40,9 +39,9 @@
       "Team protection denies Miya's backline DPS during fights."
     ],
     "counterTypes": [
-      "projectile-block",
-      "anti-marksman",
-      "team-protection"
+      "protect",
+      "anti-projectile",
+      "anti-marksman"
     ],
     "proof": [
       {
@@ -62,41 +61,39 @@
           "Miya waits for Lolita's shield to end."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "miya",
-    "counterHeroId": "saber",
+    "counterHeroId": "natalia",
     "reasons": [
-      "Saber can lock and burst Miya before she deals sustained DPS.",
-      "Pickoff pressure is strongest when Miya is isolated or late to use ultimate."
+      "Natalia can deny Miya's basic-attack damage window with Smoke Bomb's basic-attack immunity.",
+      "Natalia can pressure Miya from hidden angles before Miya reaches safe free-hit positioning."
     ],
     "counterTypes": [
-      "burst",
-      "backline-pickoff",
-      "anti-squishy"
+      "basic-attack-immunity",
+      "pickoff",
+      "anti-marksman"
     ],
     "proof": [
       {
-        "id": "saber-burst-vs-miya-squishy-backline",
-        "category": "damage-type-advantage",
+        "id": "natalia-smoke-bomb-vs-miya-basic-attacks",
+        "category": "skill-interaction",
         "priority": "primary",
         "impact": "high",
-        "summary": "Miya is a squishy late-game marksman, while Saber can quickly lock one target and burst her before she starts a DPS window.",
+        "summary": "Miya wants repeated basic-attack uptime, while Natalia can use Smoke Bomb to become immune to enemy basic attacks during the key trade window.",
         "worksBestWhen": [
-          "Saber reaches level 4.",
-          "Miya is alone or too far from her tank or support.",
-          "Miya's ultimate is on cooldown or she reacts late."
+          "Natalia reaches Miya before Miya is protected by frontline.",
+          "Natalia saves Smoke Bomb for Miya's basic-attack response.",
+          "Miya's ultimate or defensive spell is unavailable or forced early."
         ],
         "failureCases": [
-          "Miya uses ultimate before Saber's full combo lands.",
-          "Miya has Wind of Nature or defensive item timing.",
-          "Miya is protected by tank or support."
+          "Miya uses Hidden Moonlight to reposition before Natalia commits.",
+          "Natalia is revealed or controlled before reaching Miya.",
+          "Miya has strong peel and does not fight inside Smoke Bomb."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "miya",
@@ -105,9 +102,9 @@
       "Pharsa can zone and burst Miya from outside Miya's comfortable basic-attack range."
     ],
     "counterTypes": [
-      "long-range-burst",
-      "zoning",
-      "escape"
+      "range-advantage",
+      "burst",
+      "zoning"
     ],
     "proof": [
       {
@@ -127,8 +124,7 @@
           "Pharsa misses burst damage or lacks vision."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "miya",
@@ -137,8 +133,8 @@
       "Lunox can burst Miya and avoid extended basic-attack trades with survival tools."
     ],
     "counterTypes": [
-      "magic-burst",
-      "escape",
+      "burst",
+      "mobility",
       "anti-squishy"
     ],
     "proof": [
@@ -159,7 +155,6 @@
           "Miya has full late-game items and safe positioning."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   }
 ]

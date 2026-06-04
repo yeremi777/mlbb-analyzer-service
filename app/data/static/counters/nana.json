@@ -6,9 +6,9 @@
       "Harley can enter, burst Nana, and escape before Molina fully punishes him."
     ],
     "counterTypes": [
-      "in-out-burst",
-      "poke",
-      "backline-pickoff"
+      "burst",
+      "mobility",
+      "pickoff"
     ],
     "proof": [
       {
@@ -28,8 +28,7 @@
           "Harley's escape path is blocked."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "nana",
@@ -38,9 +37,9 @@
       "Hayabusa can reach Nana, burst with ultimate, and avoid some counterplay during the combo."
     ],
     "counterTypes": [
-      "in-out-assassin",
-      "untargetable-ultimate",
-      "backline-pickoff"
+      "mobility",
+      "pickoff",
+      "backline-access"
     ],
     "proof": [
       {
@@ -60,8 +59,7 @@
           "Nana's passive saves her."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "nana",
@@ -72,7 +70,7 @@
     "counterTypes": [
       "mobility",
       "dodge",
-      "burst-assassin"
+      "burst"
     ],
     "proof": [
       {
@@ -92,8 +90,7 @@
           "Lancelot lacks damage."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "nana",
@@ -124,8 +121,7 @@
           "Ling lacks energy."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   },
   {
     "targetHeroId": "nana",
@@ -135,8 +131,8 @@
     ],
     "counterTypes": [
       "cleanse",
-      "control-immunity",
-      "anti-cc-support"
+      "anti-cc",
+      "protect"
     ],
     "proof": [
       {
@@ -156,7 +152,6 @@
           "Allies are outside Diggie's range."
         ]
       }
-    ],
-    "patchVersion": "manual-proof-v1"
+    ]
   }
 ]
