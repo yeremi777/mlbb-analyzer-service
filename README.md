@@ -64,6 +64,22 @@ http://127.0.0.1:8000/docs
 uv run pytest
 ```
 
+## Dataset validation
+
+Validate the bundled static dataset without starting the API server:
+
+```bash
+uv run mlbb-validate-dataset
+```
+
+Validate another dataset directory:
+
+```bash
+uv run mlbb-validate-dataset --data-dir app/data/static
+```
+
+The command exits non-zero and prints validation errors when hero or counter data is invalid.
+
 ## API Endpoints
 
 - `GET /health`

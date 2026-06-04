@@ -13,6 +13,9 @@ dependencies = [
   "openrouter>=0.9.0",
 ]
 
+[project.scripts]
+mlbb-validate-dataset = "app.data.validation:main"
+
 [project.optional-dependencies]
 dev = [
   "pytest>=8.3.0,<9.0.0",

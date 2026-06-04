@@ -1,7 +1,10 @@
+import argparse
+import sys
 from pathlib import Path
 
 from pydantic import ValidationError
 
+from app.core.config import DATA_DIR
 from app.data.loader import (
     load_counter_index,
     load_counter_matchups,
@@ -89,3 +92,29 @@ def validate_dataset(data_dir: Path) -> None:
 
     if errors:
         raise DatasetValidationError(errors)
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Validate the bundled MLBB static dataset.")
+    parser.add_argument(
+        "--data-dir",
+        type=Path,
+        default=DATA_DIR,
+        help=f"Dataset directory to validate. Defaults to {DATA_DIR}.",
+    )
+    args = parser.parse_args(argv)
+
+    try:
+        validate_dataset(args.data_dir)
+    except DatasetValidationError as exc:
+        print(f"Dataset validation failed for {args.data_dir}:", file=sys.stderr)
+        for error in exc.errors:
+            print(f"- {error}", file=sys.stderr)
+        return 1
+
+    print(f"Dataset validation passed for {args.data_dir}.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
