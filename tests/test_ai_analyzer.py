@@ -90,3 +90,50 @@ def test_detail_analysis_uses_ai_when_provider_returns_valid_json() -> None:
     assert response.source == "ai"
     assert response.summary == payload["summary"]
     assert response.evidenceIds == payload["evidenceIds"]
+
+
+def test_detail_analysis_retries_when_detail_payload_is_missing_required_field() -> None:
+    dataset = Dataset(DATA_DIR)
+    settings = _openrouter_settings()
+    invalid_payload = {
+        "score": 96,
+        "confidence": 92,
+        "summary": "Diggie answers Tigreal's engage window.",
+        "conditions": ["Save ultimate for the real engage."],
+        "failureCases": ["Tigreal baits ultimate first."],
+        "evidenceIds": ["diggie-time-journey-vs-tigreal-engage"],
+    }
+    repaired_payload = {
+        **invalid_payload,
+        "strengths": ["Reduces Tigreal engage value."],
+    }
+
+    with patch("app.analyzer.ai.create_chat_provider") as mock_factory:
+        mock_provider = mock_factory.return_value
+        mock_provider.complete_json.side_effect = [invalid_payload, repaired_payload]
+        response = run_detail_analysis(dataset, "tigreal", "diggie", settings, "en")
+
+    assert response.source == "ai"
+    assert response.strengths == repaired_payload["strengths"]
+    assert mock_provider.complete_json.call_count == 2
+    repair_messages = mock_provider.complete_json.call_args_list[1].args[0]
+    assert "previous JSON did not match" in repair_messages[-1]["content"]
+
+
+def test_detail_analysis_raises_when_retry_payload_is_still_invalid() -> None:
+    dataset = Dataset(DATA_DIR)
+    settings = _openrouter_settings()
+    invalid_payload = {
+        "score": 96,
+        "confidence": 92,
+        "summary": "Diggie answers Tigreal's engage window.",
+    }
+
+    with patch("app.analyzer.ai.create_chat_provider") as mock_factory:
+        mock_provider = mock_factory.return_value
+        mock_provider.complete_json.side_effect = [invalid_payload, invalid_payload]
+
+        with pytest.raises(AnalyzerProviderError, match="after retry"):
+            run_detail_analysis(dataset, "tigreal", "diggie", settings, "en")
+
+    assert mock_provider.complete_json.call_count == 2

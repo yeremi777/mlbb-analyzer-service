@@ -1,3 +1,4 @@
+import json
 from typing import Any
 
 from pydantic import BaseModel, Field, ValidationError
@@ -40,6 +41,20 @@ class _DetailPayload(BaseModel):
     conditions: list[str] = Field(default_factory=list)
     failureCases: list[str] = Field(default_factory=list)
     evidenceIds: list[str] = Field(default_factory=list)
+
+
+_DETAIL_REPAIR_INSTRUCTION = """The previous JSON did not match the required detail response schema.
+
+Return corrected JSON only with exactly these keys:
+- score: integer 0-100
+- confidence: integer 0-100
+- summary: non-empty string
+- strengths: non-empty array of strings from the provided reasons/proof
+- conditions: array of strings from proof.worksBestWhen
+- failureCases: array of strings from proof.failureCases
+- evidenceIds: array of proof ids present in the input
+
+Do not add matchup facts outside the provided dataset context."""
 
 
 def _ensure_ai_ready(settings: Settings) -> None:
@@ -95,6 +110,34 @@ def _validate_scoring_payload(
             "Scoring response must include every expected counterHeroId once."
         )
     return parsed.recommendations
+
+
+def _build_detail_repair_messages(
+    messages: list[dict[str, str]],
+    payload: dict[str, Any],
+    exc: ValidationError,
+) -> list[dict[str, str]]:
+    return [
+        *messages,
+        {"role": "assistant", "content": json.dumps(payload, ensure_ascii=False)},
+        {
+            "role": "user",
+            "content": (
+                f"{_DETAIL_REPAIR_INSTRUCTION}\n\n"
+                f"Validation error:\n{exc}"
+            ),
+        },
+    ]
+
+
+def _validate_detail_payload(
+    payload: dict[str, Any],
+    allowed_ids: set[str],
+) -> _DetailPayload:
+    parsed = _DetailPayload.model_validate(payload)
+    if not _validate_evidence_ids(parsed.evidenceIds, allowed_ids):
+        raise AnalyzerProviderError("Detail response referenced unknown evidence ids.")
+    return parsed
 
 
 def _run_with_provider(
@@ -163,9 +206,12 @@ def run_detail_analysis(
 
     try:
         payload = _run_with_provider(settings, messages)
-        parsed = _DetailPayload.model_validate(payload)
-        if not _validate_evidence_ids(parsed.evidenceIds, allowed_ids):
-            raise AnalyzerProviderError("Detail response referenced unknown evidence ids.")
+        try:
+            parsed = _validate_detail_payload(payload, allowed_ids)
+        except ValidationError as first_exc:
+            repair_messages = _build_detail_repair_messages(messages, payload, first_exc)
+            retry_payload = _run_with_provider(settings, repair_messages)
+            parsed = _validate_detail_payload(retry_payload, allowed_ids)
         return AnalyzeDetailResponse(
             targetHeroId=target_hero_id,
             counterHeroId=counter_hero_id,
@@ -179,4 +225,4 @@ def run_detail_analysis(
             evidenceIds=parsed.evidenceIds,
         )
     except ValidationError as exc:
-        raise AnalyzerProviderError(f"Invalid detail response from model: {exc}") from exc
+        raise AnalyzerProviderError(f"Invalid detail response from model after retry: {exc}") from exc

@@ -46,9 +46,10 @@ Return JSON only in this shape:
   "evidenceIds": ["proof ids used"]
 }
 
-Strengths must come from provided reasons and proof.
-Conditions must come from proof.worksBestWhen when available.
-Failure cases must come from proof.failureCases when available.
+All keys are required. Use an empty array for optional arrays only when the dataset has no matching evidence.
+strengths must be a non-empty array and must come from provided reasons and proof.
+conditions must come from proof.worksBestWhen when available.
+failureCases must come from proof.failureCases when available.
 evidenceIds must only list proof ids present in the input."""
 
 LANGUAGE_INSTRUCTIONS = {
