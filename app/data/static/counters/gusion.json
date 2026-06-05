@@ -6,11 +6,7 @@
       "Khufra directly attacks Gusion's need to dash into the target.",
       "Backline protection is strong because Gusion must enter close range to complete his combo."
     ],
-    "counterTypes": [
-      "anti-dash",
-      "anti-dive",
-      "protect"
-    ],
+    "counterTypes": ["anti-dash", "anti-dive", "protect"],
     "proof": [
       {
         "id": "khufra-anti-dash-vs-gusion-sword-spike",
@@ -36,11 +32,7 @@
       "Minsitthar can limit Gusion's dash-based combo in a controlled area.",
       "This is especially useful around objectives where Gusion must enter a predictable zone."
     ],
-    "counterTypes": [
-      "anti-dash",
-      "anti-dive",
-      "teamfight"
-    ],
+    "counterTypes": ["anti-dash", "anti-dive", "teamfight"],
     "proof": [
       {
         "id": "minsitthar-zone-vs-gusion-dash-combo",
@@ -61,46 +53,12 @@
   },
   {
     "targetHeroId": "gusion",
-    "counterHeroId": "saber",
-    "reasons": [
-      "Saber can punish Gusion after Gusion dashes in and becomes targetable.",
-      "Gusion is vulnerable when his combo reset or escape path is already spent."
-    ],
-    "counterTypes": [
-      "burst",
-      "pickoff",
-      "cooldown-punish"
-    ],
-    "proof": [
-      {
-        "id": "saber-burst-vs-gusion-post-dash",
-        "category": "cooldown-window",
-        "priority": "primary",
-        "impact": "medium",
-        "summary": "Gusion wants to complete a fast combo and leave; Saber can answer when Gusion has committed Incandescence or Sword Spike into the fight.",
-        "worksBestWhen": [
-          "Saber does not reveal before Gusion commits.",
-          "Saber targets Gusion after the first dash sequence."
-        ],
-        "failureCases": [
-          "Saber is killed first.",
-          "Gusion holds his reset and dodges the punish window."
-        ]
-      }
-    ]
-  },
-  {
-    "targetHeroId": "gusion",
     "counterHeroId": "kaja",
     "reasons": [
       "Kaja can lock Gusion after he dives into the backline.",
       "This punishes Gusion's need to stand close enough to recall daggers and finish the kill."
     ],
-    "counterTypes": [
-      "pickoff",
-      "crowd-control-counter",
-      "anti-dive"
-    ],
+    "counterTypes": ["pickoff", "crowd-control-counter", "anti-dive"],
     "proof": [
       {
         "id": "kaja-lockdown-vs-gusion-close-commit",
@@ -121,30 +79,54 @@
   },
   {
     "targetHeroId": "gusion",
-    "counterHeroId": "chou",
+    "counterHeroId": "obsidia",
     "reasons": [
-      "Chou can dodge or reposition around Gusion's dagger path.",
-      "He can punish Gusion after Gusion commits to a marked target."
+      "Obsidia can punish Gusion's dash-based combo by restricting his displacement during Hunt of Bone.",
+      "This is especially valuable after Gusion commits with Sword Spike or Incandescence, because it limits his ability to reset, chase, or escape after the burst attempt."
     ],
-    "counterTypes": [
-      "mobility",
-      "pickoff",
-      "cooldown-punish"
-    ],
+    "counterTypes": ["anti-dash", "anti-dive", "cooldown-punish"],
     "proof": [
       {
-        "id": "chou-counterplay-vs-gusion-combo-execution",
-        "category": "execution-difficulty",
-        "priority": "condition",
-        "impact": "medium",
-        "summary": "Gusion's combo is execution-heavy; Chou can turn the matchup if he avoids the dagger recall and catches Gusion after the dash.",
+        "id": "obsidia-hunt-of-bone-vs-gusion-dash-reset",
+        "category": "skill-interaction",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Gusion depends on displacement skills to enter, reset, and leave after his dagger combo; Obsidia's Hunt of Bone can tether him and disable displacement skills for a short window, making his combo flow much harder to complete safely.",
         "worksBestWhen": [
-          "Chou waits for Gusion's first commit.",
-          "Chou has vision of Gusion's flank path."
+          "Obsidia has vision of Gusion before he starts the flank.",
+          "Obsidia saves Hunt of Bone until Gusion commits or tries to escape after using part of his combo.",
+          "Allies are ready to follow up while Gusion is tethered."
         ],
         "failureCases": [
-          "Chou engages before Gusion spends key cooldowns.",
-          "Gusion lands full dagger combo before Chou can react."
+          "Obsidia misses Hunt of Bone or hits the wrong frontline target.",
+          "Gusion bursts Obsidia before she can cast the ultimate.",
+          "Gusion waits outside the tether window and re-engages after it ends."
+        ]
+      }
+    ]
+  },
+  {
+    "targetHeroId": "gusion",
+    "counterHeroId": "saber",
+    "reasons": [
+      "Saber can punish Gusion after Gusion dashes in and becomes targetable.",
+      "Gusion is vulnerable when his combo reset or escape path is already spent."
+    ],
+    "counterTypes": ["burst", "pickoff", "cooldown-punish"],
+    "proof": [
+      {
+        "id": "saber-burst-vs-gusion-post-dash",
+        "category": "cooldown-window",
+        "priority": "primary",
+        "impact": "medium",
+        "summary": "Gusion wants to complete a fast combo and leave; Saber can answer when Gusion has committed Incandescence or Sword Spike into the fight.",
+        "worksBestWhen": [
+          "Saber does not reveal before Gusion commits.",
+          "Saber targets Gusion after the first dash sequence."
+        ],
+        "failureCases": [
+          "Saber is killed first.",
+          "Gusion holds his reset and dodges the punish window."
         ]
       }
     ]

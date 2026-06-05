@@ -104,8 +104,8 @@ def _validate_scoring_payload(
     expected_counter_ids: set[str],
 ) -> list[_ScoringItem]:
     parsed = _ScoringBatchPayload.model_validate(payload)
-    returned_ids = {item.counterHeroId for item in parsed.recommendations}
-    if returned_ids != expected_counter_ids:
+    returned_ids = [item.counterHeroId for item in parsed.recommendations]
+    if len(returned_ids) != len(expected_counter_ids) or set(returned_ids) != expected_counter_ids:
         raise AnalyzerProviderError(
             "Scoring response must include every expected counterHeroId once."
         )
