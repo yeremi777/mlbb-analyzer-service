@@ -25,6 +25,9 @@ GET ${NEXT_PUBLIC_ANALYZER_API_URL}/api/heroes/{heroId}/counters
 POST ${NEXT_PUBLIC_ANALYZER_API_URL}/api/counters/analyze-score
 ```
 
+Use `credentials: "include"` on analyze requests so the browser stores and sends the
+rate-limit tracking cookie.
+
 6. While waiting, score can show a ticker or odometer animation.
 7. API returns final `score` and `confidence` for every counter matchup.
 8. Frontend sorts by `score`, runs reveal animation, and animates each card to its final score.

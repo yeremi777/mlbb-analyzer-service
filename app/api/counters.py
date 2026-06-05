@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Response
 
 from app.analyzer.ai import run_detail_analysis, run_scoring_analysis
 from app.analyzer.errors import (
@@ -8,6 +8,7 @@ from app.analyzer.errors import (
     AnalyzerProviderError,
 )
 from app.core.config import get_settings
+from app.core.rate_limit import enforce_analyze_rate_limit
 from app.schemas.analysis import (
     AnalyzeDetailRequest,
     AnalyzeDetailResponse,
@@ -67,10 +68,15 @@ def _require_matchups(request: Request, target_hero_id: str) -> None:
     ),
     responses=COUNTER_ANALYZE_SCORE_RESPONSES,
 )
-def analyze_score(payload: AnalyzeScoresRequest, request: Request) -> AnalyzeScoresResponse:
+def analyze_score(
+    payload: AnalyzeScoresRequest,
+    request: Request,
+    response: Response,
+) -> AnalyzeScoresResponse:
     _require_target_hero(request, payload.targetHeroId)
     _require_matchups(request, payload.targetHeroId)
     settings = get_settings()
+    enforce_analyze_rate_limit(request, response, settings, "analyze-score")
     try:
         return run_scoring_analysis(
             request.app.state.dataset,
@@ -92,7 +98,11 @@ def analyze_score(payload: AnalyzeScoresRequest, request: Request) -> AnalyzeSco
     ),
     responses=COUNTER_ANALYZE_DETAIL_RESPONSES,
 )
-def analyze_detail(payload: AnalyzeDetailRequest, request: Request) -> AnalyzeDetailResponse:
+def analyze_detail(
+    payload: AnalyzeDetailRequest,
+    request: Request,
+    response: Response,
+) -> AnalyzeDetailResponse:
     dataset = request.app.state.dataset
     _require_target_hero(request, payload.targetHeroId)
 
@@ -116,6 +126,7 @@ def analyze_detail(payload: AnalyzeDetailRequest, request: Request) -> AnalyzeDe
         )
 
     settings = get_settings()
+    enforce_analyze_rate_limit(request, response, settings, "analyze-detail")
     try:
         return run_detail_analysis(
             dataset,

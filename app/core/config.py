@@ -1,7 +1,8 @@
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data" / "static"
@@ -39,6 +40,53 @@ class Settings(BaseSettings):
         validation_alias="OPENROUTER_HTTP_REFERER",
     )
 
+    redis_url_override: str | None = Field(default=None, validation_alias="REDIS_URL")
+    redis_host: str | None = Field(default=None, validation_alias="REDIS_HOST")
+    redis_port: int = Field(default=6379, ge=1, le=65535, validation_alias="REDIS_PORT")
+    redis_db: int = Field(default=0, ge=0, validation_alias="REDIS_DB")
+    rate_limit_enabled: bool = Field(default=False, validation_alias="RATE_LIMIT_ENABLED")
+    rate_limit_analyze_max_requests: int = Field(
+        default=5,
+        ge=1,
+        validation_alias="RATE_LIMIT_ANALYZE_MAX_REQUESTS",
+    )
+    rate_limit_analyze_window_seconds: int = Field(
+        default=18_000,
+        ge=1,
+        validation_alias="RATE_LIMIT_ANALYZE_WINDOW_SECONDS",
+    )
+    rate_limit_analyze_detail_multiplier: int = Field(
+        default=3,
+        ge=1,
+        validation_alias="RATE_LIMIT_ANALYZE_DETAIL_MULTIPLIER",
+    )
+    rate_limit_cookie_name: str = Field(
+        default="mlbb_analyzer_client_id",
+        validation_alias="RATE_LIMIT_COOKIE_NAME",
+    )
+    rate_limit_cookie_max_age_seconds: int = Field(
+        default=2_592_000,
+        ge=1,
+        validation_alias="RATE_LIMIT_COOKIE_MAX_AGE_SECONDS",
+    )
+    rate_limit_cookie_secure: bool = Field(
+        default=False,
+        validation_alias="RATE_LIMIT_COOKIE_SECURE",
+    )
+    rate_limit_cookie_samesite: Literal["lax", "strict", "none"] = Field(
+        default="lax",
+        validation_alias="RATE_LIMIT_COOKIE_SAMESITE",
+    )
+    rate_limit_salt: str = Field(
+        default="mlbb-analyzer-service-local-rate-limit",
+        validation_alias="RATE_LIMIT_SALT",
+    )
+
+    @field_validator("rate_limit_cookie_samesite", mode="before")
+    @classmethod
+    def normalize_cookie_samesite(cls, value: str) -> str:
+        return value.strip().casefold()
+
     def allowed_origins(self) -> list[str]:
         origins = [LOCAL_DEV_ORIGIN]
         if not self.frontend_origin:
@@ -48,6 +96,13 @@ class Settings(BaseSettings):
             if trimmed and trimmed not in origins:
                 origins.append(trimmed)
         return origins
+
+    def redis_url(self) -> str | None:
+        if self.redis_url_override:
+            return self.redis_url_override
+        if not self.redis_host:
+            return None
+        return f"redis://{self.redis_host}:{self.redis_port}/{self.redis_db}"
 
     def _api_key_configured(self, key: str | None) -> bool:
         return bool(key and key not in PLACEHOLDER_API_KEYS)

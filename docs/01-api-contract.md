@@ -39,7 +39,14 @@ POST /api/counters/analyze-score
 - `404` — target hero or counter data not found
 - `501` — `AI_PROVIDER` is not implemented (for example `openai`)
 - `502` — model call failed or returned invalid JSON
+- `503` — rate limit storage is unavailable or misconfigured
 - `504` — provider is not configured (missing API key) or request timed out
+- `429` — rate limit exceeded
+
+Default rate limit:
+
+- analyze-score: 5 requests per browser/IP per 5 hours
+- analyze-detail: 15 requests per browser/IP per 5 hours
 
 ## Analyze Detail (slow path)
 
@@ -80,6 +87,17 @@ Same AI error codes as analyze-score, plus:
 
 - `404` `counter_hero_not_found`
 - `404` `counter_matchup_not_found`
+
+Rate limited responses include `Retry-After` when the remaining Redis key TTL is available:
+
+```json
+{
+  "error": {
+    "code": "rate_limit_exceeded",
+    "message": "Too many analyze requests. Please try again later."
+  }
+}
+```
 
 ## Error Response Shape
 

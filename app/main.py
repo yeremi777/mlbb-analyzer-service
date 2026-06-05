@@ -67,10 +67,15 @@ def create_app() -> FastAPI:
     ) -> JSONResponse:
         detail = exc.detail
         if isinstance(detail, dict) and "code" in detail and "message" in detail:
-            return JSONResponse(status_code=exc.status_code, content={"error": detail})
+            return JSONResponse(
+                status_code=exc.status_code,
+                content={"error": detail},
+                headers=exc.headers,
+            )
         return JSONResponse(
             status_code=exc.status_code,
             content={"error": {"code": "http_error", "message": str(detail)}},
+            headers=exc.headers,
         )
 
     return app
