@@ -9,7 +9,11 @@ from app.analyzer.errors import (
     AnalyzerNotImplementedError,
     AnalyzerProviderError,
 )
-from app.analyzer.prompt import build_detail_messages, build_scoring_messages
+from app.analyzer.prompt import (
+    build_detail_messages,
+    build_scoring_messages,
+    language_instruction,
+)
 from app.analyzer.providers import ChatProvider, ProviderError, create_chat_provider
 from app.core.config import Settings
 from app.data.loader import Dataset
@@ -116,6 +120,7 @@ def _build_detail_repair_messages(
     messages: list[dict[str, str]],
     payload: dict[str, Any],
     exc: ValidationError,
+    language: str,
 ) -> list[dict[str, str]]:
     return [
         *messages,
@@ -124,6 +129,7 @@ def _build_detail_repair_messages(
             "role": "user",
             "content": (
                 f"{_DETAIL_REPAIR_INSTRUCTION}\n\n"
+                f"{language_instruction(language)}\n\n"
                 f"Validation error:\n{exc}"
             ),
         },
@@ -209,7 +215,7 @@ def run_detail_analysis(
         try:
             parsed = _validate_detail_payload(payload, allowed_ids)
         except ValidationError as first_exc:
-            repair_messages = _build_detail_repair_messages(messages, payload, first_exc)
+            repair_messages = _build_detail_repair_messages(messages, payload, first_exc, language)
             retry_payload = _run_with_provider(settings, repair_messages)
             parsed = _validate_detail_payload(retry_payload, allowed_ids)
         return AnalyzeDetailResponse(

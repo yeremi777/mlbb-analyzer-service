@@ -120,6 +120,31 @@ def test_detail_analysis_retries_when_detail_payload_is_missing_required_field()
     assert "previous JSON did not match" in repair_messages[-1]["content"]
 
 
+def test_detail_repair_preserves_indonesian_language() -> None:
+    dataset = Dataset(DATA_DIR)
+    settings = _openrouter_settings()
+    invalid_payload = {
+        "score": 96,
+        "confidence": 92,
+        "summary": "Diggie menjawab jendela engage Tigreal.",
+        "conditions": ["Simpan ultimate untuk engage sebenarnya."],
+        "failureCases": ["Tigreal memancing ultimate lebih dulu."],
+        "evidenceIds": ["diggie-time-journey-vs-tigreal-engage"],
+    }
+    repaired_payload = {
+        **invalid_payload,
+        "strengths": ["Mengurangi nilai engage Tigreal."],
+    }
+
+    with patch("app.analyzer.ai.create_chat_provider") as mock_factory:
+        mock_provider = mock_factory.return_value
+        mock_provider.complete_json.side_effect = [invalid_payload, repaired_payload]
+        run_detail_analysis(dataset, "tigreal", "diggie", settings, "id")
+
+    repair_messages = mock_provider.complete_json.call_args_list[1].args[0]
+    assert "Indonesian" in repair_messages[-1]["content"]
+
+
 def test_detail_analysis_raises_when_retry_payload_is_still_invalid() -> None:
     dataset = Dataset(DATA_DIR)
     settings = _openrouter_settings()

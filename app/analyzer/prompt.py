@@ -53,9 +53,21 @@ failureCases must come from proof.failureCases when available.
 evidenceIds must only list proof ids present in the input."""
 
 LANGUAGE_INSTRUCTIONS = {
-    "en": "Write all user-visible text fields in English.",
-    "id": "Write all user-visible text fields in Indonesian.",
+    "en": (
+        "Write all user-visible explanation text (summary, strengths, conditions, failureCases) "
+        "in English. Keep every identifier exactly as given: counterHeroId, evidenceIds, and proof ids."
+    ),
+    "id": (
+        "Write all user-visible explanation text (summary, strengths, conditions, failureCases) "
+        "in natural Indonesian (Bahasa Indonesia). "
+        "Do not translate or alter any identifier: keep counterHeroId, evidenceIds, and proof ids "
+        "exactly as given. Keep hero names as written. Only the explanatory prose should be Indonesian."
+    ),
 }
+
+
+def language_instruction(language: str) -> str:
+    return LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS["en"])
 
 
 def _hero_context(hero: Hero) -> dict[str, Any]:
@@ -113,7 +125,7 @@ def build_scoring_messages(
         {
             "role": "user",
             "content": (
-                f"{LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS['en'])}\n\n"
+                f"{language_instruction(language)}\n\n"
                 f"Dataset context:\n{json.dumps(payload, indent=2)}"
             ),
         },
@@ -136,7 +148,7 @@ def build_detail_messages(
         {
             "role": "user",
             "content": (
-                f"{LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS['en'])}\n\n"
+                f"{language_instruction(language)}\n\n"
                 f"Dataset context:\n{json.dumps(payload, indent=2)}"
             ),
         },

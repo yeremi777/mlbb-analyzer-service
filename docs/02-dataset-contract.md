@@ -1,6 +1,6 @@
 # Dataset Contract
 
-The Python service should own the static dataset after migration.
+The backend owns the static dataset; `app/data/static/` is the source of truth.
 
 ## Suggested Structure
 

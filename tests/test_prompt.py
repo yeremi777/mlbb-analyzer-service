@@ -38,3 +38,31 @@ def test_detail_prompt_includes_single_matchup_context() -> None:
     assert matchup.counterHeroId in combined
     assert "failureCases" in combined
     assert "evidenceIds" in combined
+
+
+def test_detail_prompt_requests_indonesian_output_and_preserves_ids() -> None:
+    dataset = Dataset(DATA_DIR)
+    target = dataset.heroes_by_id["tigreal"]
+    matchups = dataset.get_matchups_for_target("tigreal")
+    matchup = matchups[0]
+    counter = dataset.heroes_by_id[matchup.counterHeroId]
+
+    messages = build_detail_messages(target, matchup, counter, "id")
+    user_content = messages[1]["content"]
+
+    assert "Indonesian" in user_content
+    assert "Do not translate or alter any identifier" in user_content
+    # identifiers must still be present unchanged in the dataset context
+    assert matchup.counterHeroId in user_content
+
+
+def test_unknown_language_falls_back_to_english() -> None:
+    dataset = Dataset(DATA_DIR)
+    target = dataset.heroes_by_id["tigreal"]
+    matchups = dataset.get_matchups_for_target("tigreal")
+    matchup = matchups[0]
+    counter = dataset.heroes_by_id[matchup.counterHeroId]
+
+    messages = build_detail_messages(target, matchup, counter, "fr")
+
+    assert "in English" in messages[1]["content"]
