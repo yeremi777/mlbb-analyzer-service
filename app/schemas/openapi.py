@@ -1,4 +1,4 @@
-"""OpenAPI response examples for counter analyze endpoints."""
+"""OpenAPI response examples for counter and synergy analyze endpoints."""
 
 from app.schemas.analysis import ErrorResponse
 
@@ -104,6 +104,95 @@ COUNTER_ANALYZE_DETAIL_RESPONSES: dict[int, dict] = {
         "model": ErrorResponse,
         "description": "Target hero, counter hero, or matchup was not found.",
         "content": _json_content(examples=_COUNTER_DETAIL_404_EXAMPLES),
+    },
+    501: {
+        "model": ErrorResponse,
+        "description": "AI provider is not implemented.",
+        "content": _json_content(example=_AI_501_EXAMPLE),
+    },
+    502: {
+        "model": ErrorResponse,
+        "description": "AI provider returned an error or invalid output.",
+        "content": _json_content(example=_AI_502_EXAMPLE),
+    },
+    504: {
+        "model": ErrorResponse,
+        "description": "AI provider is not configured or timed out.",
+        "content": _json_content(example=_AI_504_EXAMPLE),
+    },
+}
+
+_SYNERGY_SCORE_404_EXAMPLES = {
+    "anchor_hero_not_found": {
+        "summary": "Anchor hero not found",
+        "value": {
+            "error": {
+                "code": "anchor_hero_not_found",
+                "message": "Anchor hero was not found in the dataset.",
+            }
+        },
+    },
+    "synergy_data_not_found": {
+        "summary": "Synergy data not found",
+        "value": {
+            "error": {
+                "code": "synergy_data_not_found",
+                "message": "Synergy data was not found for the anchor hero.",
+            }
+        },
+    },
+}
+
+_SYNERGY_DETAIL_404_EXAMPLES = {
+    **_SYNERGY_SCORE_404_EXAMPLES,
+    "synergy_hero_not_found": {
+        "summary": "Synergy hero not found",
+        "value": {
+            "error": {
+                "code": "synergy_hero_not_found",
+                "message": "Synergy hero was not found in the dataset.",
+            }
+        },
+    },
+    "synergy_matchup_not_found": {
+        "summary": "Synergy matchup not found",
+        "value": {
+            "error": {
+                "code": "synergy_matchup_not_found",
+                "message": "Synergy matchup was not found for the anchor hero.",
+            }
+        },
+    },
+}
+
+SYNERGY_ANALYZE_SCORE_RESPONSES: dict[int, dict] = {
+    404: {
+        "model": ErrorResponse,
+        "description": "Anchor hero or synergy data was not found.",
+        "content": _json_content(examples=_SYNERGY_SCORE_404_EXAMPLES),
+    },
+    501: {
+        "model": ErrorResponse,
+        "description": "AI provider is not implemented.",
+        "content": _json_content(example=_AI_501_EXAMPLE),
+    },
+    502: {
+        "model": ErrorResponse,
+        "description": "AI provider returned an error or invalid output.",
+        "content": _json_content(example=_AI_502_EXAMPLE),
+    },
+    504: {
+        "model": ErrorResponse,
+        "description": "AI provider is not configured or timed out.",
+        "content": _json_content(example=_AI_504_EXAMPLE),
+    },
+}
+
+SYNERGY_ANALYZE_DETAIL_RESPONSES: dict[int, dict] = {
+    404: {
+        "model": ErrorResponse,
+        "description": "Anchor hero, synergy hero, or matchup was not found.",
+        "content": _json_content(examples=_SYNERGY_DETAIL_404_EXAMPLES),
     },
     501: {
         "model": ErrorResponse,

@@ -13,6 +13,8 @@ The service loads a local hero and counter dataset, validates it on startup, and
 - Swagger/OpenAPI documentation
 - Fast AI scoring endpoint for all counters (`POST /api/counters/analyze-score`)
 - On-demand AI detail endpoint per counter card (`POST /api/counters/analyze-detail`)
+- Hero synergy matchup API (`GET /api/heroes/{id}/synergies`)
+- AI synergy scoring and detail endpoints (`POST /api/synergies/analyze-score`, `POST /api/synergies/analyze-detail`)
 
 ## Tech Stack
 
@@ -86,8 +88,11 @@ The command exits non-zero and prints validation errors when hero or counter dat
 - `GET /api/heroes`
 - `GET /api/heroes/{hero_id}`
 - `GET /api/heroes/{hero_id}/counters`
+- `GET /api/heroes/{hero_id}/synergies`
 - `POST /api/counters/analyze-score`
 - `POST /api/counters/analyze-detail`
+- `POST /api/synergies/analyze-score`
+- `POST /api/synergies/analyze-detail`
 
 Hero list filters:
 
@@ -149,6 +154,18 @@ curl -X POST http://127.0.0.1:8000/api/counters/analyze-score \
 curl -X POST http://127.0.0.1:8000/api/counters/analyze-detail \
   -H "Content-Type: application/json" \
   -d '{"targetHeroId":"tigreal","counterHeroId":"diggie"}'
+```
+
+Synergy analysis mirrors the counter endpoints, keyed by `anchorHeroId` / `synergyHeroId`:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/synergies/analyze-score \
+  -H "Content-Type: application/json" \
+  -d '{"anchorHeroId":"tigreal"}'
+
+curl -X POST http://127.0.0.1:8000/api/synergies/analyze-detail \
+  -H "Content-Type: application/json" \
+  -d '{"anchorHeroId":"tigreal","synergyHeroId":"pharsa"}'
 ```
 
 Without a configured provider, both endpoints return an error JSON payload (no fallback scores).

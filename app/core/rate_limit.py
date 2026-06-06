@@ -92,7 +92,7 @@ def _increment_or_raise(
 
 
 def _max_requests_for_endpoint(settings: Settings, endpoint_name: str) -> int:
-    if endpoint_name == "analyze-detail":
+    if endpoint_name.endswith("-detail"):
         return settings.rate_limit_analyze_max_requests * settings.rate_limit_analyze_detail_multiplier
     return settings.rate_limit_analyze_max_requests
 

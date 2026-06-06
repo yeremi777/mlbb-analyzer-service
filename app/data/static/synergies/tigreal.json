@@ -1,0 +1,161 @@
+[
+  {
+    "anchorHeroId": "tigreal",
+    "synergyHeroId": "pharsa",
+    "reasons": [
+      "Tigreal's Implosion drags and stuns multiple enemies into a tight cluster, the ideal stationary target for Pharsa's wide-area ultimate Feathered Air Strike.",
+      "The lockdown guarantees Pharsa's long-range AoE lands on immobilized targets."
+    ],
+    "synergyTypes": [
+      "teamfight-combo",
+      "engage-follow-up",
+      "setup-combo"
+    ],
+    "proof": [
+      {
+        "id": "pharsa-feathered-air-strike-with-tigreal-grouped-aoe",
+        "category": "teamfight-combo",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Tigreal's flicker into Implosion gathers and stuns the enemy team into one spot, then Pharsa rains Feathered Air Strike onto the clustered, immobile targets for massive guaranteed AoE damage they cannot dodge.",
+        "worksBestWhen": [
+          "Tigreal lands Implosion on two or more enemies.",
+          "Pharsa is positioned at safe range with ult ready.",
+          "Enemies lack Purify or instant disengage."
+        ],
+        "failureCases": [
+          "Implosion is interrupted or whiffs.",
+          "Enemies are spread out or have dashes to escape the zone.",
+          "Pharsa is caught out before Tigreal engages."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "tigreal",
+    "synergyHeroId": "gusion",
+    "reasons": [
+      "After Tigreal locks enemies with flicker into Implosion, Gusion instantly deletes squishies with Shadowblade Slaughter and Sword Spike daggers.",
+      "Tigreal's stun removes Gusion's need to land his own setup, freeing his full burst rotation."
+    ],
+    "synergyTypes": [
+      "pickoff-combo",
+      "burst-follow-up",
+      "setup-combo"
+    ],
+    "proof": [
+      {
+        "id": "gusion-dagger-burst-with-tigreal-locked-targets",
+        "category": "pickoff-combo",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Tigreal's Implosion holds enemies in place so Gusion can chain his Sword Spike and Shadowblade Slaughter dagger combo for near-instant burst on the stunned backline before they can react.",
+        "worksBestWhen": [
+          "Tigreal stuns the enemy carry or mage.",
+          "Gusion has full energy and ult charges ready.",
+          "No Purify or shield on the target."
+        ],
+        "failureCases": [
+          "Target carries Purify or strong disengage.",
+          "Tigreal's engage is reacted to early.",
+          "Gusion mistimes daggers during the stun window."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "tigreal",
+    "synergyHeroId": "eudora",
+    "reasons": [
+      "Eudora's point-and-click burst needs no aiming, so Tigreal's stun guarantees a full one-shot combo.",
+      "One of the easiest reliable burst-kill duos for low-coordination play."
+    ],
+    "synergyTypes": [
+      "pickoff-combo",
+      "burst-follow-up",
+      "setup-combo"
+    ],
+    "proof": [
+      {
+        "id": "eudora-thunders-wrath-with-tigreal-pointclick-burst",
+        "category": "pickoff-combo",
+        "priority": "secondary",
+        "impact": "high",
+        "summary": "Once Tigreal locks a target with Implosion or Sacred Hammer, Eudora lands her full point-and-click lightning combo for instant deletion, with the stun removing any mobility she would otherwise struggle against.",
+        "worksBestWhen": [
+          "Tigreal stuns a squishy mage or marksman.",
+          "Eudora applies her Superconductor mark for the amplified follow-up.",
+          "Target lacks Purify or magic shield."
+        ],
+        "failureCases": [
+          "Target purifies out of the stun.",
+          "Enemy frontline blocks Eudora's line of sight.",
+          "Tigreal's combo is interrupted before landing."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "tigreal",
+    "synergyHeroId": "moskov",
+    "reasons": [
+      "Moskov's Spear of Quiescence basic attacks pierce through enemies, so Tigreal's clustered Implosion lets him hit the entire enemy team at once.",
+      "Sustained piercing DPS punishes the grouped, stunned formation."
+    ],
+    "synergyTypes": [
+      "teamfight-combo",
+      "setup-combo"
+    ],
+    "proof": [
+      {
+        "id": "moskov-piercing-spear-with-tigreal-clustered-team",
+        "category": "teamfight-combo",
+        "priority": "secondary",
+        "impact": "medium",
+        "summary": "Tigreal's Implosion pulls enemies into a tight cluster, letting Moskov's piercing Spear of Quiescence basic attacks hit multiple grouped, stunned targets at once while they are unable to scatter.",
+        "worksBestWhen": [
+          "Enemies are dragged into a tight line by Implosion.",
+          "Moskov has attack-speed items online.",
+          "Tigreal peels or follows up with Sacred Hammer to keep them grouped."
+        ],
+        "failureCases": [
+          "Enemies disperse before Moskov can attack.",
+          "Moskov is focused or kited by the enemy frontline.",
+          "Low-damage Moskov early game cannot convert the window."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "tigreal",
+    "synergyHeroId": "aurora",
+    "reasons": [
+      "Aurora layers her freeze CC on top of Tigreal's Implosion stun, creating a long uninterruptible chain on the grouped enemies.",
+      "Her wide-area frozen ultimate amplifies the burst window Tigreal opens."
+    ],
+    "synergyTypes": [
+      "cc-chain",
+      "teamfight-combo",
+      "setup-combo"
+    ],
+    "proof": [
+      {
+        "id": "aurora-frozen-stun-with-tigreal-cc-chain",
+        "category": "crowd-control-chain",
+        "priority": "secondary",
+        "impact": "high",
+        "summary": "Tigreal's Implosion groups and stuns the enemy team, then Aurora extends the lockdown with her Frosty Breeze and wide-area Cold Destruction ultimate, chaining hard freeze CC so allies have a long uninterrupted window to burst the cluster down.",
+        "worksBestWhen": [
+          "Tigreal lands Implosion on two or more enemies.",
+          "Aurora has Frosty Breeze or Cold Destruction ready to freeze.",
+          "Team has follow-up burst to exploit the extended CC."
+        ],
+        "failureCases": [
+          "Enemies carry Purify or tenacity.",
+          "Aurora mistimes her freeze outside Tigreal's stun.",
+          "Targets too spread for both AoE effects to overlap."
+        ]
+      }
+    ]
+  }
+]

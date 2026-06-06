@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from app.schemas.analysis import ErrorResponse
 from app.schemas.counter import CounterHeroMatchup
 from app.schemas.hero import Hero, HeroListResponse
+from app.schemas.synergy import SynergyHeroMatchup
 
 router = APIRouter(prefix="/api/heroes", tags=["heroes"])
 
@@ -117,4 +118,45 @@ def list_hero_counters(hero_id: str, request: Request) -> list[CounterHeroMatchu
             proof=matchup.proof,
         )
         for matchup in matchups
+    ]
+
+
+@router.get(
+    "/{hero_id}/synergies",
+    response_model=list[SynergyHeroMatchup],
+    summary="List hero synergies",
+    description="Returns synergy pairing records for one anchor hero, with synergy hero details joined in.",
+    responses={404: {"model": ErrorResponse, "description": "Hero or synergy data was not found."}},
+)
+def list_hero_synergies(hero_id: str, request: Request) -> list[SynergyHeroMatchup]:
+    dataset = request.app.state.dataset
+
+    if hero_id not in dataset.heroes_by_id:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "code": "hero_not_found",
+                "message": "Hero was not found in the dataset.",
+            },
+        )
+
+    synergies = dataset.get_synergies_for_anchor(hero_id)
+    if not synergies:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "code": "synergy_data_not_found",
+                "message": "Synergy data was not found for the anchor hero.",
+            },
+        )
+
+    return [
+        SynergyHeroMatchup(
+            anchorHeroId=synergy.anchorHeroId,
+            synergyHero=dataset.heroes_by_id[synergy.synergyHeroId],
+            reasons=synergy.reasons,
+            synergyTypes=synergy.synergyTypes,
+            proof=synergy.proof,
+        )
+        for synergy in synergies
     ]

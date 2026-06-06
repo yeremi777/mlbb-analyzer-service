@@ -3,6 +3,7 @@ from typing import Any
 
 from app.schemas.counter import CounterMatchup, Proof
 from app.schemas.hero import Hero
+from app.schemas.synergy import SynergyMatchup
 
 SCORING_SYSTEM_INSTRUCTION = """You are scoring Mobile Legends hero counter recommendations.
 
@@ -145,6 +146,119 @@ def build_detail_messages(
     }
     return [
         {"role": "system", "content": DETAIL_SYSTEM_INSTRUCTION},
+        {
+            "role": "user",
+            "content": (
+                f"{language_instruction(language)}\n\n"
+                f"Dataset context:\n{json.dumps(payload, indent=2)}"
+            ),
+        },
+    ]
+
+
+SYNERGY_SCORING_SYSTEM_INSTRUCTION = """You are scoring Mobile Legends hero synergy recommendations.
+
+Use only the provided dataset context.
+Do not invent hero skills, item requirements, patch facts, or synergy facts.
+Do not use outside knowledge unless the caller explicitly includes it.
+
+For each synergy in the batch, return:
+- synergyHeroId: must match an id from the input
+- score: 0-100 synergy strength
+- confidence: 0-100 evidence confidence
+
+Score guidance:
+- 95-100: defining, near-mandatory pairing
+- 85-94: strong and reliable synergy
+- 75-84: good synergy with meaningful conditions
+- 65-74: situational synergy
+- below 65: weak, incomplete, or too conditional
+
+High context increases confidence, not necessarily score.
+Direct skill-combo and setup-into-payoff synergies should score higher than generic or purely situational pairings.
+
+Respond with JSON only in this shape:
+{"recommendations":[{"synergyHeroId":"...","score":0,"confidence":0}]}
+Include every synergyHeroId from the input exactly once."""
+
+SYNERGY_DETAIL_SYSTEM_INSTRUCTION = """You are explaining one Mobile Legends hero synergy pairing.
+
+Use only the provided dataset context.
+Do not invent hero skills, item requirements, patch facts, or synergy facts.
+Do not use outside knowledge unless the caller explicitly includes it.
+
+Return JSON only in this shape:
+{
+  "score": 0,
+  "confidence": 0,
+  "summary": "concise explanation",
+  "strengths": ["concrete strengths from provided evidence"],
+  "conditions": ["works-best conditions from provided evidence"],
+  "failureCases": ["failure cases from provided evidence"],
+  "evidenceIds": ["proof ids used"]
+}
+
+All keys are required. Use an empty array for optional arrays only when the dataset has no matching evidence.
+strengths must be a non-empty array and must come from provided reasons and proof.
+conditions must come from proof.worksBestWhen when available.
+failureCases must come from proof.failureCases when available.
+evidenceIds must only list proof ids present in the input."""
+
+
+def _synergy_context(
+    synergy: SynergyMatchup,
+    synergy_hero: Hero | None,
+) -> dict[str, Any]:
+    context: dict[str, Any] = {
+        "synergyHeroId": synergy.synergyHeroId,
+        "reasons": synergy.reasons,
+        "synergyTypes": synergy.synergyTypes,
+        "proof": [_proof_context(proof) for proof in synergy.proof],
+    }
+    if synergy_hero is not None:
+        context["synergyHero"] = _hero_context(synergy_hero)
+    return context
+
+
+def build_synergy_scoring_messages(
+    anchor_hero: Hero,
+    synergies: list[SynergyMatchup],
+    heroes_by_id: dict[str, Hero],
+    language: str,
+) -> list[dict[str, str]]:
+    payload = {
+        "anchorHero": _hero_context(anchor_hero),
+        "synergies": [
+            _synergy_context(synergy, heroes_by_id.get(synergy.synergyHeroId))
+            for synergy in synergies
+        ],
+        "outputLanguage": language,
+    }
+    return [
+        {"role": "system", "content": SYNERGY_SCORING_SYSTEM_INSTRUCTION},
+        {
+            "role": "user",
+            "content": (
+                f"{language_instruction(language)}\n\n"
+                f"Dataset context:\n{json.dumps(payload, indent=2)}"
+            ),
+        },
+    ]
+
+
+def build_synergy_detail_messages(
+    anchor_hero: Hero,
+    synergy: SynergyMatchup,
+    synergy_hero: Hero,
+    language: str,
+) -> list[dict[str, str]]:
+    payload = {
+        "anchorHero": _hero_context(anchor_hero),
+        "synergy": _synergy_context(synergy, synergy_hero),
+        "outputLanguage": language,
+    }
+    return [
+        {"role": "system", "content": SYNERGY_DETAIL_SYSTEM_INSTRUCTION},
         {
             "role": "user",
             "content": (

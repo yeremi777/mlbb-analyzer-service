@@ -1,0 +1,161 @@
+[
+  {
+    "anchorHeroId": "saber",
+    "synergyHeroId": "tigreal",
+    "reasons": [
+      "Implosion pulls scattered enemies together and stuns them while Sacred Hammer's charge knocks them airborne, creating a clean window for Saber to dive and Triple Sweep an isolated target.",
+      "Tigreal's frontline presence absorbs peel and protects Saber as he commits to the backline dive."
+    ],
+    "synergyTypes": [
+      "engage-follow-up",
+      "cc-chain",
+      "dive-support"
+    ],
+    "proof": [
+      {
+        "id": "tigreal-groupcc-with-saber-engage",
+        "category": "engage-follow-up",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Tigreal's Implosion gathers and stuns enemies (his Sacred Hammer charge knocks them airborne on its second cast), gluing a priority backliner in place so Saber's charge into Triple Sweep lands cleanly and the airborne lockdown chains off the group CC.",
+        "worksBestWhen": [
+          "Tigreal lands Implosion on a clustered enemy group.",
+          "Saber pre-casts Orbiting Swords before the dive.",
+          "The target lacks Purify or a peeling roamer."
+        ],
+        "failureCases": [
+          "Implosion misses or is flashed away.",
+          "Enemy carry has Purify or immunity to escape the lockdown.",
+          "Saber dives before Tigreal commits his stun."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "saber",
+    "synergyHeroId": "franco",
+    "reasons": [
+      "Iron Hook drags a squishy out of position and Bloody Hunt suppresses them, holding the target perfectly still for Saber's full Triple Sweep combo.",
+      "Both roam early to pick off backliners, with Franco's tankiness covering Saber's dive."
+    ],
+    "synergyTypes": [
+      "pickoff-combo",
+      "cc-chain"
+    ],
+    "proof": [
+      {
+        "id": "franco-hooksuppress-with-saber-pickoff",
+        "category": "pickoff-combo",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Franco's Iron Hook yanks a target into the team and Bloody Hunt suppresses it, removing all counterplay so Saber can charge in and instantly delete the isolated carry with Triple Sweep.",
+        "worksBestWhen": [
+          "Franco lands a hook on an out-of-position squishy.",
+          "The duo roams together in early to mid game.",
+          "Saber has Orbiting Swords ready to maximize burst."
+        ],
+        "failureCases": [
+          "Hook misses or grabs a tank instead of the carry.",
+          "Enemy has cleanse or anti-CC to break the suppress.",
+          "Target is shielded by a peel support."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "saber",
+    "synergyHeroId": "kaja",
+    "reasons": [
+      "Divine Judgment drags and suppresses a single target, pulling it out of formation directly into Saber's lockdown.",
+      "Kaja's pull isolates squishy backliners so Saber can execute uninterrupted by the enemy frontline."
+    ],
+    "synergyTypes": [
+      "setup-combo",
+      "pickoff-combo",
+      "cc-chain"
+    ],
+    "proof": [
+      {
+        "id": "kaja-drag-with-saber-isolation",
+        "category": "setup-combo",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Kaja's Divine Judgment locks a single enemy with an unpurgeable suppression and drags them away from their team, delivering an isolated target straight into Saber's Triple Sweep range with no allied peel nearby.",
+        "worksBestWhen": [
+          "Kaja flickers in to grab the backline carry.",
+          "Saber is positioned to immediately follow the drag.",
+          "The dragged target is separated from its tanks."
+        ],
+        "failureCases": [
+          "Kaja gets bursted before completing the drag channel.",
+          "Target has CC-immunity active mid-drag (Divine Judgment's suppression cannot be purified).",
+          "Enemy team collapses on the isolated Kaja and Saber."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "saber",
+    "synergyHeroId": "vexana",
+    "reasons": [
+      "After Saber pins a target airborne, Vexana follows with Deathly Grasp and Cursed Blast for heavy magic burst to confirm the kill.",
+      "Her CC adds a second layer of lockdown that extends the window on Saber's isolated target."
+    ],
+    "synergyTypes": [
+      "cc-chain",
+      "burst-follow-up",
+      "pickoff-combo"
+    ],
+    "proof": [
+      {
+        "id": "vexana-burstfollowup-with-saber-combo",
+        "category": "crowd-control-chain",
+        "priority": "secondary",
+        "impact": "high",
+        "summary": "Saber locks a target with Triple Sweep's airborne, and Vexana dumps Deathly Grasp and Cursed Blast onto the pinned target, mixing magic damage with Saber's physical burst to kill through any single defense type.",
+        "worksBestWhen": [
+          "Saber lands Triple Sweep on a squishy first.",
+          "Vexana is within range to chain her skills onto the pin.",
+          "The target stacks only one defense type."
+        ],
+        "failureCases": [
+          "Vexana's skillshots miss the airborne target.",
+          "Target survives long enough to be peeled out.",
+          "Vexana is too far back to follow up in time."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "saber",
+    "synergyHeroId": "angela",
+    "reasons": [
+      "Angela's Heartguard ultimate attaches to Saber and grants a shield from anywhere on the map, keeping the fragile assassin alive through his all-in dive.",
+      "Her Smart Heart movement-speed passive and Love Waves help Saber reach and stick to a target."
+    ],
+    "synergyTypes": [
+      "protect",
+      "shielding",
+      "dive-support"
+    ],
+    "proof": [
+      {
+        "id": "angela-heartguard-with-saber-dive-protect",
+        "category": "protection",
+        "priority": "secondary",
+        "impact": "medium",
+        "summary": "Angela attaches to Saber with Heartguard, layering a shield and casting support from his position while he charges into Triple Sweep on the backline; the extra effective HP lets the squishy assassin survive the focus fire that normally punishes his no-escape dive long enough to finish the kill.",
+        "worksBestWhen": [
+          "Angela times Heartguard as Saber commits his dive.",
+          "Saber targets a squishy carry worth the shield investment.",
+          "Angela stays alive at range to maintain the attach."
+        ],
+        "failureCases": [
+          "Heartguard is on cooldown when Saber engages.",
+          "Enemy burst exceeds the shield before Saber lands his combo.",
+          "Angela is caught and killed before casting the ult."
+        ]
+      }
+    ]
+  }
+]

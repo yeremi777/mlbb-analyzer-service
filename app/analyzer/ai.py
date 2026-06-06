@@ -1,8 +1,12 @@
-import json
 from typing import Any
 
 from pydantic import BaseModel, Field, ValidationError
 
+from app.analyzer.detail import (
+    allowed_evidence_ids,
+    build_detail_repair_messages,
+    validate_detail_payload,
+)
 from app.analyzer.errors import (
     AnalyzerError,
     AnalyzerNotConfiguredError,
@@ -12,7 +16,8 @@ from app.analyzer.errors import (
 from app.analyzer.prompt import (
     build_detail_messages,
     build_scoring_messages,
-    language_instruction,
+    build_synergy_detail_messages,
+    build_synergy_scoring_messages,
 )
 from app.analyzer.providers import ChatProvider, ProviderError, create_chat_provider
 from app.core.config import Settings
@@ -20,9 +25,11 @@ from app.data.loader import Dataset
 from app.schemas.analysis import (
     AnalyzeDetailResponse,
     AnalyzeScoresResponse,
+    AnalyzeSynergyDetailResponse,
+    AnalyzeSynergyScoresResponse,
     ScoreRecommendation,
+    SynergyScoreRecommendation,
 )
-from app.schemas.counter import CounterMatchup
 
 _NOT_IMPLEMENTED_PROVIDERS = frozenset({"openai", "anthropic"})
 
@@ -37,28 +44,14 @@ class _ScoringItem(BaseModel):
     confidence: int = Field(ge=0, le=100)
 
 
-class _DetailPayload(BaseModel):
+class _SynergyScoringBatchPayload(BaseModel):
+    recommendations: list["_SynergyScoringItem"]
+
+
+class _SynergyScoringItem(BaseModel):
+    synergyHeroId: str = Field(min_length=1)
     score: int = Field(ge=0, le=100)
     confidence: int = Field(ge=0, le=100)
-    summary: str = Field(min_length=1)
-    strengths: list[str] = Field(min_length=1)
-    conditions: list[str] = Field(default_factory=list)
-    failureCases: list[str] = Field(default_factory=list)
-    evidenceIds: list[str] = Field(default_factory=list)
-
-
-_DETAIL_REPAIR_INSTRUCTION = """The previous JSON did not match the required detail response schema.
-
-Return corrected JSON only with exactly these keys:
-- score: integer 0-100
-- confidence: integer 0-100
-- summary: non-empty string
-- strengths: non-empty array of strings from the provided reasons/proof
-- conditions: array of strings from proof.worksBestWhen
-- failureCases: array of strings from proof.failureCases
-- evidenceIds: array of proof ids present in the input
-
-Do not add matchup facts outside the provided dataset context."""
 
 
 def _ensure_ai_ready(settings: Settings) -> None:
@@ -93,16 +86,6 @@ def _rank_score_recommendations(
     ]
 
 
-def _allowed_evidence_ids(matchup: CounterMatchup) -> set[str]:
-    return {proof.id for proof in matchup.proof}
-
-
-def _validate_evidence_ids(evidence_ids: list[str], allowed_ids: set[str]) -> bool:
-    if not evidence_ids:
-        return True
-    return all(evidence_id in allowed_ids for evidence_id in evidence_ids)
-
-
 def _validate_scoring_payload(
     payload: dict[str, Any],
     expected_counter_ids: set[str],
@@ -116,34 +99,32 @@ def _validate_scoring_payload(
     return parsed.recommendations
 
 
-def _build_detail_repair_messages(
-    messages: list[dict[str, str]],
-    payload: dict[str, Any],
-    exc: ValidationError,
-    language: str,
-) -> list[dict[str, str]]:
+def _rank_synergy_recommendations(
+    items: list[_SynergyScoringItem],
+) -> list[SynergyScoreRecommendation]:
+    ordered = sorted(items, key=lambda item: (-item.score, -item.confidence, item.synergyHeroId))
     return [
-        *messages,
-        {"role": "assistant", "content": json.dumps(payload, ensure_ascii=False)},
-        {
-            "role": "user",
-            "content": (
-                f"{_DETAIL_REPAIR_INSTRUCTION}\n\n"
-                f"{language_instruction(language)}\n\n"
-                f"Validation error:\n{exc}"
-            ),
-        },
+        SynergyScoreRecommendation(
+            rank=rank,
+            synergyHeroId=item.synergyHeroId,
+            score=item.score,
+            confidence=item.confidence,
+        )
+        for rank, item in enumerate(ordered, start=1)
     ]
 
 
-def _validate_detail_payload(
+def _validate_synergy_scoring_payload(
     payload: dict[str, Any],
-    allowed_ids: set[str],
-) -> _DetailPayload:
-    parsed = _DetailPayload.model_validate(payload)
-    if not _validate_evidence_ids(parsed.evidenceIds, allowed_ids):
-        raise AnalyzerProviderError("Detail response referenced unknown evidence ids.")
-    return parsed
+    expected_synergy_ids: set[str],
+) -> list[_SynergyScoringItem]:
+    parsed = _SynergyScoringBatchPayload.model_validate(payload)
+    returned_ids = [item.synergyHeroId for item in parsed.recommendations]
+    if len(returned_ids) != len(expected_synergy_ids) or set(returned_ids) != expected_synergy_ids:
+        raise AnalyzerProviderError(
+            "Synergy scoring response must include every expected synergyHeroId once."
+        )
+    return parsed.recommendations
 
 
 def _run_with_provider(
@@ -208,16 +189,16 @@ def run_detail_analysis(
     target_hero = dataset.heroes_by_id[target_hero_id]
     counter_hero = dataset.heroes_by_id[counter_hero_id]
     messages = build_detail_messages(target_hero, matchup, counter_hero, language)
-    allowed_ids = _allowed_evidence_ids(matchup)
+    allowed_ids = allowed_evidence_ids(matchup)
 
     try:
         payload = _run_with_provider(settings, messages)
         try:
-            parsed = _validate_detail_payload(payload, allowed_ids)
+            parsed = validate_detail_payload(payload, allowed_ids)
         except ValidationError as first_exc:
-            repair_messages = _build_detail_repair_messages(messages, payload, first_exc, language)
+            repair_messages = build_detail_repair_messages(messages, payload, first_exc, language)
             retry_payload = _run_with_provider(settings, repair_messages)
-            parsed = _validate_detail_payload(retry_payload, allowed_ids)
+            parsed = validate_detail_payload(retry_payload, allowed_ids)
         return AnalyzeDetailResponse(
             targetHeroId=target_hero_id,
             counterHeroId=counter_hero_id,
@@ -232,3 +213,74 @@ def run_detail_analysis(
         )
     except ValidationError as exc:
         raise AnalyzerProviderError(f"Invalid detail response from model after retry: {exc}") from exc
+
+
+def run_synergy_scoring_analysis(
+    dataset: Dataset,
+    anchor_hero_id: str,
+    settings: Settings,
+    language: str,
+) -> AnalyzeSynergyScoresResponse:
+    _ensure_ai_ready(settings)
+
+    synergies = dataset.get_synergies_for_anchor(anchor_hero_id)
+    anchor_hero = dataset.heroes_by_id[anchor_hero_id]
+    expected_ids = {synergy.synergyHeroId for synergy in synergies}
+    messages = build_synergy_scoring_messages(anchor_hero, synergies, dataset.heroes_by_id, language)
+
+    try:
+        payload = _run_with_provider(settings, messages)
+        items = _validate_synergy_scoring_payload(payload, expected_ids)
+        recommendations = _rank_synergy_recommendations(items)
+        return AnalyzeSynergyScoresResponse(
+            anchorHeroId=anchor_hero_id,
+            source="ai",
+            recommendations=recommendations,
+        )
+    except ValidationError as exc:
+        raise AnalyzerProviderError(f"Invalid synergy scoring response from model: {exc}") from exc
+
+
+def run_synergy_detail_analysis(
+    dataset: Dataset,
+    anchor_hero_id: str,
+    synergy_hero_id: str,
+    settings: Settings,
+    language: str,
+) -> AnalyzeSynergyDetailResponse:
+    _ensure_ai_ready(settings)
+
+    synergies = dataset.get_synergies_for_anchor(anchor_hero_id)
+    synergy = next((row for row in synergies if row.synergyHeroId == synergy_hero_id), None)
+    if synergy is None:
+        raise ValueError("synergy matchup not found")
+
+    anchor_hero = dataset.heroes_by_id[anchor_hero_id]
+    synergy_hero = dataset.heroes_by_id[synergy_hero_id]
+    messages = build_synergy_detail_messages(anchor_hero, synergy, synergy_hero, language)
+    allowed_ids = allowed_evidence_ids(synergy)
+
+    try:
+        payload = _run_with_provider(settings, messages)
+        try:
+            parsed = validate_detail_payload(payload, allowed_ids)
+        except ValidationError as first_exc:
+            repair_messages = build_detail_repair_messages(messages, payload, first_exc, language)
+            retry_payload = _run_with_provider(settings, repair_messages)
+            parsed = validate_detail_payload(retry_payload, allowed_ids)
+        return AnalyzeSynergyDetailResponse(
+            anchorHeroId=anchor_hero_id,
+            synergyHeroId=synergy_hero_id,
+            source="ai",
+            score=parsed.score,
+            confidence=parsed.confidence,
+            summary=parsed.summary,
+            strengths=parsed.strengths,
+            conditions=parsed.conditions,
+            failureCases=parsed.failureCases,
+            evidenceIds=parsed.evidenceIds,
+        )
+    except ValidationError as exc:
+        raise AnalyzerProviderError(
+            f"Invalid synergy detail response from model after retry: {exc}"
+        ) from exc

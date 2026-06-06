@@ -59,6 +59,62 @@ class AnalyzeDetailResponse(BaseModel):
     evidenceIds: list[str]
 
 
+class AnalyzeSynergyScoresRequest(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "anchorHeroId": "tigreal",
+                "language": "en",
+            }
+        }
+    )
+
+    anchorHeroId: str = Field(min_length=1, examples=["tigreal"])
+    language: Literal["en", "id"] = Field(default="en")
+
+
+class SynergyScoreRecommendation(BaseModel):
+    rank: int = Field(ge=1)
+    synergyHeroId: str
+    score: int = Field(ge=0, le=100)
+    confidence: int = Field(ge=0, le=100)
+
+
+class AnalyzeSynergyScoresResponse(BaseModel):
+    anchorHeroId: str
+    source: Literal["ai"] = "ai"
+    recommendations: list[SynergyScoreRecommendation]
+
+
+class AnalyzeSynergyDetailRequest(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "anchorHeroId": "tigreal",
+                "synergyHeroId": "pharsa",
+                "language": "en",
+            }
+        }
+    )
+
+    anchorHeroId: str = Field(min_length=1, examples=["tigreal"])
+    synergyHeroId: str = Field(min_length=1, examples=["pharsa"])
+    language: Literal["en", "id"] = Field(default="en")
+
+
+class AnalyzeSynergyDetailResponse(BaseModel):
+    anchorHeroId: str
+    synergyHeroId: str
+    source: Literal["ai"] = "ai"
+    score: int = Field(ge=0, le=100)
+    confidence: int = Field(ge=0, le=100)
+    summary: str
+    strengths: list[str]
+    conditions: list[str]
+    failureCases: list[str]
+    evidenceIds: list[str]
+
+
 class ErrorDetail(BaseModel):
     code: str
     message: str

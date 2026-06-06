@@ -11,6 +11,9 @@ from app.data.loader import (
     load_counter_matchups_by_file,
     load_heroes,
     load_json,
+    load_synergy_index,
+    load_synergy_matchups,
+    load_synergy_matchups_by_file,
 )
 
 
@@ -90,8 +93,67 @@ def validate_dataset(data_dir: Path) -> None:
             if "scoreHint" in proof.model_extra:
                 errors.append(f"{proof.id} must not include scoreHint")
 
+    _validate_synergies(data_dir, hero_ids, errors)
+
     if errors:
         raise DatasetValidationError(errors)
+
+
+def _validate_synergies(data_dir: Path, hero_ids: set[str], errors: list[str]) -> None:
+    try:
+        index = load_synergy_index(data_dir)
+    except (OSError, ValueError, ValidationError) as exc:
+        raise DatasetValidationError([*errors, f"synergies.json is invalid: {exc}"]) from exc
+
+    for relative_file in index.files:
+        path = data_dir / relative_file
+        if path.resolve().parent != (data_dir / "synergies").resolve():
+            errors.append(f"{relative_file} must be inside {data_dir / 'synergies'}")
+        if path.suffix != ".json":
+            errors.append(f"{relative_file} must be a JSON file")
+
+    try:
+        synergies = load_synergy_matchups(data_dir)
+        synergies_by_file = load_synergy_matchups_by_file(data_dir)
+    except (OSError, ValueError, ValidationError) as exc:
+        raise DatasetValidationError([*errors, f"synergy files are invalid: {exc}"]) from exc
+
+    for relative_file, file_synergies in synergies_by_file.items():
+        expected_anchor = Path(relative_file).stem
+        for synergy in file_synergies:
+            if synergy.anchorHeroId != expected_anchor:
+                errors.append(
+                    f"{relative_file} contains anchorHeroId {synergy.anchorHeroId}, "
+                    f"expected {expected_anchor}"
+                )
+
+    seen_pairs: set[tuple[str, str]] = set()
+
+    for synergy in synergies:
+        pair = (synergy.anchorHeroId, synergy.synergyHeroId)
+
+        if synergy.anchorHeroId not in hero_ids:
+            errors.append(f"{synergy.anchorHeroId} anchorHeroId does not exist in heroes.json")
+        if synergy.synergyHeroId not in hero_ids:
+            errors.append(f"{synergy.synergyHeroId} synergyHeroId does not exist in heroes.json")
+        if synergy.anchorHeroId == synergy.synergyHeroId:
+            errors.append(f"{synergy.anchorHeroId} cannot synergize with itself")
+        if pair in seen_pairs:
+            errors.append(f"duplicate synergy: {synergy.anchorHeroId}/{synergy.synergyHeroId}")
+        seen_pairs.add(pair)
+        if _has_blank(synergy.reasons):
+            errors.append(f"{synergy.anchorHeroId}/{synergy.synergyHeroId} has blank reasons")
+        if _has_blank(synergy.synergyTypes):
+            errors.append(f"{synergy.anchorHeroId}/{synergy.synergyHeroId} has blank synergyTypes")
+        if "score" in synergy.model_extra:
+            errors.append(f"{synergy.anchorHeroId}/{synergy.synergyHeroId} must not include score")
+        if "patchVersion" in synergy.model_extra:
+            errors.append(
+                f"{synergy.anchorHeroId}/{synergy.synergyHeroId} must not include patchVersion"
+            )
+        for proof in synergy.proof:
+            if "scoreHint" in proof.model_extra:
+                errors.append(f"{proof.id} must not include scoreHint")
 
 
 def main(argv: list[str] | None = None) -> int:

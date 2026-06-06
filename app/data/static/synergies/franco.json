@@ -1,0 +1,162 @@
+[
+  {
+    "anchorHeroId": "franco",
+    "synergyHeroId": "eudora",
+    "reasons": [
+      "Eudora's Ball Lightning stun and Thunder's Wrath single-target lightning burst can fully delete the hooked, suppressed target inside the Bloody Hunt window before they can react.",
+      "Both are early-to-mid game pick-off specialists who roam and delete squishy backliners."
+    ],
+    "synergyTypes": [
+      "pickoff-combo",
+      "burst-follow-up",
+      "setup-combo"
+    ],
+    "proof": [
+      {
+        "id": "eudora-thunders-wrath-with-franco-instant-delete",
+        "category": "pickoff-combo",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Franco isolates a carry with Iron Hook and locks them with Bloody Hunt's unbreakable suppression; Eudora chains Ball Lightning, Thunder's Wrath, and Forked Lightning for heavy burst, deleting the immobilized target before they ever act.",
+        "worksBestWhen": [
+          "The hooked target is a squishy mage or marksman.",
+          "Eudora is in range and has ultimate up when Franco engages.",
+          "They coordinate focus fire on a single priority target."
+        ],
+        "failureCases": [
+          "Target is a tank or has heavy HP or magic defense that survives the burst.",
+          "Eudora is caught out before Franco lands the hook.",
+          "Enemy frontline blocks the hook so the wrong target is pulled."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "franco",
+    "synergyHeroId": "saber",
+    "reasons": [
+      "Saber's Triple Sweep is a single-target lockdown ult that follows up the pick perfectly, deleting the hooked enemy.",
+      "Both roam together in early-mid game to snowball pick-offs on enemy carries."
+    ],
+    "synergyTypes": [
+      "cc-chain",
+      "pickoff-combo",
+      "setup-combo"
+    ],
+    "proof": [
+      {
+        "id": "saber-triple-sweep-with-franco-followup-delete",
+        "category": "crowd-control-chain",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Once Franco hooks and suppresses a high-value target, Saber's Charge closes the gap and Triple Sweep locks and bursts the same isolated enemy, guaranteeing the kill since the target cannot escape the chained CC.",
+        "worksBestWhen": [
+          "Targeting a fragile backline marksman or mage.",
+          "Saber is positioned to immediately follow the hook.",
+          "The rest of the enemy team is out of peel range."
+        ],
+        "failureCases": [
+          "The picked target has Purify or save items to break Saber's lockdown after suppression ends.",
+          "Saber jumps the wrong target during chaos.",
+          "Enemy peels collapse before Saber lands his ult."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "franco",
+    "synergyHeroId": "vexana",
+    "reasons": [
+      "Vexana's Cursed Blast and Deathly Grasp deliver heavy magic burst onto the suppressed target, confirming the kill.",
+      "Her Eternal Guard summon adds frontline pressure and zoning during the pick."
+    ],
+    "synergyTypes": [
+      "pickoff-combo",
+      "burst-follow-up",
+      "setup-combo"
+    ],
+    "proof": [
+      {
+        "id": "vexana-cursed-blast-with-franco-burst-confirm",
+        "category": "pickoff-combo",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Franco's hook plus Bloody Hunt holds a target perfectly still, letting Vexana land her Cursed Blast and Deathly Grasp combo for massive magic burst that deletes the trapped enemy, with her Nether Touch passive chaining curse damage into nearby teammates.",
+        "worksBestWhen": [
+          "Vexana has line of sight and skills off cooldown on the engage.",
+          "The suppressed target is clustered with other enemies for AoE value.",
+          "Franco hooks a squishy core."
+        ],
+        "failureCases": [
+          "Vexana's skillshots miss the displaced target.",
+          "Target is too tanky to die within the suppression window.",
+          "Vexana is too far back to land the combo in time."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "franco",
+    "synergyHeroId": "pharsa",
+    "reasons": [
+      "Pharsa's Feathered Air Strike bombards the locked target from safety, securing kills after the hook.",
+      "Wings By Wings mobility lets her rotate with Franco for fast coordinated ganks."
+    ],
+    "synergyTypes": [
+      "pickoff-combo",
+      "burst-follow-up",
+      "setup-combo"
+    ],
+    "proof": [
+      {
+        "id": "pharsa-feathered-air-strike-with-franco-zone-delete",
+        "category": "pickoff-combo",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Franco creates a stationary target with Iron Hook and Bloody Hunt; Pharsa channels Feathered Air Strike onto the exact spot, raining massive area damage that deletes the immobilized enemy from a safe backline distance.",
+        "worksBestWhen": [
+          "The target stays pinned in Pharsa's bombardment zone via suppression.",
+          "Pharsa is unthreatened while channeling.",
+          "They collapse on isolated rotations or ganks."
+        ],
+        "failureCases": [
+          "Enemy assassins dive Pharsa before she can channel.",
+          "Target is freed or peeled before the airstrike lands.",
+          "Pharsa is forced to relocate and loses her channel."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "franco",
+    "synergyHeroId": "helcurt",
+    "reasons": [
+      "Helcurt's burst combo instantly finishes the suppressed target Franco isolates.",
+      "Dark Night Falls makes enemies nearsighted, sharply cutting their vision so Franco's surprise hooks are far easier to land."
+    ],
+    "synergyTypes": [
+      "vision-setup",
+      "pickoff-combo",
+      "setup-combo"
+    ],
+    "proof": [
+      {
+        "id": "helcurt-dark-night-with-franco-blind-pick",
+        "category": "vision-setup",
+        "priority": "secondary",
+        "impact": "medium",
+        "summary": "Helcurt's ultimate Dark Night Falls makes all enemies nearsighted, sharply reducing their sight range and cutting vision of their allies, letting Franco land unseen hooks; he then bursts the hooked, suppressed target down instantly before the enemy team can locate or respond.",
+        "worksBestWhen": [
+          "Helcurt activates his ult to cover Franco's flank engage.",
+          "The picked target is a fragile carry Helcurt can one-combo.",
+          "The duo strikes from fog or bushes."
+        ],
+        "failureCases": [
+          "Enemy has strong vision-independent peel.",
+          "Helcurt is itemized poorly and lacks one-shot burst.",
+          "The blind times out before the pick is executed."
+        ]
+      }
+    ]
+  }
+]

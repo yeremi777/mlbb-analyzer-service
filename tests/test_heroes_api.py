@@ -72,6 +72,42 @@ def test_list_hero_counters() -> None:
     assert body[0]["proof"]
 
 
+def test_list_hero_synergies() -> None:
+    with TestClient(app) as client:
+        response = client.get("/api/heroes/miya/synergies")
+
+    body = response.json()
+    assert response.status_code == 200
+    assert len(body) == 5
+    assert body[0]["anchorHeroId"] == "miya"
+    assert body[0]["synergyHero"]["uid"]
+    assert body[0]["synergyTypes"]
+    assert body[0]["reasons"]
+    assert body[0]["proof"]
+
+
+def test_list_hero_synergies_no_data() -> None:
+    # layla exists in the catalog but is not one of the curated synergy anchors.
+    with TestClient(app) as client:
+        response = client.get("/api/heroes/layla/synergies")
+
+    assert response.status_code == 404
+    assert response.json() == {
+        "error": {
+            "code": "synergy_data_not_found",
+            "message": "Synergy data was not found for the anchor hero.",
+        }
+    }
+
+
+def test_list_hero_synergies_unknown_hero() -> None:
+    with TestClient(app) as client:
+        response = client.get("/api/heroes/unknown/synergies")
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "hero_not_found"
+
+
 def test_dataset_summary_route_removed() -> None:
     with TestClient(app) as client:
         response = client.get("/api/dataset/summary")

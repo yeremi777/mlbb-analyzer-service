@@ -1,0 +1,162 @@
+[
+  {
+    "anchorHeroId": "alice",
+    "synergyHeroId": "tigreal",
+    "reasons": [
+      "Tigreal's Sacred Hammer charge and Implosion ultimate drag scattered enemies into one tight, stunned cluster, the ideal target for Alice to dive and slam Throne of Ruin on multiple foes at once.",
+      "His long stun holds enemies stationary while Alice's Crimson Blood Banquet passive drains the whole group."
+    ],
+    "synergyTypes": [
+      "cc-chain",
+      "engage-follow-up",
+      "teamfight-combo"
+    ],
+    "proof": [
+      {
+        "id": "tigreal-implosion-with-alice-grouping",
+        "category": "crowd-control-chain",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Tigreal's ultimate Implosion sucks enemies into the center and stuns them, creating a stationary clump that Alice blinks into with Crimson Gleam (Scarlet Shadow); she then drops Throne of Ruin to immobilize the group and triggers her Crimson Blood Banquet passive for AoE Max-HP magic damage and self-healing off the whole cluster.",
+        "worksBestWhen": [
+          "Tigreal initiates first and lands his ult on a clustered enemy backline.",
+          "Alice has her blink and Throne of Ruin charged to follow within the stun window.",
+          "Fights happen in chokepoints or around objectives like Turtle and Lord."
+        ],
+        "failureCases": [
+          "Enemies spread out or use purify or anti-CC to break the group.",
+          "Tigreal whiffs his ult or gets kited before connecting.",
+          "Alice arrives after the stun expires and gets focused alone."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "alice",
+    "synergyHeroId": "atlas",
+    "reasons": [
+      "Fatal Links chains and pulls multiple enemies together, then his Perfect Match landing immobilizes them — the grouped, stationary cluster Alice wants.",
+      "Atlas hard-engages the backline so Alice can blink in safely and slam Throne of Ruin on bunched targets."
+    ],
+    "synergyTypes": [
+      "engage-follow-up",
+      "cc-chain",
+      "teamfight-combo"
+    ],
+    "proof": [
+      {
+        "id": "atlas-fatal-links-with-alice-engage",
+        "category": "engage-follow-up",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Atlas latches enemies with Fatal Links and yanks them into a pile, immobilizing them; Alice follows with Crimson Gleam (Scarlet Shadow) blink and slams Throne of Ruin to immobilize the clustered group, while Doom Waltz and her Crimson Blood Banquet passive deal Max-HP magic damage and drain HP to sustain mid-fight.",
+        "worksBestWhen": [
+          "Atlas lands a multi-target Fatal Links pull on grouped enemies.",
+          "Alice times her dive to hit during the chain's lockdown.",
+          "Both contest the same objective or a chokepoint teamfight."
+        ],
+        "failureCases": [
+          "Enemies dodge or break the Fatal Links chain before the slam.",
+          "Atlas is killed or CC'd before activating his ult.",
+          "The team is too scattered for the pull to group multiple targets."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "alice",
+    "synergyHeroId": "franco",
+    "reasons": [
+      "Iron Hook isolates and yanks a priority target into Alice's range, and Bloody Hunt suppresses them so they cannot move or escape.",
+      "A pinned target lets Alice freely land Doom Waltz, Throne of Ruin, and her Crimson Blood Banquet drain for guaranteed damage and sustain."
+    ],
+    "synergyTypes": [
+      "pickoff-combo",
+      "cc-chain",
+      "setup-combo"
+    ],
+    "proof": [
+      {
+        "id": "franco-hook-with-alice-lockdown",
+        "category": "pickoff-combo",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Franco's Iron Hook drags an enemy out of position and his Bloody Hunt ult suppresses them; the locked target sits in range of Alice's Crimson Gleam blink, Doom Waltz slow, and her Crimson Blood Banquet passive, letting her deal Max-HP magic damage and heal off the pinned victim, with Throne of Ruin adding an extra AoE immobilize.",
+        "worksBestWhen": [
+          "Franco lands a clean hook on a squishy or key target.",
+          "Alice is positioned to blink onto the suppressed target immediately.",
+          "The pick happens near a chokepoint or river bush ambush."
+        ],
+        "failureCases": [
+          "Franco misses the skillshot hook entirely.",
+          "The target purifies the hook's stun before Franco's suppression lands.",
+          "Alice is too far to convert the pick before allies arrive."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "alice",
+    "synergyHeroId": "khufra",
+    "reasons": [
+      "Tyrant's Revenge bounces enemies and a wall-slam stuns instead of slows, gluing the cluster in place for Alice's AoE.",
+      "His Bouncing Ball shuts down enemy blinks and dashes so locked targets cannot escape Alice's damage."
+    ],
+    "synergyTypes": [
+      "cc-chain",
+      "setup-combo",
+      "teamfight-combo"
+    ],
+    "proof": [
+      {
+        "id": "khufra-wallslam-with-alice-zone",
+        "category": "crowd-control-chain",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Khufra slams enemies into terrain for an AoE stun and his Bouncing Ball cancels their dash and blink escapes; Alice blinks in with Crimson Gleam and drops Throne of Ruin to immobilize the trapped group, then sustains via Doom Waltz and her Crimson Blood Banquet passive's AoE Max-HP magic damage and self-heal.",
+        "worksBestWhen": [
+          "Khufra slams enemies into a wall for the stun rather than the slow.",
+          "The enemy comp relies on dashes and blinks that Khufra's ball denies.",
+          "Alice follows up within the stun duration."
+        ],
+        "failureCases": [
+          "No terrain nearby so the ult only slows.",
+          "Enemies use anti-CC or spread out before the slam.",
+          "Khufra burns his ball defensively and loses the anti-mobility lock."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "alice",
+    "synergyHeroId": "kadita",
+    "reasons": [
+      "Alice's Throne of Ruin immobilize holds enemies still so Kadita can land her full Rough Waves and Ocean's Oddity burst on guaranteed targets.",
+      "Both dive together, so Alice tanks and locks the cluster while Kadita finishes squishies caught in the CC."
+    ],
+    "synergyTypes": [
+      "teamfight-combo",
+      "setup-combo",
+      "burst-follow-up"
+    ],
+    "proof": [
+      {
+        "id": "kadita-burst-with-alice-setuppayoff",
+        "category": "teamfight-combo",
+        "priority": "secondary",
+        "impact": "medium",
+        "summary": "Alice dives first and immobilizes the enemy cluster with her ultimate Throne of Ruin, setting up stationary targets; Kadita then submerges in and detonates Ocean's Oddity plus Rough Waves to burst the locked squishies, while Alice's Throne of Ruin damage reduction and Crimson Blood Banquet healing keep her tanking up front so Kadita lands her combo at low risk.",
+        "worksBestWhen": [
+          "Alice lands her immobilize on grouped squishy targets first.",
+          "Kadita coordinates her dive to hit during the CC window.",
+          "The enemy backline is clustered and lacks instant peel."
+        ],
+        "failureCases": [
+          "Enemies have purify or strong peel to break Kadita's combo.",
+          "The two engage uncoordinated and get picked off separately.",
+          "Targets are too spread for both AoE bursts to overlap."
+        ]
+      }
+    ]
+  }
+]
