@@ -41,20 +41,20 @@ def test_analyze_synergy_score_unknown_anchor_error_shape() -> None:
 
 
 def test_analyze_synergy_score_anchor_without_data_error_shape() -> None:
-    # hayabusa exists but has no curated synergy data.
+    # ling exists but has no curated synergy data.
     with TestClient(app) as client:
-        response = client.post("/api/synergies/analyze-score", json={"anchorHeroId": "hayabusa"})
+        response = client.post("/api/synergies/analyze-score", json={"anchorHeroId": "ling"})
 
     assert response.status_code == 404
     assert response.json()["error"]["code"] == "synergy_data_not_found"
 
 
 def test_analyze_synergy_detail_unknown_matchup_error_shape() -> None:
-    # miya is an anchor, but diggie is not one of her curated synergy partners.
+    # miya is an anchor, but valir is not one of her curated synergy partners.
     with TestClient(app) as client:
         response = client.post(
             "/api/synergies/analyze-detail",
-            json={"anchorHeroId": "miya", "synergyHeroId": "diggie"},
+            json={"anchorHeroId": "miya", "synergyHeroId": "valir"},
         )
 
     assert response.status_code == 404

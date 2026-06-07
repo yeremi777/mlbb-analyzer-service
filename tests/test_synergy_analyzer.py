@@ -21,11 +21,11 @@ def test_dataset_loads_and_indexes_synergies() -> None:
         "estes",
         "angela",
         "mathilda",
-        "franco",
         "tigreal",
+        "diggie",
     }
     # heroes without curated synergy data return nothing
-    assert dataset.get_synergies_for_anchor("hayabusa") == []
+    assert dataset.get_synergies_for_anchor("ling") == []
 
 
 def test_synergy_scoring_analysis_uses_ai_when_provider_returns_valid_json() -> None:
@@ -34,7 +34,7 @@ def test_synergy_scoring_analysis_uses_ai_when_provider_returns_valid_json() -> 
     payload = {
         "recommendations": [
             {"synergyHeroId": "tigreal", "score": 95, "confidence": 90},
-            {"synergyHeroId": "franco", "score": 88, "confidence": 84},
+            {"synergyHeroId": "diggie", "score": 88, "confidence": 84},
             {"synergyHeroId": "angela", "score": 85, "confidence": 82},
             {"synergyHeroId": "estes", "score": 80, "confidence": 78},
             {"synergyHeroId": "mathilda", "score": 76, "confidence": 74},
@@ -62,7 +62,7 @@ def test_synergy_detail_analysis_uses_ai_when_provider_returns_valid_json() -> N
         "strengths": ["Tigreal's lockdown guarantees Pharsa's bombardment lands."],
         "conditions": ["Tigreal lands Implosion on a cluster."],
         "failureCases": ["Enemies are spread out."],
-        "evidenceIds": ["pharsa-feathered-air-strike-with-tigreal-grouped-aoe"],
+        "evidenceIds": ["pharsa-airstrike-follows-tigreal-implosion"],
     }
 
     with patch("app.analyzer.ai.create_chat_provider") as mock_factory:
@@ -86,7 +86,7 @@ def test_synergy_detail_repair_preserves_indonesian_language() -> None:
         "summary": "Tigreal mengelompokkan musuh agar Pharsa mendaratkan ultimate-nya.",
         "conditions": ["Tigreal mengenai Implosion pada kelompok musuh."],
         "failureCases": ["Musuh tersebar."],
-        "evidenceIds": ["pharsa-feathered-air-strike-with-tigreal-grouped-aoe"],
+        "evidenceIds": ["pharsa-airstrike-follows-tigreal-implosion"],
     }
     repaired_payload = {
         **invalid_payload,

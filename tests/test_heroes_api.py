@@ -87,9 +87,9 @@ def test_list_hero_synergies() -> None:
 
 
 def test_list_hero_synergies_no_data() -> None:
-    # hayabusa exists in the catalog but is not one of the curated synergy anchors.
+    # ling exists in the catalog but is not one of the curated synergy anchors.
     with TestClient(app) as client:
-        response = client.get("/api/heroes/hayabusa/synergies")
+        response = client.get("/api/heroes/ling/synergies")
 
     assert response.status_code == 404
     assert response.json() == {
