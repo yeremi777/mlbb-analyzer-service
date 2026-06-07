@@ -276,7 +276,7 @@ def test_analyze_detail_rate_limit_reuses_client_cookie_key(monkeypatch) -> None
             assert response.status_code == 200
 
     client_keys = [key for key in fake_redis.counts if ":client:" in key]
-    detail_client_keys = [key for key in client_keys if ":analyze-detail:" in key]
+    detail_client_keys = [key for key in client_keys if ":analyze-counter-detail:" in key]
 
     assert len(detail_client_keys) == 1
     assert fake_redis.counts[detail_client_keys[0]] == 2

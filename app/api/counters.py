@@ -76,7 +76,7 @@ def analyze_score(
     _require_target_hero(request, payload.targetHeroId)
     _require_matchups(request, payload.targetHeroId)
     settings = get_settings()
-    enforce_analyze_rate_limit(request, response, settings, "analyze-score")
+    enforce_analyze_rate_limit(request, response, settings, "analyze-counter-score")
     try:
         return run_scoring_analysis(
             request.app.state.dataset,
@@ -126,7 +126,7 @@ def analyze_detail(
         )
 
     settings = get_settings()
-    enforce_analyze_rate_limit(request, response, settings, "analyze-detail")
+    enforce_analyze_rate_limit(request, response, settings, "analyze-counter-detail")
     try:
         return run_detail_analysis(
             dataset,
