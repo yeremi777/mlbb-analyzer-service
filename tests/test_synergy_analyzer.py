@@ -25,7 +25,7 @@ def test_dataset_loads_and_indexes_synergies() -> None:
         "tigreal",
     }
     # heroes without curated synergy data return nothing
-    assert dataset.get_synergies_for_anchor("layla") == []
+    assert dataset.get_synergies_for_anchor("hayabusa") == []
 
 
 def test_synergy_scoring_analysis_uses_ai_when_provider_returns_valid_json() -> None:

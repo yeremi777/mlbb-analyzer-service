@@ -3,8 +3,8 @@
     "anchorHeroId": "alice",
     "synergyHeroId": "tigreal",
     "reasons": [
-      "Tigreal's Sacred Hammer charge and Implosion ultimate drag scattered enemies into one tight, stunned cluster, the ideal target for Alice to dive and slam Throne of Ruin on multiple foes at once.",
-      "His long stun holds enemies stationary while Alice's Crimson Blood Banquet passive drains the whole group."
+      "Tigreal can group enemies into one fight area, giving Alice a strong entry point for AoE pressure.",
+      "Alice can follow Tigreal's control window with Crimson Gleam entry and Throne of Ruin disruption."
     ],
     "synergyTypes": [
       "cc-chain",
@@ -13,20 +13,20 @@
     ],
     "proof": [
       {
-        "id": "tigreal-implosion-with-alice-grouping",
+        "id": "tigreal-implosion-sets-alice-teamfight-entry",
         "category": "crowd-control-chain",
         "priority": "primary",
         "impact": "high",
-        "summary": "Tigreal's ultimate Implosion sucks enemies into the center and stuns them, creating a stationary clump that Alice blinks into with Crimson Gleam (Scarlet Shadow); she then drops Throne of Ruin to immobilize the group and triggers her Crimson Blood Banquet passive for AoE Max-HP magic damage and self-healing off the whole cluster.",
+        "summary": "Tigreal groups and stuns enemies, while Alice enters the cluster to apply AoE damage, sustain, and control.",
         "worksBestWhen": [
-          "Tigreal initiates first and lands his ult on a clustered enemy backline.",
-          "Alice has her blink and Throne of Ruin charged to follow within the stun window.",
-          "Fights happen in chokepoints or around objectives like Turtle and Lord."
+          "Tigreal engages before Alice commits.",
+          "Alice has her entry and main fight tools ready.",
+          "The fight happens around an objective or chokepoint."
         ],
         "failureCases": [
-          "Enemies spread out or use purify or anti-CC to break the group.",
-          "Tigreal whiffs his ult or gets kited before connecting.",
-          "Alice arrives after the stun expires and gets focused alone."
+          "Enemies spread out before Tigreal engages.",
+          "Alice arrives after the control window ends.",
+          "Enemy burst or anti-heal cuts down Alice's sustain after entry."
         ]
       }
     ]
@@ -35,8 +35,8 @@
     "anchorHeroId": "alice",
     "synergyHeroId": "atlas",
     "reasons": [
-      "Fatal Links chains and pulls multiple enemies together, then his Perfect Match landing immobilizes them — the grouped, stationary cluster Alice wants.",
-      "Atlas hard-engages the backline so Alice can blink in safely and slam Throne of Ruin on bunched targets."
+      "Atlas can pull multiple enemies together, creating a grouped target zone for Alice's AoE follow-up.",
+      "Alice can use the engage window to enter and pressure several enemies at once."
     ],
     "synergyTypes": [
       "engage-follow-up",
@@ -45,52 +45,20 @@
     ],
     "proof": [
       {
-        "id": "atlas-fatal-links-with-alice-engage",
+        "id": "atlas-fatal-links-groups-enemies-for-alice",
         "category": "engage-follow-up",
         "priority": "primary",
         "impact": "high",
-        "summary": "Atlas latches enemies with Fatal Links and yanks them into a pile, immobilizing them; Alice follows with Crimson Gleam (Scarlet Shadow) blink and slams Throne of Ruin to immobilize the clustered group, while Doom Waltz and her Crimson Blood Banquet passive deal Max-HP magic damage and drain HP to sustain mid-fight.",
+        "summary": "Atlas creates a multi-target engage, and Alice follows into the pulled area with sustained AoE pressure.",
         "worksBestWhen": [
-          "Atlas lands a multi-target Fatal Links pull on grouped enemies.",
-          "Alice times her dive to hit during the chain's lockdown.",
-          "Both contest the same objective or a chokepoint teamfight."
+          "Atlas catches several enemies in the engage.",
+          "Alice positions close enough to follow instantly.",
+          "The team focuses the grouped targets after Alice enters."
         ],
         "failureCases": [
-          "Enemies dodge or break the Fatal Links chain before the slam.",
-          "Atlas is killed or CC'd before activating his ult.",
-          "The team is too scattered for the pull to group multiple targets."
-        ]
-      }
-    ]
-  },
-  {
-    "anchorHeroId": "alice",
-    "synergyHeroId": "franco",
-    "reasons": [
-      "Iron Hook isolates and yanks a priority target into Alice's range, and Bloody Hunt suppresses them so they cannot move or escape.",
-      "A pinned target lets Alice freely land Doom Waltz, Throne of Ruin, and her Crimson Blood Banquet drain for guaranteed damage and sustain."
-    ],
-    "synergyTypes": [
-      "pickoff-combo",
-      "cc-chain",
-      "setup-combo"
-    ],
-    "proof": [
-      {
-        "id": "franco-hook-with-alice-lockdown",
-        "category": "pickoff-combo",
-        "priority": "primary",
-        "impact": "high",
-        "summary": "Franco's Iron Hook drags an enemy out of position and his Bloody Hunt ult suppresses them; the locked target sits in range of Alice's Crimson Gleam blink, Doom Waltz slow, and her Crimson Blood Banquet passive, letting her deal Max-HP magic damage and heal off the pinned victim, with Throne of Ruin adding an extra AoE immobilize.",
-        "worksBestWhen": [
-          "Franco lands a clean hook on a squishy or key target.",
-          "Alice is positioned to blink onto the suppressed target immediately.",
-          "The pick happens near a chokepoint or river bush ambush."
-        ],
-        "failureCases": [
-          "Franco misses the skillshot hook entirely.",
-          "The target purifies the hook's stun before Franco's suppression lands.",
-          "Alice is too far to convert the pick before allies arrive."
+          "Atlas catches only one low-value target.",
+          "Alice enters before Atlas confirms the pull.",
+          "Enemy disengage breaks the teamfight formation."
         ]
       }
     ]
@@ -99,8 +67,8 @@
     "anchorHeroId": "alice",
     "synergyHeroId": "khufra",
     "reasons": [
-      "Tyrant's Revenge bounces enemies and a wall-slam stuns instead of slows, gluing the cluster in place for Alice's AoE.",
-      "His Bouncing Ball shuts down enemy blinks and dashes so locked targets cannot escape Alice's damage."
+      "Khufra can control enemy movement and punish dash-based escape attempts near Alice's fight zone.",
+      "Alice benefits when enemies are kept near her AoE pressure instead of freely repositioning."
     ],
     "synergyTypes": [
       "cc-chain",
@@ -109,52 +77,84 @@
     ],
     "proof": [
       {
-        "id": "khufra-wallslam-with-alice-zone",
+        "id": "khufra-control-holds-targets-for-alice-zone",
         "category": "crowd-control-chain",
         "priority": "primary",
         "impact": "high",
-        "summary": "Khufra slams enemies into terrain for an AoE stun and his Bouncing Ball cancels their dash and blink escapes; Alice blinks in with Crimson Gleam and drops Throne of Ruin to immobilize the trapped group, then sustains via Doom Waltz and her Crimson Blood Banquet passive's AoE Max-HP magic damage and self-heal.",
+        "summary": "Khufra disrupts enemy movement with knock-up, wall-slam, and anti-mobility pressure, while Alice follows with AoE sustain and control.",
         "worksBestWhen": [
-          "Khufra slams enemies into a wall for the stun rather than the slow.",
-          "The enemy comp relies on dashes and blinks that Khufra's ball denies.",
-          "Alice follows up within the stun duration."
+          "Khufra engages near terrain or a contested objective.",
+          "Alice follows during Khufra's control window.",
+          "Enemy heroes rely on movement skills to escape Alice's zone."
         ],
         "failureCases": [
-          "No terrain nearby so the ult only slows.",
-          "Enemies use anti-CC or spread out before the slam.",
-          "Khufra burns his ball defensively and loses the anti-mobility lock."
+          "There is no useful terrain for the engage.",
+          "Khufra uses his control defensively before Alice enters.",
+          "Enemies avoid grouping around Alice's fight area."
         ]
       }
     ]
   },
   {
     "anchorHeroId": "alice",
-    "synergyHeroId": "kadita",
+    "synergyHeroId": "angela",
     "reasons": [
-      "Alice's Throne of Ruin immobilize holds enemies still so Kadita can land her full Rough Waves and Ocean's Oddity burst on guaranteed targets.",
-      "Both dive together, so Alice tanks and locks the cluster while Kadita finishes squishies caught in the CC."
+      "Angela can attach to Alice and shield her during a deep engage.",
+      "Alice can use the added protection to stay inside the enemy formation and continue applying AoE pressure."
     ],
     "synergyTypes": [
-      "teamfight-combo",
-      "setup-combo",
-      "burst-follow-up"
+      "shielding",
+      "dive-support",
+      "healing-sustain"
     ],
     "proof": [
       {
-        "id": "kadita-burst-with-alice-setuppayoff",
-        "category": "teamfight-combo",
+        "id": "angela-heartguard-supports-alice-deep-entry",
+        "category": "protection",
         "priority": "secondary",
-        "impact": "medium",
-        "summary": "Alice dives first and immobilizes the enemy cluster with her ultimate Throne of Ruin, setting up stationary targets; Kadita then submerges in and detonates Ocean's Oddity plus Rough Waves to burst the locked squishies, while Alice's Throne of Ruin damage reduction and Crimson Blood Banquet healing keep her tanking up front so Kadita lands her combo at low risk.",
+        "impact": "high",
+        "summary": "Alice commits into dangerous fight zones, and Angela can shield and support her during that deep-entry window.",
         "worksBestWhen": [
-          "Alice lands her immobilize on grouped squishy targets first.",
-          "Kadita coordinates her dive to hit during the CC window.",
-          "The enemy backline is clustered and lacks instant peel."
+          "Angela attaches before Alice commits into the enemy formation.",
+          "Alice enters with key cooldowns ready.",
+          "The team follows while Alice draws pressure."
         ],
         "failureCases": [
-          "Enemies have purify or strong peel to break Kadita's combo.",
-          "The two engage uncoordinated and get picked off separately.",
-          "Targets are too spread for both AoE bursts to overlap."
+          "Alice enters before Angela can attach.",
+          "Enemy burst breaks the shield before Alice stabilizes.",
+          "Alice dives beyond follow-up damage and is isolated after the shield ends."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "alice",
+    "synergyHeroId": "floryn",
+    "reasons": [
+      "Floryn can support Alice during deep engages because Bloom can heal allied heroes regardless of their map position.",
+      "Alice benefits from global healing when she repositions into the enemy backline or fights beyond normal support range."
+    ],
+    "synergyTypes": [
+      "healing-sustain",
+      "shielding",
+      "dive-support"
+    ],
+    "proof": [
+      {
+        "id": "floryn-bloom-supports-alice-deep-fight",
+        "category": "healing-sustain",
+        "priority": "secondary",
+        "impact": "medium",
+        "summary": "Alice may dive beyond normal support range, while Floryn can still stabilize her with global healing and support value during the commit.",
+        "worksBestWhen": [
+          "Floryn saves Bloom for Alice's real engage or objective fight.",
+          "Alice has enough HP and cooldowns to keep fighting after the heal lands.",
+          "The team times follow-up around Alice's deep pressure."
+        ],
+        "failureCases": [
+          "Alice is burst before Bloom can stabilize her.",
+          "Floryn uses Bloom before Alice commits.",
+          "Anti-heal or heavy burst reduces the sustain value."
         ]
       }
     ]

@@ -147,10 +147,6 @@ def _validate_synergies(data_dir: Path, hero_ids: set[str], errors: list[str]) -
             errors.append(f"{synergy.anchorHeroId}/{synergy.synergyHeroId} has blank synergyTypes")
         if "score" in synergy.model_extra:
             errors.append(f"{synergy.anchorHeroId}/{synergy.synergyHeroId} must not include score")
-        if "patchVersion" in synergy.model_extra:
-            errors.append(
-                f"{synergy.anchorHeroId}/{synergy.synergyHeroId} must not include patchVersion"
-            )
         for proof in synergy.proof:
             if "scoreHint" in proof.model_extra:
                 errors.append(f"{proof.id} must not include scoreHint")

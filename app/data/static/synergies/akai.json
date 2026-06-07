@@ -3,8 +3,8 @@
     "anchorHeroId": "akai",
     "synergyHeroId": "eudora",
     "reasons": [
-      "Eudora is an immobile point-and-click burst mage who needs her target to stay still; Akai's wall-pin guarantees a stationary target for her full Superconductor combo.",
-      "The pin window is exactly long enough for her skill sequence to detonate a squishy."
+      "Eudora can burst a target that Akai pins or displaces into a fixed position.",
+      "Akai's control gives Eudora a clearer window to land her single-target magic combo."
     ],
     "synergyTypes": [
       "pickoff-combo",
@@ -13,20 +13,20 @@
     ],
     "proof": [
       {
-        "id": "eudora-superconductor-with-akai-wall-pin-delete",
+        "id": "eudora-burst-follows-akai-wall-pin",
         "category": "pickoff-combo",
         "priority": "primary",
         "impact": "high",
-        "summary": "Akai's Heavy Spin ultimate shoves an enemy carry against terrain in a wall-pin, holding a stationary target for roughly three seconds and removing the only weakness of immobile Eudora: she lands her Ball Lightning stun, Forked Lightning, and Thunder's Wrath on a locked target, deleting the squishy she could never otherwise catch.",
+        "summary": "Akai isolates or pins a target with Heavy Spin, and Eudora follows with magic burst during the control window.",
         "worksBestWhen": [
-          "Enemy has an immobile mage or marksman with no dash or blink.",
-          "Fight happens near a wall Akai can pin against.",
-          "Eudora is positioned within combo range before Akai commits the pin."
+          "Akai pins a squishy target near terrain.",
+          "Eudora is already in combo range.",
+          "The team focuses the same target after Akai commits."
         ],
         "failureCases": [
-          "Target has Purify, Flicker, or a CC-immunity dash.",
-          "Enemy Diggie's Time Journey grants team CC immunity through the pin.",
-          "Eudora is caught out of range and her short combo window expires."
+          "Akai pushes the target out of Eudora's range.",
+          "Eudora is too far to follow the pin.",
+          "The target receives peel, shield, or magic-defense support."
         ]
       }
     ]
@@ -35,8 +35,8 @@
     "anchorHeroId": "akai",
     "synergyHeroId": "saber",
     "reasons": [
-      "Saber's Triple Sweep adds a second hard lockdown and physical-defense shred on the already-pinned target.",
-      "A classic Akai burst partner for picking off isolated carries."
+      "Saber can burst a target that Akai separates from the enemy team.",
+      "Akai's displacement helps create the isolation that Saber wants for Triple Sweep."
     ],
     "synergyTypes": [
       "pickoff-combo",
@@ -45,20 +45,20 @@
     ],
     "proof": [
       {
-        "id": "saber-triplesweep-with-akai-isolate-burst",
+        "id": "saber-triple-sweep-follows-akai-isolation",
         "category": "pickoff-combo",
         "priority": "primary",
         "impact": "high",
-        "summary": "Once Akai isolates and pins a single backliner, Saber dives with Charge into Triple Sweep, which suspends the target and shreds physical defense via his passive, stacking CC on Akai's pin so the carry is locked and bursted with no escape window.",
+        "summary": "Akai separates or pins a priority enemy, and Saber follows with single-target airborne burst.",
         "worksBestWhen": [
-          "The pinned target is the enemy's squishy core.",
-          "Saber has built burst items and can reach the target quickly.",
-          "Akai pins away from the rest of the enemy team to keep the kill isolated."
+          "Akai isolates a fragile backline target.",
+          "Saber has burst cooldowns ready.",
+          "Akai pins away from enemy peel."
         ],
         "failureCases": [
-          "Target has CC-immunity or Purify to break both Saber and Akai CC.",
-          "Enemy peel arrives before Saber finishes his combo.",
-          "Pin is too close to enemy frontline, letting them collapse on Saber."
+          "Akai displaces the target outside Saber's reach.",
+          "Saber commits to a durable target.",
+          "Enemy teammates collapse on Saber after entry."
         ]
       }
     ]
@@ -67,8 +67,8 @@
     "anchorHeroId": "akai",
     "synergyHeroId": "pharsa",
     "reasons": [
-      "Pharsa's channeled Feathered Air Strike needs enemies to stay in place; Akai's pin and zoning hold them in the AoE.",
-      "Akai's frontline lets Pharsa channel her ult safely."
+      "Pharsa can follow Akai's displacement and zoning with long-range AoE damage.",
+      "Akai's frontline pressure helps Pharsa cast from a safer position."
     ],
     "synergyTypes": [
       "setup-combo",
@@ -77,20 +77,20 @@
     ],
     "proof": [
       {
-        "id": "pharsa-airstrike-with-akai-zone-channel",
+        "id": "pharsa-airstrike-follows-akai-zone-control",
         "category": "setup-combo",
         "priority": "primary",
         "impact": "high",
-        "summary": "Akai's spin pins targets and zones the enemy while creating frontline space, letting immobile Pharsa safely channel Feathered Air Strike over the locked targets so her continuous AoE bombardment lands instead of being dodged or interrupted.",
+        "summary": "Akai pins or zones enemies, and Pharsa follows with ranged damage into the controlled area.",
         "worksBestWhen": [
-          "Akai pins enemies into the center of Pharsa's ultimate AoE.",
-          "Pharsa channels from a safe backline angle behind Akai's frontline.",
-          "The team fight is in a contained space like the Turtle or Lord pit."
+          "Akai controls enemies near terrain or an objective.",
+          "Pharsa has safe vision and range to cast.",
+          "Akai does not push enemies out of Pharsa's damage area."
         ],
         "failureCases": [
-          "Enemy assassin reaches Pharsa and interrupts the channel.",
-          "Pinned target has CC immunity and walks out of the AoE.",
-          "Akai engages too far from Pharsa's safe channeling range."
+          "Enemy assassins reach Pharsa before follow-up.",
+          "Akai engages outside Pharsa's range.",
+          "Enemies disengage from the controlled zone."
         ]
       }
     ]
@@ -99,8 +99,8 @@
     "anchorHeroId": "akai",
     "synergyHeroId": "vale",
     "reasons": [
-      "Vale chains his own knock-up and slow onto Akai's pin for an unbreakable CC lock.",
-      "Enhanced tornado plus burst deletes the squishy Akai isolates."
+      "Vale can layer knock-up, slow, and burst after Akai pins or disrupts enemies.",
+      "Akai's control helps Vale connect AoE skills on targets that have limited movement."
     ],
     "synergyTypes": [
       "cc-chain",
@@ -109,52 +109,52 @@
     ],
     "proof": [
       {
-        "id": "vale-windblade-with-akai-cc-chain-burst",
+        "id": "vale-burst-chains-after-akai-control",
         "category": "crowd-control-chain",
         "priority": "primary",
         "impact": "high",
-        "summary": "Akai pins a target while Vale stacks his Windblow knock-up and Windblade slow on top, creating a continuous CC chain that holds the target through the pin's end, and his combined skill burst eliminates squishies who cannot move out of the lockdown.",
+        "summary": "Akai controls enemy movement with displacement, and Vale follows with crowd control plus magic burst into the same target area.",
         "worksBestWhen": [
-          "Akai pins a clustered or immobile backline target.",
-          "Vale lands his enhanced ultimate immediately as the pin lands.",
-          "Both commit on the same isolated carry rather than splitting targets."
+          "Akai pins or zones a priority target.",
+          "Vale holds cooldowns for the follow-up window.",
+          "Both heroes focus the same enemy group or carry."
         ],
         "failureCases": [
-          "Target purifies or dashes out of the chained CC.",
-          "Vale's burst is on cooldown when Akai engages.",
-          "Enemy spreads out, reducing Vale's AoE value."
+          "Vale casts before Akai finishes positioning the target.",
+          "Enemies spread before Vale's AoE lands.",
+          "The target escapes the control chain with mobility or protection."
         ]
       }
     ]
   },
   {
     "anchorHeroId": "akai",
-    "synergyHeroId": "tigreal",
+    "synergyHeroId": "claude",
     "reasons": [
-      "Tigreal's Implosion groups enemies, and Akai follows up to pin a key target into a wall or away from objectives.",
-      "A double-tank frontline makes safe enemy positioning nearly impossible."
+      "Claude can enter after Akai disrupts the enemy formation and creates space.",
+      "Akai can pin or zone enemies so Claude has a clearer Blazing Duet damage window."
     ],
     "synergyTypes": [
       "engage-follow-up",
-      "cc-chain",
+      "aoe-follow-up",
       "teamfight-combo"
     ],
     "proof": [
       {
-        "id": "tigreal-implosion-with-akai-group-pin",
+        "id": "claude-blazing-duet-follows-akai-disruption",
         "category": "engage-follow-up",
-        "priority": "primary",
+        "priority": "secondary",
         "impact": "high",
-        "summary": "Tigreal initiates with Sacred Hammer and Implosion to pull and stun the enemy group together, then Akai immediately pins a high-value target into a wall with his spin, chaining two layers of hard CC so enemies cannot reposition while the team collapses for the kill.",
+        "summary": "Akai starts the displacement and zoning, while Claude follows with Blazing Duet after the enemy formation is disrupted.",
         "worksBestWhen": [
-          "Both tanks engage on the same clustered enemy group.",
-          "There is terrain nearby for Akai to wall-pin the priority target.",
-          "Team has follow-up damage ready during the stacked CC window."
+          "Akai controls the enemy frontline or pins a key target.",
+          "Claude waits until Akai creates space.",
+          "The team is ready to protect Claude during his entry."
         ],
         "failureCases": [
-          "Enemy has Diggie or strong AoE purify against grouped CC.",
-          "Both tanks burn engage with no damage backup.",
-          "Enemies stay spread out, denying Tigreal's group pull."
+          "Akai pushes enemies out of Claude's damage area.",
+          "Claude enters before Akai controls enemy peel.",
+          "Enemy displacement or burst forces Claude out of the fight."
         ]
       }
     ]

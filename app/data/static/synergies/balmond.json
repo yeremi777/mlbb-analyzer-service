@@ -3,8 +3,8 @@
     "anchorHeroId": "balmond",
     "synergyHeroId": "tigreal",
     "reasons": [
-      "Tigreal's Implosion ultimate pulls and stuns multiple enemies into a tight cluster, the ideal setup for Balmond's AoE Cyclone Sweep and cone-shaped Lethal Counter execute.",
-      "His durable frontline and stun let Balmond dive in and spin freely without being kited or interrupted."
+      "Tigreal can group and stun enemies, giving Balmond a clear area to enter with Cyclone Sweep.",
+      "Balmond can follow Tigreal's engage and save Lethal Counter for enemies already lowered by the teamfight."
     ],
     "synergyTypes": [
       "engage-follow-up",
@@ -13,20 +13,20 @@
     ],
     "proof": [
       {
-        "id": "tigreal-implosion-with-balmond-groupup",
+        "id": "tigreal-implosion-sets-balmond-spin-execute",
         "category": "engage-follow-up",
         "priority": "primary",
         "impact": "high",
-        "summary": "Tigreal's Implosion stun and Sacred Hammer charge gather enemies and lock them in place, holding them inside Balmond's Cyclone Sweep spin while he charges Lethal Counter for a missing-HP true-damage execute on the grouped, softened targets.",
+        "summary": "Tigreal creates the crowd-control opening, and Balmond follows into the clustered fight with close-range AoE damage and execute pressure.",
         "worksBestWhen": [
-          "Enemies are clustered so Implosion catches two or more targets.",
-          "Tigreal lands his ultimate before Balmond commits his spin.",
-          "Balmond has execute or burst allies to finish low targets."
+          "Tigreal lands the engage before Balmond commits.",
+          "Balmond enters while enemies are still grouped.",
+          "Lethal Counter is saved for low-HP targets."
         ],
         "failureCases": [
-          "Implosion gets interrupted during its channel windup.",
-          "Enemies have purify or dashes to escape the pull.",
-          "The two engage without backline follow-up and get traded poorly."
+          "Tigreal's engage is interrupted or misses.",
+          "Balmond arrives after the control window ends.",
+          "The team lacks damage to put enemies into execute range."
         ]
       }
     ]
@@ -35,8 +35,8 @@
     "anchorHeroId": "balmond",
     "synergyHeroId": "atlas",
     "reasons": [
-      "Atlas's Fatal Links pulls multiple enemies into a single spot, creating a perfect grouped target for Balmond's Cyclone Sweep AoE and Lethal Counter cone.",
-      "Atlas's Frigid Breath passive (triggered when he casts) adds further slow so enemies cannot walk out of Balmond's spin."
+      "Atlas can pull multiple enemies into one area, giving Balmond a strong Cyclone Sweep target zone.",
+      "Balmond can use the grouped fight to pressure several enemies and look for Lethal Counter finishes."
     ],
     "synergyTypes": [
       "cc-chain",
@@ -45,52 +45,20 @@
     ],
     "proof": [
       {
-        "id": "atlas-fatallinks-with-balmond-zonelock",
+        "id": "atlas-fatal-links-groups-targets-for-balmond",
         "category": "crowd-control-chain",
         "priority": "primary",
         "impact": "high",
-        "summary": "Atlas dives with Perfect Match and Fatal Links to drag the enemy team into one cluster, then Annihilate slows them, pinning multiple heroes inside Balmond's spinning Cyclone Sweep long enough for him to land Lethal Counter and execute the lowest targets.",
+        "summary": "Atlas groups enemies through hard engage, while Balmond converts the cluster into sustained close-range damage and execute threat.",
         "worksBestWhen": [
-          "Atlas hooks two or more enemies and drags them together.",
-          "Balmond is positioned to spin on the pulled cluster immediately.",
-          "Enemy team lacks immunity to the chained CC."
+          "Atlas catches multiple enemies near an objective or chokepoint.",
+          "Balmond is already close enough to follow.",
+          "The team focuses the pulled targets during Balmond's spin."
         ],
         "failureCases": [
-          "Atlas's Fatal Links is dodged or pulls only one target.",
-          "Enemies have purify or strong disengage.",
-          "Balmond arrives late and the pull duration expires."
-        ]
-      }
-    ]
-  },
-  {
-    "anchorHeroId": "balmond",
-    "synergyHeroId": "estes",
-    "reasons": [
-      "Estes's continuous healing from Moonlight Immersion and the Blessing of the Moon Goddess link lets Balmond dive deep and sustain through his all-in spin without being burst down.",
-      "Healing amplifies Balmond's natural tankiness so he can stay in the enemy team longer."
-    ],
-    "synergyTypes": [
-      "healing-sustain",
-      "dive-support",
-      "frontline-enabler"
-    ],
-    "proof": [
-      {
-        "id": "estes-moonheal-with-balmond-sustainfront",
-        "category": "healing-sustain",
-        "priority": "secondary",
-        "impact": "high",
-        "summary": "Estes keeps Balmond topped off with channeled and linked healing, turning Balmond's durable fighter kit into a near-unkillable frontline that can spin with Cyclone Sweep through the enemy team and survive long enough to land Lethal Counter executes.",
-        "worksBestWhen": [
-          "Balmond stays within Estes's healing and link range during the dive.",
-          "Estes is peeled so he can channel freely.",
-          "Fights are sustained brawls rather than instant burst."
-        ],
-        "failureCases": [
-          "Enemy has heavy anti-heal such as Sea Halberd or Necklace of Durance.",
-          "Balmond dives out of Estes's range.",
-          "Burst assassins delete Estes before he can heal."
+          "Atlas catches only a low-value target.",
+          "Balmond is kited before reaching the pulled area.",
+          "Enemy cleanse, immunity, or disengage breaks the chain timing."
         ]
       }
     ]
@@ -99,62 +67,94 @@
     "anchorHeroId": "balmond",
     "synergyHeroId": "angela",
     "reasons": [
-      "Angela's Heartguard ultimate lets her attach to Balmond, granting a shield (and letting her cast Love Waves heals from his position) so he can charge into the backline with Soul Lock and spin safely.",
-      "Her Love Waves slow and Puppet-on-a-String root help hold enemies in Balmond's Cyclone Sweep."
+      "Angela can attach to Balmond and shield him during his entry into the enemy formation.",
+      "Balmond can use the extra protection to keep spinning near priority targets and prepare Lethal Counter."
     ],
     "synergyTypes": [
       "shielding",
-      "peel",
-      "dive-support"
+      "dive-support",
+      "frontline-enabler"
     ],
     "proof": [
       {
-        "id": "angela-heartguard-with-balmond-shielddive",
+        "id": "angela-heartguard-supports-balmond-dive",
         "category": "shielding",
         "priority": "secondary",
         "impact": "medium",
-        "summary": "Angela attaches to Balmond with Heartguard, shielding him remotely (and healing via Love Waves cast from his position) while he dives, so Balmond can reach and spin on the enemy backline without dying, and her Puppet-on-a-String root pins targets inside Cyclone Sweep for Lethal Counter follow-up.",
+        "summary": "Balmond commits into close range, and Angela's Heartguard can add protection during that commitment.",
         "worksBestWhen": [
-          "Angela times Heartguard as Balmond initiates his dive.",
-          "Balmond focuses squishies the shield lets him reach.",
-          "Angela survives to maintain the link."
+          "Angela shields Balmond as he starts the dive.",
+          "Balmond uses the shield window to stay near enemies.",
+          "The team follows up while Balmond is drawing pressure."
         ],
         "failureCases": [
-          "Angela is killed before casting Heartguard.",
-          "The shield is burst through instantly by heavy AoE.",
-          "Balmond dives a target with strong escape and wastes the shield window."
+          "Angela is caught before casting Heartguard.",
+          "Balmond dives too far from follow-up damage.",
+          "Enemy burst or anti-heal reduces the value of the support window."
         ]
       }
     ]
   },
   {
     "anchorHeroId": "balmond",
-    "synergyHeroId": "selena",
+    "synergyHeroId": "estes",
     "reasons": [
-      "Selena's long-range Abyssal Arrow stuns and marks a target, letting Balmond instantly follow with Soul Lock and Cyclone Sweep for a guaranteed lockdown.",
-      "Her burst plus Balmond's AoE softens enemies into Lethal Counter execute range."
+      "Estes can keep Balmond healthy during sustained melee fights.",
+      "Balmond benefits when the team stays grouped and lets Estes maintain healing while he frontlines."
     ],
     "synergyTypes": [
-      "setup-combo",
-      "cc-chain",
-      "burst-follow-up"
+      "healing-sustain",
+      "frontline-enabler",
+      "teamfight-combo"
     ],
     "proof": [
       {
-        "id": "selena-abyssalarrow-with-balmond-burstpick",
-        "category": "setup-combo",
+        "id": "estes-healing-extends-balmond-frontline",
+        "category": "healing-sustain",
         "priority": "secondary",
-        "impact": "medium",
-        "summary": "Selena lands a long-range Abyssal Arrow stun that immobilizes a target, giving Balmond a free window to dash in with Soul Lock and spin with Cyclone Sweep; the combined burst leaves the target low enough for Lethal Counter's missing-HP true damage to execute.",
+        "impact": "high",
+        "summary": "Balmond wants to stay inside the fight, and Estes can extend that frontline presence with repeated healing.",
         "worksBestWhen": [
-          "Selena lands her arrow to start the chain.",
-          "Balmond is close enough to immediately follow the stun.",
-          "The target is a squishy carry that the burst can lower."
+          "Balmond stays inside Estes' healing range.",
+          "The fight lasts long enough for healing to matter.",
+          "Estes is protected from enemy dive."
         ],
         "failureCases": [
-          "Selena misses Abyssal Arrow.",
-          "The chain stun expires before Balmond reaches the target.",
-          "Enemy has purify or is too tanky to drop into execute range."
+          "Balmond chases outside healing range.",
+          "Anti-heal cuts down the sustain value.",
+          "Burst damage removes Estes or Balmond before the fight extends."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "balmond",
+    "synergyHeroId": "rafaela",
+    "reasons": [
+      "Rafaela gives Balmond movement speed and healing, helping him stay near targets during Cyclone Sweep.",
+      "Her support helps Balmond chase, reset position, or continue brawling after entry."
+    ],
+    "synergyTypes": [
+      "mobility-enable",
+      "healing-sustain",
+      "dive-support"
+    ],
+    "proof": [
+      {
+        "id": "rafaela-speed-heal-helps-balmond-stick",
+        "category": "mobility-enabler",
+        "priority": "secondary",
+        "impact": "medium",
+        "summary": "Balmond needs to keep contact with enemies, while Rafaela's speed and healing help him maintain pressure in skirmishes.",
+        "worksBestWhen": [
+          "Rafaela uses her speed boost as Balmond enters or chases.",
+          "Balmond commits to reachable targets.",
+          "The team uses the speed window to follow the fight."
+        ],
+        "failureCases": [
+          "Balmond is stopped by hard crowd control before reaching targets.",
+          "Enemies use repeated dashes or disengage.",
+          "Rafaela is forced away from Balmond's path."
         ]
       }
     ]

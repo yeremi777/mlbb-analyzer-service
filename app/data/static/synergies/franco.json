@@ -3,8 +3,8 @@
     "anchorHeroId": "franco",
     "synergyHeroId": "eudora",
     "reasons": [
-      "Eudora's Ball Lightning stun and Thunder's Wrath single-target lightning burst can fully delete the hooked, suppressed target inside the Bloody Hunt window before they can react.",
-      "Both are early-to-mid game pick-off specialists who roam and delete squishy backliners."
+      "Eudora can burst a target Franco has hooked or suppressed.",
+      "Franco's single-target control gives Eudora a stable window to land her magic combo."
     ],
     "synergyTypes": [
       "pickoff-combo",
@@ -13,20 +13,20 @@
     ],
     "proof": [
       {
-        "id": "eudora-thunders-wrath-with-franco-instant-delete",
+        "id": "eudora-burst-confirms-franco-catch",
         "category": "pickoff-combo",
         "priority": "primary",
         "impact": "high",
-        "summary": "Franco isolates a carry with Iron Hook and locks them with Bloody Hunt's unbreakable suppression; Eudora chains Ball Lightning, Thunder's Wrath, and Forked Lightning for heavy burst, deleting the immobilized target before they ever act.",
+        "summary": "Franco isolates one target with hook or suppression, and Eudora follows with single-target magic burst during the control window.",
         "worksBestWhen": [
-          "The hooked target is a squishy mage or marksman.",
-          "Eudora is in range and has ultimate up when Franco engages.",
-          "They coordinate focus fire on a single priority target."
+          "Franco catches a squishy mage or marksman.",
+          "Eudora is in range with full combo ready.",
+          "Both heroes focus the same target after the catch."
         ],
         "failureCases": [
-          "Target is a tank or has heavy HP or magic defense that survives the burst.",
-          "Eudora is caught out before Franco lands the hook.",
-          "Enemy frontline blocks the hook so the wrong target is pulled."
+          "Franco hooks a tank or bait target.",
+          "Eudora is out of range when the hook lands.",
+          "Enemy shield, magic defense, or peel keeps the target alive."
         ]
       }
     ]
@@ -35,30 +35,94 @@
     "anchorHeroId": "franco",
     "synergyHeroId": "saber",
     "reasons": [
-      "Saber's Triple Sweep is a single-target lockdown ult that follows up the pick perfectly, deleting the hooked enemy.",
-      "Both roam together in early-mid game to snowball pick-offs on enemy carries."
+      "Saber can follow Franco's hook or suppression with Triple Sweep burst.",
+      "Franco's catch creates the isolated target that Saber wants for a single-target pickoff."
     ],
     "synergyTypes": [
       "cc-chain",
       "pickoff-combo",
-      "setup-combo"
+      "burst-follow-up"
     ],
     "proof": [
       {
-        "id": "saber-triple-sweep-with-franco-followup-delete",
+        "id": "saber-triple-sweep-follows-franco-catch",
         "category": "crowd-control-chain",
         "priority": "primary",
         "impact": "high",
-        "summary": "Once Franco hooks and suppresses a high-value target, Saber's Charge closes the gap and Triple Sweep locks and bursts the same isolated enemy, guaranteeing the kill since the target cannot escape the chained CC.",
+        "summary": "Franco catches a priority target, and Saber chains airborne burst onto the same isolated enemy.",
         "worksBestWhen": [
-          "Targeting a fragile backline marksman or mage.",
-          "Saber is positioned to immediately follow the hook.",
-          "The rest of the enemy team is out of peel range."
+          "Franco catches a fragile backline target.",
+          "Saber is close enough to follow immediately.",
+          "The enemy team is not already positioned to peel."
         ],
         "failureCases": [
-          "The picked target has Purify or save items to break Saber's lockdown after suppression ends.",
-          "Saber jumps the wrong target during chaos.",
-          "Enemy peels collapse before Saber lands his ult."
+          "Franco misses or hooks a durable target.",
+          "Saber dives before the catch is confirmed.",
+          "Enemy peel interrupts Saber after the control window."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "franco",
+    "synergyHeroId": "karina",
+    "reasons": [
+      "Karina can enter after Franco isolates a target with hook or suppression.",
+      "Franco's pickoff window helps Karina finish a target and look for reset pressure."
+    ],
+    "synergyTypes": [
+      "pickoff-combo",
+      "burst-follow-up",
+      "dive-support"
+    ],
+    "proof": [
+      {
+        "id": "karina-burst-follows-franco-isolation",
+        "category": "pickoff-combo",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Franco creates the controlled target, while Karina follows with burst mobility to finish the pick.",
+        "worksBestWhen": [
+          "Franco catches a low-HP or fragile enemy.",
+          "Karina waits for the hook or suppression before entering.",
+          "Karina has cooldowns available to continue after the kill."
+        ],
+        "failureCases": [
+          "Franco pulls a tank into the team.",
+          "Karina enters into grouped enemy peel.",
+          "The target survives and Karina loses reset pressure."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "franco",
+    "synergyHeroId": "kadita",
+    "reasons": [
+      "Kadita can follow Franco's hook or suppression with delayed knock-up and burst.",
+      "Franco's control window helps Kadita time Breath of the Ocean and Rough Waves on the caught target."
+    ],
+    "synergyTypes": [
+      "pickoff-combo",
+      "setup-combo",
+      "burst-follow-up"
+    ],
+    "proof": [
+      {
+        "id": "kadita-burst-combo-follows-franco-catch",
+        "category": "pickoff-combo",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Franco isolates or suppresses a target, while Kadita uses the control window to connect her knock-up timing and burst combo.",
+        "worksBestWhen": [
+          "Franco catches a squishy or priority target.",
+          "Kadita is close enough to follow immediately.",
+          "Kadita times Breath of the Ocean during Franco's control window."
+        ],
+        "failureCases": [
+          "Franco hooks a tank or bait target.",
+          "Kadita is too far and the control window expires.",
+          "Enemy peel, cleanse, or saved mobility breaks the follow-up timing."
         ]
       }
     ]
@@ -67,8 +131,8 @@
     "anchorHeroId": "franco",
     "synergyHeroId": "vexana",
     "reasons": [
-      "Vexana's Cursed Blast and Deathly Grasp deliver heavy magic burst onto the suppressed target, confirming the kill.",
-      "Her Eternal Guard summon adds frontline pressure and zoning during the pick."
+      "Vexana can land magic burst on a target Franco has hooked or suppressed.",
+      "Franco's control gives Vexana time to place her follow-up damage and add zoning pressure."
     ],
     "synergyTypes": [
       "pickoff-combo",
@@ -77,84 +141,20 @@
     ],
     "proof": [
       {
-        "id": "vexana-cursed-blast-with-franco-burst-confirm",
+        "id": "vexana-burst-follows-franco-suppression",
         "category": "pickoff-combo",
         "priority": "primary",
         "impact": "high",
-        "summary": "Franco's hook plus Bloody Hunt holds a target perfectly still, letting Vexana land her Cursed Blast and Deathly Grasp combo for massive magic burst that deletes the trapped enemy, with her Nether Touch passive chaining curse damage into nearby teammates.",
+        "summary": "Franco holds a target in place, and Vexana follows with magic burst plus zoning pressure around the caught enemy.",
         "worksBestWhen": [
-          "Vexana has line of sight and skills off cooldown on the engage.",
-          "The suppressed target is clustered with other enemies for AoE value.",
-          "Franco hooks a squishy core."
+          "Franco catches a squishy target within Vexana's range.",
+          "Vexana has key cooldowns ready when the catch lands.",
+          "The target is near teammates for extra AoE or zoning value."
         ],
         "failureCases": [
-          "Vexana's skillshots miss the displaced target.",
-          "Target is too tanky to die within the suppression window.",
-          "Vexana is too far back to land the combo in time."
-        ]
-      }
-    ]
-  },
-  {
-    "anchorHeroId": "franco",
-    "synergyHeroId": "pharsa",
-    "reasons": [
-      "Pharsa's Feathered Air Strike bombards the locked target from safety, securing kills after the hook.",
-      "Wings By Wings mobility lets her rotate with Franco for fast coordinated ganks."
-    ],
-    "synergyTypes": [
-      "pickoff-combo",
-      "burst-follow-up",
-      "setup-combo"
-    ],
-    "proof": [
-      {
-        "id": "pharsa-feathered-air-strike-with-franco-zone-delete",
-        "category": "pickoff-combo",
-        "priority": "primary",
-        "impact": "high",
-        "summary": "Franco creates a stationary target with Iron Hook and Bloody Hunt; Pharsa channels Feathered Air Strike onto the exact spot, raining massive area damage that deletes the immobilized enemy from a safe backline distance.",
-        "worksBestWhen": [
-          "The target stays pinned in Pharsa's bombardment zone via suppression.",
-          "Pharsa is unthreatened while channeling.",
-          "They collapse on isolated rotations or ganks."
-        ],
-        "failureCases": [
-          "Enemy assassins dive Pharsa before she can channel.",
-          "Target is freed or peeled before the airstrike lands.",
-          "Pharsa is forced to relocate and loses her channel."
-        ]
-      }
-    ]
-  },
-  {
-    "anchorHeroId": "franco",
-    "synergyHeroId": "helcurt",
-    "reasons": [
-      "Helcurt's burst combo instantly finishes the suppressed target Franco isolates.",
-      "Dark Night Falls makes enemies nearsighted, sharply cutting their vision so Franco's surprise hooks are far easier to land."
-    ],
-    "synergyTypes": [
-      "vision-setup",
-      "pickoff-combo",
-      "setup-combo"
-    ],
-    "proof": [
-      {
-        "id": "helcurt-dark-night-with-franco-blind-pick",
-        "category": "vision-setup",
-        "priority": "secondary",
-        "impact": "medium",
-        "summary": "Helcurt's ultimate Dark Night Falls makes all enemies nearsighted, sharply reducing their sight range and cutting vision of their allies, letting Franco land unseen hooks; he then bursts the hooked, suppressed target down instantly before the enemy team can locate or respond.",
-        "worksBestWhen": [
-          "Helcurt activates his ult to cover Franco's flank engage.",
-          "The picked target is a fragile carry Helcurt can one-combo.",
-          "The duo strikes from fog or bushes."
-        ],
-        "failureCases": [
-          "Enemy has strong vision-independent peel.",
-          "Helcurt is itemized poorly and lacks one-shot burst.",
-          "The blind times out before the pick is executed."
+          "Vexana is too far to follow the hook.",
+          "The target is too durable for the burst window.",
+          "Enemy peel prevents Vexana from finishing the target."
         ]
       }
     ]

@@ -41,9 +41,9 @@ def test_analyze_synergy_score_unknown_anchor_error_shape() -> None:
 
 
 def test_analyze_synergy_score_anchor_without_data_error_shape() -> None:
-    # layla exists but has no curated synergy data.
+    # hayabusa exists but has no curated synergy data.
     with TestClient(app) as client:
-        response = client.post("/api/synergies/analyze-score", json={"anchorHeroId": "layla"})
+        response = client.post("/api/synergies/analyze-score", json={"anchorHeroId": "hayabusa"})
 
     assert response.status_code == 404
     assert response.json()["error"]["code"] == "synergy_data_not_found"

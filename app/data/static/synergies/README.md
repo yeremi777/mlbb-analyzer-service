@@ -18,7 +18,7 @@ synergies/
 
 Each `synergies/<anchorHeroId>.json` is an array of `SynergyMatchup` entries for that anchor hero.
 
-## Entry Shape (see docs/06 for the full contract)
+## Entry Shape (see docs/07 for the full contract)
 
 ```json
 {
@@ -41,19 +41,19 @@ Each `synergies/<anchorHeroId>.json` is an array of `SynergyMatchup` entries for
 ```
 
 - `anchorHeroId` / `synergyHeroId` must exist in `heroes.json`; they must differ; pairs are unique.
-- No `score`, no `proof.scoreHint`, no `patchVersion`.
+- No static runtime scoring fields.
 - `proof.category` must be one of the allowed **synergy** categories in `docs/07-synergy-proof-workflow.md`
   (distinct from the counter `ProofCategory` enum).
 - `priority` ∈ {`primary`, `secondary`, `condition`}; `impact` ∈ {`low`, `medium`, `high`}.
 
 ## Coverage
 
-Curated for the first 10 anchor heroes (file order): `miya`, `balmond`, `saber`, `alice`,
-`nana`, `tigreal`, `alucard`, `karina`, `akai`, `franco` — 5 synergies each, manually curated
-with public MLBB guides used only to verify mechanics.
+Curated for anchor hero IDs 1-20: `miya`, `balmond`, `saber`, `alice`, `nana`, `tigreal`,
+`alucard`, `karina`, `akai`, `franco`, `bane`, `bruno`, `clint`, `rafaela`, `eudora`,
+`zilong`, `fanny`, `layla`, `minotaur`, and `lolita` — 5 synergies each, manually curated
+with public references used only to verify mechanics.
 
-## Backend Wiring (follow-up, not yet implemented)
+## Backend Wiring
 
-Data shape is ready; the backend does not read it yet. A follow-up task should add a
-`SynergyProof` / `SynergyMatchup` schema (with the `docs/06` category enum, separate from the
-counter enum), loader + validation coverage, and a `GET /api/heroes/{id}/synergies` endpoint.
+The backend reads this data through the synergy loader, validation command, `GET /api/heroes/{id}/synergies`,
+and the AI synergy analyze endpoints.

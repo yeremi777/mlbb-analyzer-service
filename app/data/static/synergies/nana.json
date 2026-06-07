@@ -3,8 +3,8 @@
     "anchorHeroId": "nana",
     "synergyHeroId": "atlas",
     "reasons": [
-      "Atlas's Fatal Links pulls multiple enemies into one spot, letting Nana land all of Molina Blitz on the clumped group for maximum AoE damage and the stun.",
-      "Locked-down enemies cannot escape Molina Blitz's casting delay, turning a hard-to-land skill into a guaranteed teamfight wipe."
+      "Atlas can pull multiple enemies into one area, giving Nana a strong target for Molina Blitz.",
+      "Nana can layer slow, stun, and magic burst after Atlas starts the teamfight."
     ],
     "synergyTypes": [
       "teamfight-combo",
@@ -13,20 +13,20 @@
     ],
     "proof": [
       {
-        "id": "atlas-fatallinks-with-nana-grouped-aoe",
+        "id": "atlas-fatal-links-sets-nana-molina-blitz",
         "category": "teamfight-combo",
         "priority": "primary",
         "impact": "high",
-        "summary": "Atlas grabs and slams multiple enemies into one location with Fatal Links; the grouped, immobilized targets are the ideal canvas for Nana's Molina Blitz, which repeatedly strikes an area and stuns anyone hit, converting Atlas's engage into a full AoE burst.",
+        "summary": "Atlas groups enemies with hard engage, and Nana follows with AoE magic damage plus crowd-control layering.",
         "worksBestWhen": [
-          "Enemies are clumped in the teamfight before Atlas commits.",
-          "Nana is positioned in range to drop Molina Blitz immediately after the slam.",
-          "Team has follow-up damage to finish the stunned group."
+          "Atlas catches multiple enemies.",
+          "Nana is in range to cast after the pull.",
+          "The team has damage ready during the follow-up control."
         ],
         "failureCases": [
-          "Enemy uses Purify or Diggie ult to negate the Fatal Links pull.",
-          "Atlas engages alone and dies before Nana can follow.",
-          "Enemies are spread out so only one is caught."
+          "Atlas engages before Nana is in range.",
+          "Enemies cleanse or disengage after the pull.",
+          "Nana is caught before she can cast."
         ]
       }
     ]
@@ -35,8 +35,8 @@
     "anchorHeroId": "nana",
     "synergyHeroId": "tigreal",
     "reasons": [
-      "Tigreal's Implosion ultimate sucks enemies into the center and stuns them, bunching them perfectly for Nana's Molina Blitz AoE.",
-      "The combined hard CC window gives Nana time to land her full slow-and-stun combo on multiple targets."
+      "Tigreal can pull and stun enemies, giving Nana a stable area for Molina Blitz follow-up.",
+      "Nana adds secondary control after Tigreal's engage to extend the punishment window."
     ],
     "synergyTypes": [
       "cc-chain",
@@ -45,20 +45,20 @@
     ],
     "proof": [
       {
-        "id": "tigreal-implosion-with-nana-cc-chain",
+        "id": "tigreal-implosion-sets-nana-cc-followup",
         "category": "crowd-control-chain",
         "priority": "primary",
         "impact": "high",
-        "summary": "Tigreal's Implosion pulls enemies together and stuns them; Nana immediately layers Molina Blitz over the stunned cluster, chaining CC so the group is locked from Tigreal's stun straight into Molina's slow and continuous-hit stun.",
+        "summary": "Tigreal starts the grouped crowd-control window, and Nana layers Molina Blitz plus Molina Smooch pressure into the same area.",
         "worksBestWhen": [
-          "Tigreal lands his ult on two or more enemies.",
-          "Nana stays backline-safe but in skill range.",
-          "Frontline can peel for Nana after she commits her combo."
+          "Tigreal catches two or more enemies.",
+          "Nana waits for Tigreal's control before casting ultimate.",
+          "Nana stays backline-safe while following up."
         ],
         "failureCases": [
-          "Tigreal's ult is dodged or flickered away from.",
-          "Enemy purifies the stun.",
-          "Nana is caught and bursted before casting."
+          "Tigreal's engage misses or is interrupted.",
+          "Enemies spread before Nana's follow-up lands.",
+          "Enemy cleanse or anti-CC reduces the chain value."
         ]
       }
     ]
@@ -67,8 +67,8 @@
     "anchorHeroId": "nana",
     "synergyHeroId": "franco",
     "reasons": [
-      "Franco can Iron Hook a target Nana has slowed or transformed, then suppress them with Bloody Hunt so they have zero escape.",
-      "Nana's Molina Smooch slow makes Franco's notoriously hard-to-land hook far more reliable."
+      "Franco can pull a target that Nana has slowed or transformed.",
+      "Nana can prepare Molina around Franco's catch zone to extend the pickoff chain."
     ],
     "synergyTypes": [
       "pickoff-combo",
@@ -77,20 +77,20 @@
     ],
     "proof": [
       {
-        "id": "franco-hook-with-nana-pickoff",
+        "id": "franco-hook-converts-nana-molina-control",
         "category": "pickoff-combo",
         "priority": "primary",
         "impact": "high",
-        "summary": "Nana's Molina Smooch slows and transforms a target, dramatically improving Franco's chance to land Iron Hook; he then drags the target into the team and locks it with Bloody Hunt suppression, creating an inescapable pick-off chain on the enemy carry.",
+        "summary": "Nana limits a target's movement with Molina, and Franco converts that control into a hook or suppression pickoff.",
         "worksBestWhen": [
-          "Focusing an isolated squishy backliner.",
-          "Nana lands the slow or transform first to set up the hook.",
-          "Team can collapse on the hooked target."
+          "Nana places Molina near the target's movement path.",
+          "Franco waits for the slow or transform before hooking.",
+          "The team collapses on the pulled target."
         ],
         "failureCases": [
-          "Target uses Purify to escape Nana's slow or transform before the hook lands (Bloody Hunt suppression itself cannot be purified).",
-          "Hook is body-blocked by a tank.",
-          "Franco hooks a tank instead of the priority carry."
+          "Hook is blocked by a tank.",
+          "Molina hits a low-value target.",
+          "Franco pulls the target away from Nana's follow-up damage."
         ]
       }
     ]
@@ -99,8 +99,8 @@
     "anchorHeroId": "nana",
     "synergyHeroId": "saber",
     "reasons": [
-      "Saber's Triple Sweep lifts and locks a single target; opening with Nana's transform or slow guarantees he reaches and bursts the trapped carry.",
-      "The transformed, helpless target cannot react during Saber's dive, securing a clean pick-off."
+      "Saber can burst a target that Nana has transformed or slowed.",
+      "Nana's control gives Saber a clearer single-target entry window."
     ],
     "synergyTypes": [
       "setup-combo",
@@ -109,20 +109,20 @@
     ],
     "proof": [
       {
-        "id": "saber-triplesweep-with-nana-burst",
+        "id": "saber-triple-sweep-follows-nana-control",
         "category": "setup-combo",
         "priority": "secondary",
         "impact": "high",
-        "summary": "Nana transforms a priority target into a harmless cat or slows it with Molina Smooch, removing its ability to fight back; Saber then dives with Charge into Triple Sweep to knock the carry airborne and delete it during the lift before it can escape or retaliate.",
+        "summary": "Nana sets the target with movement control, and Saber follows with Triple Sweep to finish the pick.",
         "worksBestWhen": [
-          "Targeting a single squishy carry.",
-          "Nana lands transform or slow before Saber commits.",
-          "Saber has flank position to reach the backline."
+          "Nana's control lands on a fragile priority target.",
+          "Saber has burst cooldowns ready.",
+          "Saber waits for the setup before entering."
         ],
         "failureCases": [
-          "Target purifies Saber's lift.",
-          "Enemy frontline peels Saber off.",
-          "Saber is caught out before Nana sets up."
+          "Nana controls a tank or low-value target.",
+          "Saber enters after the control ends.",
+          "Enemy peel reaches Saber during the dive."
         ]
       }
     ]
@@ -131,8 +131,8 @@
     "anchorHeroId": "nana",
     "synergyHeroId": "gusion",
     "reasons": [
-      "Gusion's dagger-and-dash burst lands cleanly on a target slowed or transformed by Nana, and Molina Smooch's magic defense reduction amplifies his magic burst.",
-      "The combined CC plus magic-resist reduction lets Gusion delete squishies he might otherwise miss."
+      "Nana's Molina Smooch can reduce the target's magic defense, supporting Gusion's magic burst follow-up.",
+      "The slow or transform effect can make Gusion's dagger combo easier to connect."
     ],
     "synergyTypes": [
       "damage-amplification",
@@ -141,19 +141,19 @@
     ],
     "proof": [
       {
-        "id": "gusion-daggers-with-nana-magicshred",
+        "id": "gusion-magic-burst-follows-nana-molina",
         "category": "damage-amplification",
         "priority": "secondary",
         "impact": "high",
-        "summary": "Nana's Molina Smooch slows and reduces the target's magic defense, making it both easier for Gusion to land his Sword Spike and Shadowblade Slaughter combo and far more lethal, since the magic-resist reduction stacks with his already high magic burst to delete the carry.",
+        "summary": "Nana weakens and controls the target with Molina Smooch, while Gusion follows with magic burst during the setup window.",
         "worksBestWhen": [
-          "Nana lands Molina Smooch on the priority target first.",
-          "Gusion has the cooldowns ready to dive immediately.",
-          "Target is a squishy mage or marksman."
+          "Nana lands Molina Smooch on the priority target.",
+          "Gusion has full combo cooldowns ready.",
+          "The target is fragile enough for burst conversion."
         ],
         "failureCases": [
-          "Target purifies or flickers out of the slow.",
-          "Gusion mistimes daggers and the slow expires.",
+          "Gusion misses key dagger damage.",
+          "The target cleanses or escapes before the combo connects.",
           "Enemy frontline shields or peels the target."
         ]
       }

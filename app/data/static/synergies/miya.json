@@ -3,8 +3,8 @@
     "anchorHeroId": "miya",
     "synergyHeroId": "estes",
     "reasons": [
-      "Estes provides constant chain-healing and a powerful AoE ult lock-on, letting Miya stay in fights far longer and out-sustain trades.",
-      "His passive movement speed bonus on healed allies helps Miya reposition while kiting."
+      "Estes can keep Miya healthy during extended front-to-back fights, giving her more time to convert attack-speed scaling into damage.",
+      "Miya benefits when Estes stays near the backline and supports her repeated basic-attack uptime."
     ],
     "synergyTypes": [
       "healing-sustain",
@@ -13,20 +13,20 @@
     ],
     "proof": [
       {
-        "id": "estes-chainheal-with-miya-sustain",
+        "id": "estes-healing-sustain-for-miya-backline-dps",
         "category": "healing-sustain",
         "priority": "primary",
         "impact": "high",
-        "summary": "Estes' Moonlight Immersion healing link and Blessing of the Moon Goddess ultimate pour continuous, high-volume healing onto Miya, so her low base survivability is offset and she can hold her ground attacking from the backline through extended team fights.",
+        "summary": "Miya wants long attack uptime from a safe backline position, while Estes extends that window with repeated healing during grouped fights.",
         "worksBestWhen": [
-          "Miya is positioned behind the frontline within Estes' healing range.",
-          "The team fights as a grouped front-to-back unit.",
-          "Miya has reached her core item spike so the sustained DPS pays off."
+          "Miya stays behind the frontline within Estes' healing range.",
+          "The team plays grouped objective or front-to-back fights.",
+          "Miya has enough items to reward the sustained fight window."
         ],
         "failureCases": [
-          "Enemy assassins burst Miya faster than heals tick.",
-          "Anti-heal items reduce Estes' output.",
-          "Estes gets caught out and dies, removing all sustain."
+          "Enemy burst kills Miya before healing stabilizes her.",
+          "Anti-heal reduces Estes' sustain value.",
+          "Miya positions too far from Estes during the fight."
         ]
       }
     ]
@@ -35,30 +35,30 @@
     "anchorHeroId": "miya",
     "synergyHeroId": "angela",
     "reasons": [
-      "Angela's Heartguard ultimate globally attaches to Miya, granting a large shield, healing, and movement speed regardless of map position.",
-      "Her Love Waves slow and her Smart Heart passive speed buff let Miya free-hit safely."
+      "Angela can attach to Miya with Heartguard and add a shield during the enemy dive window.",
+      "Miya can keep attacking while Angela supports her from the attached position."
     ],
     "synergyTypes": [
       "shielding",
-      "backline-protection",
-      "peel"
+      "protect",
+      "backline-protection"
     ],
     "proof": [
       {
-        "id": "angela-heartguard-with-miya-shield",
+        "id": "angela-heartguard-protects-miya-damage-window",
         "category": "protection",
         "priority": "primary",
         "impact": "high",
-        "summary": "Angela's ultimate Heartguard lets her possess Miya from anywhere on the map, layering a shield, heal-over-time, and protection while Miya keeps attacking, turning a fragile hyper-carry into a near-unkillable damage anchor during the possession window.",
+        "summary": "Miya is fragile during late-game damage uptime, and Angela's Heartguard can shield and support her through a focused engage.",
         "worksBestWhen": [
-          "Miya is the team's primary damage dealer worth saving the ult for.",
-          "Angela can stay alive at range to channel the global ult.",
-          "The enemy commits a dive that the shield absorbs."
+          "Angela saves Heartguard for the real dive or teamfight.",
+          "Miya is the main damage source worth protecting.",
+          "Miya continues spacing behind the frontline while shielded."
         ],
         "failureCases": [
-          "Heartguard is on cooldown when the dive lands.",
-          "Angela is killed before casting the ult.",
-          "Heavy burst overwhelms the shield instantly."
+          "Heartguard is on cooldown when the dive starts.",
+          "Enemy burst breaks through the shield quickly.",
+          "Miya is isolated beyond team peel after the shield ends."
         ]
       }
     ]
@@ -67,8 +67,8 @@
     "anchorHeroId": "miya",
     "synergyHeroId": "mathilda",
     "reasons": [
-      "Mathilda's Guiding Wind grants Miya a shield and a linked dash, directly covering Miya's lack of mobility and escape.",
-      "Her ult and CC let her engage or peel divers off Miya."
+      "Mathilda gives Miya shield value and a repositioning option through Guiding Wind.",
+      "Miya can use the added mobility to kite away from divers or follow safe cleanup opportunities."
     ],
     "synergyTypes": [
       "mobility-enable",
@@ -77,52 +77,20 @@
     ],
     "proof": [
       {
-        "id": "mathilda-guidingwind-with-miya-mobility",
+        "id": "mathilda-guiding-wind-enables-miya-reposition",
         "category": "mobility-enabler",
         "priority": "primary",
         "impact": "high",
-        "summary": "Mathilda's Guiding Wind attaches to Miya, giving her a shield and the ability to dash alongside Mathilda, compensating for Miya's single biggest weakness (no blink or dash) so she can reposition out of danger or chase down kills she otherwise couldn't.",
+        "summary": "Miya lacks a normal dash, while Mathilda can provide shield and movement support that helps Miya reposition during fights.",
         "worksBestWhen": [
-          "Miya needs to escape a dive or reposition in a fight.",
-          "Mathilda stays near Miya to keep the link available.",
-          "The team plays a mobile, skirmish-heavy tempo."
+          "Mathilda stays close enough for Miya to use the mobility link.",
+          "Miya saves the reposition for enemy engage or cleanup.",
+          "The team plays around Miya as the protected backline carry."
         ],
         "failureCases": [
-          "Mathilda dashes away from Miya leaving the link out of range.",
-          "Guiding Wind is on cooldown during the engage.",
-          "Miya is rooted or suppressed so the dash can't trigger."
-        ]
-      }
-    ]
-  },
-  {
-    "anchorHeroId": "miya",
-    "synergyHeroId": "franco",
-    "reasons": [
-      "Franco's Iron Hook pulls an enemy directly into Miya's attack range, and Bloody Hunt suppresses them so she can free-hit.",
-      "His durability zones assassins away from Miya."
-    ],
-    "synergyTypes": [
-      "pickoff-combo",
-      "cc-chain",
-      "setup-combo"
-    ],
-    "proof": [
-      {
-        "id": "franco-hook-with-miya-pickoff",
-        "category": "pickoff-combo",
-        "priority": "secondary",
-        "impact": "high",
-        "summary": "Franco's Iron Hook yanks an isolated enemy into the team, and his Bloody Hunt ultimate locks them in suppression long enough for Miya to dump her full attack-speed DPS into a target that cannot move or fight back, converting a single pick into a guaranteed kill.",
-        "worksBestWhen": [
-          "Franco lands the hook on a high-value squishy target.",
-          "Miya is in position to immediately follow up the suppression.",
-          "The rest of the enemy team is out of range to retaliate."
-        ],
-        "failureCases": [
-          "Franco whiffs the hook.",
-          "The hooked target has CC immunity.",
-          "Miya is too far away to capitalize before the suppression ends."
+          "Guiding Wind is unavailable during the enemy engage.",
+          "Miya is rooted, suppressed, or burst before she can reposition.",
+          "Mathilda moves away from Miya before the link can be used."
         ]
       }
     ]
@@ -131,30 +99,62 @@
     "anchorHeroId": "miya",
     "synergyHeroId": "tigreal",
     "reasons": [
-      "Tigreal's Implosion ultimate group-stuns multiple enemies, giving Miya a window of free, uninterrupted damage on a clustered team.",
-      "His frontline body, plus the knock-up from Sacred Hammer's second cast, shield Miya from divers."
+      "Tigreal can start fights and keep enemies controlled while Miya attacks from the backline.",
+      "Grouped enemies increase the value of Miya's repeated basic attacks and teamfight damage window."
     ],
     "synergyTypes": [
       "engage-follow-up",
-      "cc-chain",
+      "frontline-enabler",
       "teamfight-combo"
     ],
     "proof": [
       {
-        "id": "tigreal-implosion-with-miya-teamfight",
+        "id": "tigreal-engage-creates-miya-backline-dps-window",
         "category": "engage-follow-up",
         "priority": "secondary",
         "impact": "high",
-        "summary": "Tigreal engages with Sacred Hammer into Implosion, dragging and stunning the enemy team into a tight cluster; Miya follows up with Moon Arrow's extra arrows and Arrow of Eclipse to spread damage across multiple immobilized targets, turning his initiation into a team wipe.",
+        "summary": "Tigreal creates a grouped crowd-control opening, and Miya follows from safe range with sustained basic-attack damage.",
         "worksBestWhen": [
-          "Tigreal catches multiple enemies in the ult radius.",
-          "Miya hangs back ready to follow up immediately after the stun lands.",
-          "The team groups for an objective fight where the AoE pays off."
+          "Tigreal engages within Miya's follow-up range.",
+          "Miya waits behind the frontline before attacking.",
+          "The team is ready to protect Miya after Tigreal commits."
         ],
         "failureCases": [
-          "Tigreal flickers in and dies before Miya can follow up.",
-          "Enemies are spread out so Implosion only grabs one.",
-          "Miya gets focused by a diver who ignores the frontline."
+          "Tigreal engages too far from Miya.",
+          "Enemy assassins bypass the frontline and reach Miya.",
+          "Enemies spread before Tigreal creates a grouped target."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "miya",
+    "synergyHeroId": "diggie",
+    "reasons": [
+      "Diggie can protect Miya from crowd-control chains that would stop her attack uptime.",
+      "Time Journey supports Miya during major teamfights by giving nearby protection during the enemy engage window."
+    ],
+    "synergyTypes": [
+      "protect",
+      "shielding",
+      "teamfight-combo"
+    ],
+    "proof": [
+      {
+        "id": "diggie-time-journey-protects-miya-dps-uptime",
+        "category": "protection",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Miya needs uninterrupted attack uptime, while Diggie can protect nearby teammates during a crowd-control engage with Time Journey.",
+        "worksBestWhen": [
+          "Diggie stays close enough to cover Miya.",
+          "Diggie saves Time Journey for the enemy's real engage.",
+          "Miya keeps attacking after the protection window starts."
+        ],
+        "failureCases": [
+          "Diggie uses Time Journey before the main engage.",
+          "Miya is caught outside Diggie's protection range.",
+          "Enemy waits out the protection window before committing damage."
         ]
       }
     ]

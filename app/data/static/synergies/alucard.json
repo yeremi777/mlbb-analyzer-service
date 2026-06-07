@@ -3,8 +3,8 @@
     "anchorHeroId": "alucard",
     "synergyHeroId": "akai",
     "reasons": [
-      "Akai's Headbutt knock-up and Heavy Spin ultimate displace and disrupt enemies, and a wall-pin during Heavy Spin holds a target still so Alucard can free-hit with Whirling Smash and Pursuit dashes.",
-      "His tankiness soaks enemy CC and frontline damage, opening the dive window Alucard needs before his lifesteal engine starts."
+      "Akai can disrupt and pin enemies, giving Alucard a stable melee target to attack.",
+      "Akai's frontline engage can absorb the first layer of crowd control before Alucard enters."
     ],
     "synergyTypes": [
       "engage-follow-up",
@@ -13,20 +13,20 @@
     ],
     "proof": [
       {
-        "id": "akai-spin-with-alucard-lockdown",
+        "id": "akai-heavy-spin-sets-alucard-melee-window",
         "category": "engage-follow-up",
         "priority": "primary",
         "impact": "high",
-        "summary": "Akai initiates with his Heavy Spin ultimate, shoving a key target against terrain in a wall-pin that briefly stuns on collision and holds them through the spin; Alucard dives the held target and chains skills into passive gap-close attacks without being kited, while Akai absorbs the enemy lockdown that would otherwise pin Alucard.",
+        "summary": "Akai starts the displacement and zoning, while Alucard follows onto controlled targets to maintain melee damage and sustain.",
         "worksBestWhen": [
-          "Akai engages first and spends enemy CC before Alucard enters.",
-          "The target gets cornered against a wall.",
-          "Alucard activates Fission Wave on entry for the lifesteal and cooldown boost."
+          "Akai engages first and creates a target window.",
+          "Alucard waits until the enemy is disrupted before diving.",
+          "The fight happens near terrain or a narrow area."
         ],
         "failureCases": [
-          "Enemy has multiple dashes or blinks to escape the spin.",
-          "Alucard dives before Akai locks the target and eats the CC himself.",
-          "Heavy anti-heal shuts down his sustain mid-fight."
+          "Alucard dives before Akai controls the target.",
+          "Enemy anti-heal reduces Alucard's sustain.",
+          "Akai pushes the target out of Alucard's follow-up path."
         ]
       }
     ]
@@ -35,8 +35,8 @@
     "anchorHeroId": "alucard",
     "synergyHeroId": "kaja",
     "reasons": [
-      "Kaja's Divine Judgment is an uncancellable suppression that drags a backline target into the team, handing Alucard a stationary, escape-proof target to burst.",
-      "Suppression bypasses Purify and immunity, so the locked carry cannot dash away from Alucard's Pursuit."
+      "Kaja can suppress and drag a priority target into Alucard's melee range.",
+      "Alucard benefits from the controlled target because his damage and sustain require continued contact."
     ],
     "synergyTypes": [
       "pickoff-combo",
@@ -45,20 +45,20 @@
     ],
     "proof": [
       {
-        "id": "kaja-suppression-with-alucard-pickoff",
+        "id": "kaja-divine-judgment-sets-alucard-pickoff",
         "category": "pickoff-combo",
         "priority": "primary",
         "impact": "high",
-        "summary": "Kaja flies in and suppresses a priority carry, dragging them back toward his team where they are stuck and unable to act; Alucard, who lacks reliable CC and is normally kited, gets a guaranteed stationary target to delete with Whirling Smash and Fission Wave before the suppression ends.",
+        "summary": "Kaja creates a single-target lockdown, and Alucard follows with melee burst and sustain during the control window.",
         "worksBestWhen": [
-          "Kaja catches an isolated squishy backliner.",
-          "Alucard is in range to follow up immediately on the dragged target.",
-          "The team converges on the suppressed target."
+          "Kaja catches a fragile or isolated target.",
+          "Alucard is in range to follow the drag.",
+          "The team collapses on the same target."
         ],
         "failureCases": [
-          "Kaja gets caught and bursted before reaching the carry.",
-          "Enemy frontline peels Alucard off the suppressed target.",
-          "Diggie CC immunity is active when Kaja casts."
+          "Kaja is burst before completing the catch.",
+          "Alucard is peeled away from the target.",
+          "The target survives long enough for backup to arrive."
         ]
       }
     ]
@@ -67,8 +67,8 @@
     "anchorHeroId": "alucard",
     "synergyHeroId": "grock",
     "reasons": [
-      "Grock's Wild Charge and ult disrupt enemy formation, and his Guardian's Barrier wall blocks escape routes so the target cannot flee Alucard's lock-on.",
-      "His durable frontline tanks engage and CC, creating the safe dive lane Alucard needs."
+      "Grock can create terrain pressure and block retreat paths, helping Alucard keep targets in melee range.",
+      "Grock's durable frontline gives Alucard a safer angle to enter after the fight begins."
     ],
     "synergyTypes": [
       "setup-combo",
@@ -77,20 +77,20 @@
     ],
     "proof": [
       {
-        "id": "grock-wall-with-alucard-trap",
+        "id": "grock-wall-helps-alucard-stick-to-targets",
         "category": "setup-combo",
         "priority": "secondary",
         "impact": "high",
-        "summary": "Grock charges in to scatter and stun the enemy, then drops Guardian's Barrier to wall off retreat paths; trapped targets cannot reposition out of Alucard's Pursuit range, letting his lifesteal-fueled melee combo run uninterrupted while Grock soaks the frontline.",
+        "summary": "Grock disrupts positioning and limits escape routes, while Alucard uses the trapped space to continue melee pressure.",
         "worksBestWhen": [
-          "Grock walls behind the target to cut escape.",
-          "Grock engages first to spend enemy CC.",
-          "Fights occur in tight terrain where the wall is most effective."
+          "Grock places the wall behind or beside the target's escape path.",
+          "Alucard follows after Grock spends enemy attention.",
+          "The fight occurs in tight terrain where the wall has value."
         ],
         "failureCases": [
-          "Enemy has dashes or blinks over or around the wall.",
-          "Grock is out of position so the wall lands uselessly.",
-          "Alucard is focused by burst before sustain kicks in."
+          "The enemy dashes around the wall.",
+          "Grock places the wall away from the target path.",
+          "Alucard is bursted before sustain can start."
         ]
       }
     ]
@@ -99,8 +99,8 @@
     "anchorHeroId": "alucard",
     "synergyHeroId": "angela",
     "reasons": [
-      "Angela's Heartguard ult shield and her Smart Heart movement-speed passive let her keep Alucard topped up and protected while he dives deep into the backline.",
-      "The shield and movement-speed boost cover Alucard's lack of an escape, extending his time inside the fight."
+      "Angela can attach to Alucard and shield him during his melee dive.",
+      "Alucard can use the added protection to keep attacking and trigger his sustain pattern."
     ],
     "synergyTypes": [
       "shielding",
@@ -109,52 +109,52 @@
     ],
     "proof": [
       {
-        "id": "angela-shield-with-alucard-sustain",
+        "id": "angela-heartguard-supports-alucard-dive-sustain",
         "category": "shielding",
         "priority": "secondary",
         "impact": "medium",
-        "summary": "Angela attaches a shield and movement-speed boost to Alucard and can ult into him for global protection, stacking on top of his innate lifesteal so he survives the focus fire that normally punishes his no-escape dives, keeping his attack uptime high so his sustain engine keeps running.",
+        "summary": "Alucard commits into melee range, and Angela's Heartguard can protect him during the focus-fire window.",
         "worksBestWhen": [
-          "Angela times the shield as Alucard enters the fight.",
-          "Alucard commits to a sustained brawl rather than a quick poke.",
-          "Angela stays in shield range of the diving Alucard."
+          "Angela casts Heartguard as Alucard enters.",
+          "Alucard chooses a fight where he can keep attacking.",
+          "The team follows while Alucard draws pressure."
         ],
         "failureCases": [
-          "Enemy applies heavy anti-heal that negates both shield value and his lifesteal.",
-          "Alucard dives so deep Angela cannot reach him.",
-          "Burst combo kills Alucard faster than the shield absorbs."
+          "Anti-heal reduces Alucard's sustain.",
+          "Enemy burst breaks through the shield quickly.",
+          "Alucard dives beyond follow-up support."
         ]
       }
     ]
   },
   {
     "anchorHeroId": "alucard",
-    "synergyHeroId": "selena",
+    "synergyHeroId": "mathilda",
     "reasons": [
-      "Selena's Abyssal Arrow stuns a target from long range, setting up a clean pick that Alucard can dive in and finish.",
-      "Her Abyssal Trap vision warns Alucard of ambushes, protecting his squishy dive approach."
+      "Mathilda can give Alucard extra mobility and shielding before he commits.",
+      "Alucard can use Guiding Wind support to reach targets or reset his position during skirmishes."
     ],
     "synergyTypes": [
-      "vision-setup",
-      "setup-combo",
-      "pickoff-combo"
+      "mobility-enable",
+      "shielding",
+      "dive-support"
     ],
     "proof": [
       {
-        "id": "selena-arrow-with-alucard-pick",
-        "category": "vision-setup",
+        "id": "mathilda-guiding-wind-enables-alucard-entry",
+        "category": "mobility-enabler",
         "priority": "secondary",
         "impact": "medium",
-        "summary": "Selena lands a long-range Abyssal Arrow stun whose duration scales with distance, locking a target in place; Alucard converts that lockdown into a free dive-and-burst with his passive gap-closer, and her traps give the map vision that keeps his fragile approach safe from counter-ambush.",
+        "summary": "Mathilda supports Alucard's entry with mobility and shield value, helping him reach a target without starting the dive alone.",
         "worksBestWhen": [
-          "Selena hits a full-charge long-range arrow for max stun.",
-          "Alucard is positioned to follow up before the stun expires.",
-          "Trap vision reveals the target's location ahead of the engage."
+          "Mathilda prepares Guiding Wind before Alucard commits.",
+          "Alucard uses the mobility to reach a killable target.",
+          "The team plays a skirmish tempo around Alucard's entry."
         ],
         "failureCases": [
-          "Selena misses the skillshot arrow.",
-          "The stunned target is too far for Alucard to reach in time.",
-          "Enemy peels or cleanses before Alucard arrives."
+          "Alucard enters before Mathilda is nearby.",
+          "Enemy saves hard CC for Alucard's landing point.",
+          "The mobility path pulls Alucard into an isolated fight."
         ]
       }
     ]

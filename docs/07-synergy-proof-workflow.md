@@ -9,8 +9,6 @@ Synergy data is similar to counter data, but the relationship is different:
 - Counter data explains how one hero stops, punishes, or denies another hero.
 - Synergy data explains how one hero enables, protects, follows up, amplifies, or completes another hero's game plan.
 
-Do not include `patchVersion` in synergy records.
-
 ---
 
 ## Main Goal
@@ -380,8 +378,6 @@ Do not include comments.
 
 Do not include numeric scores.
 
-Do not include `patchVersion`.
-
 ---
 
 ## Suggested TypeScript Types
@@ -502,7 +498,6 @@ When generating JSON:
 
 - Output valid JSON only.
 - Use `SynergyMatchup[]`.
-- Do not include `patchVersion`.
 - Do not include numeric scores.
 - Do not include comments.
 - Do not include Markdown.

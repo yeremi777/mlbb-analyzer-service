@@ -1,42 +1,10 @@
 [
   {
     "anchorHeroId": "karina",
-    "synergyHeroId": "atlas",
-    "reasons": [
-      "Fatal Links groups multiple enemies into one clump, letting Karina land Dance of Death AoE and chain ultimate resets through the fight.",
-      "His pull-and-stun engage gives a guaranteed window for her dive."
-    ],
-    "synergyTypes": [
-      "engage-follow-up",
-      "cc-chain",
-      "teamfight-combo"
-    ],
-    "proof": [
-      {
-        "id": "atlas-fatallinks-with-karina-clump",
-        "category": "engage-follow-up",
-        "priority": "primary",
-        "impact": "high",
-        "summary": "Atlas's Fatal Links chains and drags multiple enemies together, then slams them down and stuns them; the tightly clumped, stunned cluster is the ideal target for Karina's AoE Dance of Death and lets each kill reset her Shadow Assault ultimate so she carves through the whole group.",
-        "worksBestWhen": [
-          "Atlas lands his ultimate on two or more enemies.",
-          "Karina uses Hero Lock Mode to focus the clumped target.",
-          "She follows immediately after the knock-up."
-        ],
-        "failureCases": [
-          "Atlas whiffs or hits only one isolated target.",
-          "Enemies have purify or anti-CC to break the link.",
-          "Karina engages before the lock lands and gets focused."
-        ]
-      }
-    ]
-  },
-  {
-    "anchorHeroId": "karina",
     "synergyHeroId": "franco",
     "reasons": [
-      "Iron Hook isolates and yanks a single high-value target out of position for a guaranteed pick.",
-      "Bloody Hunt suppression holds the target completely still so Karina's burst and ult reset are guaranteed."
+      "Franco can isolate a target with hook or suppression, giving Karina a clear burst target.",
+      "Karina can enter after Franco's catch to finish the target and look for reset pressure."
     ],
     "synergyTypes": [
       "pickoff-combo",
@@ -45,20 +13,52 @@
     ],
     "proof": [
       {
-        "id": "franco-hook-with-karina-pickoff",
+        "id": "franco-hook-sets-karina-pickoff-reset-window",
         "category": "pickoff-combo",
         "priority": "primary",
         "impact": "high",
-        "summary": "Franco hooks a carry into the team and suppresses with Bloody Hunt, removing all control from the target; Karina dives the locked target, bursts it to death, and the kill resets Shadow Assault, turning a single pick into a snowballing reset chain.",
+        "summary": "Franco creates a controlled single-target pick, and Karina follows with burst mobility to finish the isolated enemy.",
         "worksBestWhen": [
-          "Picking off an isolated backline carry.",
-          "Ambushing from fog with bush vision.",
-          "Karina is in range to follow the hook instantly."
+          "Franco catches a squishy or weakened target.",
+          "Karina waits until the catch is confirmed.",
+          "Karina has cooldowns ready to continue after the kill."
         ],
         "failureCases": [
-          "Franco misses the hook.",
-          "Target has purify or a save from a teammate.",
-          "Enemy groups tightly so the hook pulls into peel."
+          "Franco misses or hooks a tank.",
+          "Karina enters before the target is controlled.",
+          "Enemy peel reaches Karina during the burst window."
+        ]
+      }
+    ]
+  },
+  {
+    "anchorHeroId": "karina",
+    "synergyHeroId": "atlas",
+    "reasons": [
+      "Atlas can group enemies and create a multi-target entry window for Karina.",
+      "Karina benefits when Atlas lowers enemy movement options before she dives."
+    ],
+    "synergyTypes": [
+      "engage-follow-up",
+      "cc-chain",
+      "teamfight-combo"
+    ],
+    "proof": [
+      {
+        "id": "atlas-fatal-links-sets-karina-teamfight-entry",
+        "category": "engage-follow-up",
+        "priority": "primary",
+        "impact": "high",
+        "summary": "Atlas pulls enemies together, and Karina follows into the controlled area to burst weakened targets and continue reset pressure.",
+        "worksBestWhen": [
+          "Atlas catches multiple enemies.",
+          "Karina enters after the control lands.",
+          "The team lowers enemy HP during the grouped window."
+        ],
+        "failureCases": [
+          "Atlas catches only one durable target.",
+          "Karina enters before the engage connects.",
+          "Enemies survive the burst and collapse on Karina."
         ]
       }
     ]
@@ -67,8 +67,8 @@
     "anchorHeroId": "karina",
     "synergyHeroId": "tigreal",
     "reasons": [
-      "Implosion plus Sacred Hammer pulls and stuns multiple enemies into a tight, locked clump.",
-      "His frontline tankiness and peel let Karina dive deep and reset safely without being focused."
+      "Tigreal can group and stun enemies, giving Karina a safer moment to enter after the fight starts.",
+      "Karina can follow Tigreal's engage to finish weakened targets instead of opening the fight alone."
     ],
     "synergyTypes": [
       "cc-chain",
@@ -77,20 +77,20 @@
     ],
     "proof": [
       {
-        "id": "tigreal-implosion-with-karina-clump",
+        "id": "tigreal-implosion-opens-karina-cleanup-window",
         "category": "crowd-control-chain",
         "priority": "primary",
         "impact": "high",
-        "summary": "Tigreal's Sacred Hammer charge plus Implosion drags and stuns several enemies into one spot; the grouped, stunned cluster lets Karina apply Dance of Death across multiple targets and chain ult resets, while his body and CC absorb the enemy's retaliation so she survives the dive.",
+        "summary": "Tigreal controls the enemy formation, and Karina uses the disrupted fight to enter on killable targets.",
         "worksBestWhen": [
-          "Tigreal lands his ultimate on multiple enemies.",
-          "Karina waits for the stun before committing.",
-          "Hero Lock Mode is on for the clumped pile."
+          "Tigreal catches priority targets or softens the backline.",
+          "Karina waits for enemy HP to drop before entering.",
+          "Tigreal remains close enough to peel after Karina dives."
         ],
         "failureCases": [
-          "Enemies spread out before Implosion.",
-          "They hold purify or flicker to escape the stun.",
-          "Karina overextends past Tigreal's protection."
+          "Karina enters too early and gets focused.",
+          "Tigreal catches only tanks.",
+          "Enemy protection prevents Karina from finishing a target."
         ]
       }
     ]
@@ -99,8 +99,8 @@
     "anchorHeroId": "karina",
     "synergyHeroId": "angela",
     "reasons": [
-      "Heartguard shield and global ultimate keep Karina alive while she dives deep into the enemy team.",
-      "Angela can attach to Karina and cast skills while she dives, amplifying her aggression."
+      "Angela can shield Karina during a deep burst commit.",
+      "Karina can use the protection window to survive long enough to finish a target and continue fighting."
     ],
     "synergyTypes": [
       "protect",
@@ -109,20 +109,20 @@
     ],
     "proof": [
       {
-        "id": "angela-heartguard-with-karina-dive",
+        "id": "angela-heartguard-protects-karina-dive",
         "category": "protection",
         "priority": "secondary",
         "impact": "medium",
-        "summary": "Angela's Heartguard shield and her ultimate's possession let Karina commit to deep dives she could not survive alone; the extra effective HP keeps her in the fight long enough to land kills and trigger Shadow Assault resets instead of dying mid-combo.",
+        "summary": "Karina commits into dangerous space for a kill, while Angela can add shield support during that entry.",
         "worksBestWhen": [
-          "Angela times the shield as Karina engages.",
-          "Karina dives the backline knowing she is protected.",
-          "Angela's ult tracks Karina across the map for ganks."
+          "Angela casts Heartguard as Karina starts the dive.",
+          "Karina targets a low-HP or fragile enemy.",
+          "Angela remains safe while attached."
         ],
         "failureCases": [
-          "Enemy burst exceeds the shield value.",
-          "Angela is caught and killed first.",
-          "Karina dives without coordinating shield timing."
+          "Karina dives without shield timing.",
+          "Enemy burst breaks the shield before Karina finishes.",
+          "The target survives and Karina cannot continue pressure."
         ]
       }
     ]
@@ -131,8 +131,8 @@
     "anchorHeroId": "karina",
     "synergyHeroId": "vale",
     "reasons": [
-      "His Windblow knock-up and his Windtalk-enhanced Windstorm ultimate gather and lock clustered enemies in place.",
-      "His magic burst softens grouped targets into Karina's execute threshold."
+      "Vale can control and burst grouped enemies before Karina enters.",
+      "Karina benefits when Vale's magic damage lowers targets into a more reachable finish window."
     ],
     "synergyTypes": [
       "teamfight-combo",
@@ -141,20 +141,20 @@
     ],
     "proof": [
       {
-        "id": "vale-windstorm-with-karina-soften",
+        "id": "vale-control-softens-targets-for-karina",
         "category": "teamfight-combo",
         "priority": "secondary",
         "impact": "high",
-        "summary": "Vale's Windblow knocks up clustered enemies and his Windtalk-enhanced Windstorm ultimate gathers and bursts them with heavy AoE magic damage; the grouped, pre-softened cluster falls below Karina's burst threshold so her Dance of Death and Shadow Assault secure multiple kills and resets in one engage.",
+        "summary": "Vale applies AoE control and burst, while Karina follows on damaged targets to secure kills and continue reset pressure.",
         "worksBestWhen": [
-          "Vale lands AoE CC on a clump.",
-          "His burst lands first to lower enemy HP.",
-          "Karina follows up during the immobilize window."
+          "Vale lands control or burst on grouped enemies.",
+          "Karina waits for HP bars to drop before diving.",
+          "The team has frontline pressure to protect the combo."
         ],
         "failureCases": [
-          "Vale's CC misses or is purified.",
-          "Enemies are too healthy for one combo.",
-          "Both commit burst with no frontline and get collapsed on."
+          "Vale misses the control window.",
+          "Targets remain too healthy for Karina to finish.",
+          "Both heroes commit without frontline support and get collapsed on."
         ]
       }
     ]
