@@ -414,7 +414,7 @@
     "mlid": "42",
     "name": "Harley",
     "roles": ["assassin", "mage"],
-    "lanes": ["jungle"],
+    "lanes": ["jungle", "mid"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_3aa6964c07a70f9b125da447f320e1ac.png"
     }
@@ -434,7 +434,7 @@
     "mlid": "44",
     "name": "Grock",
     "roles": ["tank", "fighter"],
-    "lanes": ["roam", "exp"],
+    "lanes": ["roam"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_1_9_902/100_f8b8c8964d3202b7b762947ac96f1ed3.png"
     }
@@ -504,7 +504,7 @@
     "mlid": "51",
     "name": "Helcurt",
     "roles": ["assassin"],
-    "lanes": ["jungle"],
+    "lanes": ["jungle", "roam"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_6abf0c552b59b8ca4cbc1af3662ef176.png"
     }
@@ -574,7 +574,7 @@
     "mlid": "58",
     "name": "Martis",
     "roles": ["fighter"],
-    "lanes": ["jungle"],
+    "lanes": ["jungle", "exp"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_cc8124b0eb6ca22d950b000744d69fbf.png"
     }
@@ -704,7 +704,7 @@
     "mlid": "71",
     "name": "Kimmy",
     "roles": ["marksman", "mage"],
-    "lanes": ["gold", "mid"],
+    "lanes": ["mid", "gold"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_1_9_642/100_61295dfefd369004e5e4a7f4fc86647b.png"
     }
@@ -724,7 +724,7 @@
     "mlid": "73",
     "name": "Harith",
     "roles": ["mage"],
-    "lanes": ["gold", "mid"],
+    "lanes": ["gold", "jungle"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d228a823b477fdf6c458c829c2e62bcf.png"
     }
@@ -754,7 +754,7 @@
     "mlid": "76",
     "name": "Faramis",
     "roles": ["support", "mage"],
-    "lanes": ["mid"],
+    "lanes": ["mid", "roam"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_04e575d648d7f7ac1174f4369595c3a2.png"
     }
@@ -764,7 +764,7 @@
     "mlid": "77",
     "name": "Badang",
     "roles": ["fighter"],
-    "lanes": ["exp", "roam"],
+    "lanes": ["roam", "exp"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_9fb1784545a48aef42241fc7a719c575.png"
     }
@@ -864,7 +864,7 @@
     "mlid": "87",
     "name": "Baxia",
     "roles": ["tank"],
-    "lanes": ["jungle"],
+    "lanes": ["jungle", "roam"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_80e408203869ca99302af195ac4f756c.png"
     }
@@ -974,7 +974,7 @@
     "mlid": "98",
     "name": "Khaleed",
     "roles": ["fighter"],
-    "lanes": ["exp", "roam"],
+    "lanes": ["roam", "exp"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_540a6a9d343842674ce002082366ec9d.png"
     }
@@ -1034,7 +1034,7 @@
     "mlid": "104",
     "name": "Gloo",
     "roles": ["tank"],
-    "lanes": ["exp", "roam"],
+    "lanes": ["roam", "exp"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_1_9_642/100_c472fe0233e5ef84a3ac9ba4a229d09f.png"
     }
@@ -1154,7 +1154,7 @@
     "mlid": "116",
     "name": "Julian",
     "roles": ["assassin", "fighter"],
-    "lanes": ["jungle"],
+    "lanes": ["jungle", "exp"],
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_5511ddc0ad2789b525f32ef572b017eb.png"
     }
