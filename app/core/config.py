@@ -2,12 +2,18 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, field_validator
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data" / "static"
 LOCAL_DEV_ORIGIN = "http://localhost:3000"
-PLACEHOLDER_API_KEYS = frozenset({"", "<YOUR_OPENROUTER_API_KEY>"})
+PLACEHOLDER_API_KEYS = frozenset(
+    {
+        "",
+        "<YOUR_OPENROUTER_API_KEY>",
+        "<YOUR_OPENCODE_ZEN_API_KEY>",
+    }
+)
 
 
 class Settings(BaseSettings):
@@ -19,7 +25,10 @@ class Settings(BaseSettings):
     reload: bool = Field(default=False, validation_alias="RELOAD")
     frontend_origin: str | None = Field(default=None, validation_alias="FRONTEND_ORIGIN")
 
-    ai_provider: str = Field(default="openrouter", validation_alias="AI_PROVIDER")
+    ai_provider: str = Field(
+        default="openrouter",
+        validation_alias=AliasChoices("AI_PROVIDERS", "AI_PROVIDER"),
+    )
     ai_timeout_seconds: int = Field(default=20, validation_alias="AI_TIMEOUT_SECONDS")
 
     openai_api_key: str | None = Field(default=None, validation_alias="OPENAI_API_KEY")
@@ -38,6 +47,17 @@ class Settings(BaseSettings):
     openrouter_http_referer: str = Field(
         default="http://127.0.0.1:8000",
         validation_alias="OPENROUTER_HTTP_REFERER",
+    )
+
+    opencode_zen_api_key: str | None = Field(default=None, validation_alias="OPENCODE_ZEN_API_KEY")
+    opencode_zen_model: str | None = Field(default=None, validation_alias="OPENCODE_ZEN_MODEL")
+    opencode_zen_server_url: str = Field(
+        default="https://opencode.ai/zen/v1",
+        validation_alias="OPENCODE_ZEN_SERVER_URL",
+    )
+    opencode_zen_endpoint_type: Literal["chat_completions", "responses", "messages"] = Field(
+        default="chat_completions",
+        validation_alias="OPENCODE_ZEN_ENDPOINT_TYPE",
     )
 
     redis_url_override: str | None = Field(default=None, validation_alias="REDIS_URL")
@@ -113,18 +133,39 @@ class Settings(BaseSettings):
     def openai_configured(self) -> bool:
         return self._api_key_configured(self.openai_api_key)
 
+    def opencode_zen_configured(self) -> bool:
+        return self._api_key_configured(self.opencode_zen_api_key)
+
+    def ai_provider_slugs(self) -> list[str]:
+        return [
+            provider.strip().casefold()
+            for provider in self.ai_provider.split(",")
+            if provider.strip()
+        ]
+
     def ai_enabled(self) -> bool:
-        provider = self.ai_provider.strip().casefold()
+        return any(self.provider_configured(provider) for provider in self.ai_provider_slugs())
+
+    def provider_configured(self, provider: str) -> bool:
         if provider == "openrouter":
             return self.openrouter_configured()
+        if provider == "opencode_zen":
+            return self.opencode_zen_configured()
         if provider == "openai":
             return self.openai_configured()
         return False
 
     def active_model(self) -> str | None:
-        provider = self.ai_provider.strip().casefold()
+        providers = self.ai_provider_slugs()
+        if not providers:
+            return None
+        return self.provider_model(providers[0])
+
+    def provider_model(self, provider: str) -> str | None:
         if provider == "openrouter":
             return self.openrouter_model
+        if provider == "opencode_zen":
+            return self.opencode_zen_model
         if provider == "openai":
             return self.openai_model
         return None

@@ -6,7 +6,18 @@ _JSON_FENCE_RE = re.compile(r"^```(?:json)?\s*\n?|\n?```\s*$", re.MULTILINE)
 
 
 class ProviderError(RuntimeError):
-    pass
+    def __init__(
+        self,
+        message: str,
+        *,
+        retryable: bool = False,
+        provider_name: str | None = None,
+        status_code: int | None = None,
+    ) -> None:
+        self.retryable = retryable
+        self.provider_name = provider_name
+        self.status_code = status_code
+        super().__init__(message)
 
 
 def extract_json_text(raw: str) -> str:

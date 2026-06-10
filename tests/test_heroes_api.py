@@ -1,6 +1,22 @@
 from fastapi.testclient import TestClient
 
+from app.core.config import DATA_DIR
+from app.data.loader import Dataset
 from app.main import app
+
+
+class _SynergyNoDataDataset:
+    def __init__(self, dataset: Dataset, anchor_without_data: str) -> None:
+        self._dataset = dataset
+        self._anchor_without_data = anchor_without_data
+
+    def __getattr__(self, name: str):
+        return getattr(self._dataset, name)
+
+    def get_synergies_for_anchor(self, anchor_hero_id: str):
+        if anchor_hero_id == self._anchor_without_data:
+            return []
+        return self._dataset.get_synergies_for_anchor(anchor_hero_id)
 
 
 def test_list_heroes_defaults_to_first_page() -> None:
@@ -87,9 +103,15 @@ def test_list_hero_synergies() -> None:
 
 
 def test_list_hero_synergies_no_data() -> None:
-    # ling exists in the catalog but is not one of the curated synergy anchors.
+    # Exercise the no-data branch with controlled test state; the bundled dataset
+    # currently has curated synergies for every catalog hero.
     with TestClient(app) as client:
-        response = client.get("/api/heroes/ling/synergies")
+        original_dataset = app.state.dataset
+        try:
+            app.state.dataset = _SynergyNoDataDataset(Dataset(DATA_DIR), "ling")
+            response = client.get("/api/heroes/ling/synergies")
+        finally:
+            app.state.dataset = original_dataset
 
     assert response.status_code == 404
     assert response.json() == {

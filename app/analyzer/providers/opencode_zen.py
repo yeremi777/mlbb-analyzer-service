@@ -5,24 +5,29 @@ import httpx
 from app.analyzer.providers.base import ProviderError, parse_json_object
 from app.core.config import Settings
 
-PROVIDER_NAME = "OpenRouter"
+PROVIDER_NAME = "OpenCode Zen"
 _RETRYABLE_STATUS_CODES = frozenset({402, 408, 409, 425, 429})
 
 
-class OpenRouterChatProvider:
+class OpenCodeZenChatProvider:
     provider_name = PROVIDER_NAME
 
     def __init__(self, settings: Settings) -> None:
-        if not settings.openrouter_configured():
+        if not settings.opencode_zen_configured():
             raise ProviderError(f"{PROVIDER_NAME} API key is not configured.")
-        self._model = settings.provider_model("openrouter")
-        if not self._model:
-            raise ProviderError("No model configured for the active AI provider.")
+        if settings.opencode_zen_endpoint_type != "chat_completions":
+            raise ProviderError(
+                f"{PROVIDER_NAME} endpoint type '{settings.opencode_zen_endpoint_type}' "
+                "is not implemented yet."
+            )
 
-        self._api_key = settings.openrouter_api_key
-        self._server_url = settings.openrouter_server_url.rstrip("/")
-        self._http_referer = settings.openrouter_http_referer
-        self._app_title = settings.openrouter_app_title
+        model = settings.provider_model("opencode_zen")
+        if not model:
+            raise ProviderError(f"No model configured for {PROVIDER_NAME}.")
+
+        self._model = _normalize_model(model)
+        self._api_key = settings.opencode_zen_api_key
+        self._server_url = settings.opencode_zen_server_url.rstrip("/")
         self._timeout_seconds = settings.ai_timeout_seconds
 
     def complete_json(self, messages: list[dict[str, str]]) -> dict[str, Any]:
@@ -36,10 +41,6 @@ class OpenRouterChatProvider:
             "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
         }
-        if self._http_referer:
-            headers["HTTP-Referer"] = self._http_referer
-        if self._app_title:
-            headers["X-OpenRouter-Title"] = self._app_title
 
         try:
             response = httpx.post(
@@ -74,6 +75,12 @@ class OpenRouterChatProvider:
 
     def close(self) -> None:
         return None
+
+
+def _normalize_model(model: str) -> str:
+    if model.startswith("opencode/"):
+        return model.removeprefix("opencode/")
+    return model
 
 
 def _message_content(response: Any) -> str:

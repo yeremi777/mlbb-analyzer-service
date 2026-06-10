@@ -1,7 +1,22 @@
 from fastapi.testclient import TestClient
 
-from app.core.config import Settings
+from app.core.config import DATA_DIR, Settings
+from app.data.loader import Dataset
 from app.main import app
+
+
+class _SynergyNoDataDataset:
+    def __init__(self, dataset: Dataset, anchor_without_data: str) -> None:
+        self._dataset = dataset
+        self._anchor_without_data = anchor_without_data
+
+    def __getattr__(self, name: str):
+        return getattr(self._dataset, name)
+
+    def get_synergies_for_anchor(self, anchor_hero_id: str):
+        if anchor_hero_id == self._anchor_without_data:
+            return []
+        return self._dataset.get_synergies_for_anchor(anchor_hero_id)
 
 
 def test_analyze_synergy_score_requires_configured_provider(monkeypatch) -> None:
@@ -41,9 +56,15 @@ def test_analyze_synergy_score_unknown_anchor_error_shape() -> None:
 
 
 def test_analyze_synergy_score_anchor_without_data_error_shape() -> None:
-    # ling exists but has no curated synergy data.
+    # Exercise the no-data branch with controlled test state; the bundled dataset
+    # currently has curated synergies for every catalog hero.
     with TestClient(app) as client:
-        response = client.post("/api/synergies/analyze-score", json={"anchorHeroId": "ling"})
+        original_dataset = app.state.dataset
+        try:
+            app.state.dataset = _SynergyNoDataDataset(Dataset(DATA_DIR), "ling")
+            response = client.post("/api/synergies/analyze-score", json={"anchorHeroId": "ling"})
+        finally:
+            app.state.dataset = original_dataset
 
     assert response.status_code == 404
     assert response.json()["error"]["code"] == "synergy_data_not_found"

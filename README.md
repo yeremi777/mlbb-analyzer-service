@@ -117,15 +117,16 @@ curl "http://127.0.0.1:8000/api/heroes?search=tig&role=tank&lane=roam&page=1&siz
 | Variable | Required | Example |
 |----------|----------|---------|
 | `FRONTEND_ORIGIN` | Yes (production) | `https://your-frontend.vercel.app` |
-| `AI_PROVIDER` | Yes (for AI scoring) | `openrouter` |
+| `AI_PROVIDERS` | Yes (for AI scoring) | `openrouter` |
 | `<AI_PROVIDER>_API_KEY` | Yes (for AI scoring) | `sk-or-...` |
 | `<AI_PROVIDER>_MODEL` | Recommended | `openrouter/free` |
 | `AI_TIMEOUT_SECONDS` | Optional | `20` |
 
-**Provider env naming:** set `AI_PROVIDER` to the provider slug in lowercase (for example `openrouter` or `openai`). Build the other AI variables by uppercasing that slug:
+**Provider env naming:** set `AI_PROVIDERS` to the provider slug in lowercase (for example `openrouter` or `openai`). For fallback, use a comma-separated priority list such as `openrouter,opencode_zen,openai`; the service tries them left to right. `AI_PROVIDER` still works as a backward-compatible alias for one provider. Build the other AI variables by uppercasing that slug:
 
-- `AI_PROVIDER=openrouter` → `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`
-- `AI_PROVIDER=openai` → `OPENAI_API_KEY`, `OPENAI_MODEL`
+- `AI_PROVIDERS=openrouter` → `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`
+- `AI_PROVIDERS=opencode_zen` → `OPENCODE_ZEN_API_KEY`, `OPENCODE_ZEN_MODEL`
+- `AI_PROVIDERS=openai` → `OPENAI_API_KEY`, `OPENAI_MODEL`
 
 Optional provider-specific settings (see `.env.example`) follow the same uppercase prefix, such as `OPENROUTER_SERVER_URL`.
 
@@ -144,7 +145,7 @@ Point the frontend at the API with `NEXT_PUBLIC_ANALYZER_API_URL=https://<your-a
 
 ## AI scoring
 
-Copy `.env.example` to `.env`, set `AI_PROVIDER`, then set `<AI_PROVIDER>_API_KEY` in uppercase (for OpenRouter: `OPENROUTER_API_KEY` from [OpenRouter keys](https://openrouter.ai/settings/keys)).
+Copy `.env.example` to `.env`, set `AI_PROVIDERS`, then set `<AI_PROVIDER>_API_KEY` in uppercase (for OpenRouter: `OPENROUTER_API_KEY` from [OpenRouter keys](https://openrouter.ai/settings/keys)).
 
 ```bash
 curl -X POST http://127.0.0.1:8000/api/counters/analyze-score \

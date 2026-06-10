@@ -55,9 +55,9 @@ class _SynergyScoringItem(BaseModel):
 
 
 def _ensure_ai_ready(settings: Settings) -> None:
-    slug = settings.ai_provider.strip().casefold()
-    if slug in _NOT_IMPLEMENTED_PROVIDERS:
-        raise AnalyzerNotImplementedError(settings.ai_provider)
+    for slug in settings.ai_provider_slugs():
+        if slug in _NOT_IMPLEMENTED_PROVIDERS:
+            raise AnalyzerNotImplementedError(slug)
     if not settings.ai_enabled():
         raise AnalyzerNotConfiguredError(settings.ai_provider)
 
