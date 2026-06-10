@@ -1,6 +1,11 @@
 from fastapi import APIRouter, HTTPException, Request, Response
 
-from app.analyzer.ai import run_detail_analysis, run_scoring_analysis
+from app.analyzer.ai import (
+    has_cached_counter_detail_analysis,
+    has_cached_counter_score_analysis,
+    run_detail_analysis,
+    run_scoring_analysis,
+)
 from app.analyzer.errors import (
     AnalyzerError,
     AnalyzerNotConfiguredError,
@@ -76,7 +81,8 @@ def analyze_score(
     _require_target_hero(request, payload.targetHeroId)
     _require_matchups(request, payload.targetHeroId)
     settings = get_settings()
-    enforce_analyze_rate_limit(request, response, settings, "analyze-counter-score")
+    if not has_cached_counter_score_analysis(payload.targetHeroId, settings, payload.language):
+        enforce_analyze_rate_limit(request, response, settings, "analyze-counter-score")
     try:
         return run_scoring_analysis(
             request.app.state.dataset,
@@ -126,7 +132,13 @@ def analyze_detail(
         )
 
     settings = get_settings()
-    enforce_analyze_rate_limit(request, response, settings, "analyze-counter-detail")
+    if not has_cached_counter_detail_analysis(
+        payload.targetHeroId,
+        payload.counterHeroId,
+        settings,
+        payload.language,
+    ):
+        enforce_analyze_rate_limit(request, response, settings, "analyze-counter-detail")
     try:
         return run_detail_analysis(
             dataset,

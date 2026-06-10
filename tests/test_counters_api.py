@@ -38,6 +38,21 @@ class _FakeRedis:
         return [1, count, self.ttl(key)]
 
 
+class _FakeProvider:
+    provider_name = "Fake"
+
+    def __init__(self, payload: dict[str, object]) -> None:
+        self.payload = payload
+        self.call_count = 0
+
+    def complete_json(self, messages: list[dict[str, str]]) -> dict[str, object]:
+        self.call_count += 1
+        return self.payload
+
+    def close(self) -> None:
+        return None
+
+
 def test_analyze_score_requires_configured_provider(monkeypatch) -> None:
     monkeypatch.setattr(
         "app.api.counters.get_settings",
@@ -125,6 +140,48 @@ def test_analyze_score_rate_limit_sets_cookie_and_blocks_excess_requests(monkeyp
             "message": "Too many analyze requests. Please try again later.",
         }
     }
+    assert max(fake_redis.counts.values()) == 1
+
+
+def test_cached_analyze_score_does_not_increment_rate_limit(monkeypatch) -> None:
+    fake_redis = _FakeRedis()
+    settings = Settings(
+        AI_PROVIDER="openrouter",
+        OPENROUTER_API_KEY="test-key",
+        REDIS_HOST="localhost",
+        REDIS_PORT=6379,
+        REDIS_DB=0,
+        RATE_LIMIT_ENABLED=True,
+        RATE_LIMIT_ANALYZE_MAX_REQUESTS=1,
+        RATE_LIMIT_ANALYZE_WINDOW_SECONDS=600,
+    )
+    provider = _FakeProvider(
+        {
+            "recommendations": [
+                {"counterHeroId": "diggie", "score": 96, "confidence": 92},
+                {"counterHeroId": "valir", "score": 88, "confidence": 85},
+                {"counterHeroId": "karrie", "score": 80, "confidence": 78},
+                {"counterHeroId": "akai", "score": 74, "confidence": 70},
+                {"counterHeroId": "lunox", "score": 70, "confidence": 68},
+            ]
+        }
+    )
+    monkeypatch.setattr("app.core.rate_limit._redis_client", lambda redis_url: fake_redis)
+    monkeypatch.setattr("app.api.counters.get_settings", lambda: settings)
+    monkeypatch.setattr("app.analyzer.ai.create_chat_provider", lambda settings: provider)
+
+    with TestClient(app) as client:
+        first_response = client.post(
+            "/api/counters/analyze-score",
+            json={"targetHeroId": "tigreal"},
+        )
+        second_response = client.post(
+            "/api/counters/analyze-score",
+            json={"targetHeroId": "tigreal"},
+        )
+
+    assert [first_response.status_code, second_response.status_code] == [200, 200]
+    assert provider.call_count == 1
     assert max(fake_redis.counts.values()) == 1
 
 

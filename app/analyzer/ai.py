@@ -152,6 +152,62 @@ def _analysis_cache_scope(settings: Settings) -> tuple[int, tuple[tuple[str, str
     return (id(settings), _provider_cache_fingerprint(settings))
 
 
+def _counter_score_cache_key(
+    target_hero_id: str,
+    settings: Settings,
+    language: str,
+) -> _CacheKey:
+    return (
+        "counter-score",
+        target_hero_id,
+        language,
+        _analysis_cache_scope(settings),
+    )
+
+
+def _counter_detail_cache_key(
+    target_hero_id: str,
+    counter_hero_id: str,
+    settings: Settings,
+    language: str,
+) -> _CacheKey:
+    return (
+        "counter-detail",
+        target_hero_id,
+        counter_hero_id,
+        language,
+        _analysis_cache_scope(settings),
+    )
+
+
+def _synergy_score_cache_key(
+    anchor_hero_id: str,
+    settings: Settings,
+    language: str,
+) -> _CacheKey:
+    return (
+        "synergy-score",
+        anchor_hero_id,
+        language,
+        _analysis_cache_scope(settings),
+    )
+
+
+def _synergy_detail_cache_key(
+    anchor_hero_id: str,
+    synergy_hero_id: str,
+    settings: Settings,
+    language: str,
+) -> _CacheKey:
+    return (
+        "synergy-detail",
+        anchor_hero_id,
+        synergy_hero_id,
+        language,
+        _analysis_cache_scope(settings),
+    )
+
+
 def _cache_get(key: _CacheKey, settings: Settings, response_type: type[_ResponseT]) -> _ResponseT | None:
     ttl_seconds = settings.ai_analysis_cache_ttl_seconds
     max_entries = settings.ai_analysis_cache_max_entries
@@ -187,6 +243,44 @@ def _cache_set(key: _CacheKey, settings: Settings, response: BaseModel) -> None:
         _ANALYSIS_CACHE.move_to_end(key)
         while len(_ANALYSIS_CACHE) > max_entries:
             _ANALYSIS_CACHE.popitem(last=False)
+
+
+def has_cached_counter_score_analysis(
+    target_hero_id: str,
+    settings: Settings,
+    language: str,
+) -> bool:
+    cache_key = _counter_score_cache_key(target_hero_id, settings, language)
+    return _cache_get(cache_key, settings, AnalyzeScoresResponse) is not None
+
+
+def has_cached_counter_detail_analysis(
+    target_hero_id: str,
+    counter_hero_id: str,
+    settings: Settings,
+    language: str,
+) -> bool:
+    cache_key = _counter_detail_cache_key(target_hero_id, counter_hero_id, settings, language)
+    return _cache_get(cache_key, settings, AnalyzeDetailResponse) is not None
+
+
+def has_cached_synergy_score_analysis(
+    anchor_hero_id: str,
+    settings: Settings,
+    language: str,
+) -> bool:
+    cache_key = _synergy_score_cache_key(anchor_hero_id, settings, language)
+    return _cache_get(cache_key, settings, AnalyzeSynergyScoresResponse) is not None
+
+
+def has_cached_synergy_detail_analysis(
+    anchor_hero_id: str,
+    synergy_hero_id: str,
+    settings: Settings,
+    language: str,
+) -> bool:
+    cache_key = _synergy_detail_cache_key(anchor_hero_id, synergy_hero_id, settings, language)
+    return _cache_get(cache_key, settings, AnalyzeSynergyDetailResponse) is not None
 
 
 def _complete_json(
@@ -231,12 +325,7 @@ def run_scoring_analysis(
 ) -> AnalyzeScoresResponse:
     _ensure_ai_ready(settings)
 
-    cache_key = (
-        "counter-score",
-        target_hero_id,
-        language,
-        _analysis_cache_scope(settings),
-    )
+    cache_key = _counter_score_cache_key(target_hero_id, settings, language)
     cached = _cache_get(cache_key, settings, AnalyzeScoresResponse)
     if cached is not None:
         return cached
@@ -270,13 +359,7 @@ def run_detail_analysis(
 ) -> AnalyzeDetailResponse:
     _ensure_ai_ready(settings)
 
-    cache_key = (
-        "counter-detail",
-        target_hero_id,
-        counter_hero_id,
-        language,
-        _analysis_cache_scope(settings),
-    )
+    cache_key = _counter_detail_cache_key(target_hero_id, counter_hero_id, settings, language)
     cached = _cache_get(cache_key, settings, AnalyzeDetailResponse)
     if cached is not None:
         return cached
@@ -336,12 +419,7 @@ def run_synergy_scoring_analysis(
 ) -> AnalyzeSynergyScoresResponse:
     _ensure_ai_ready(settings)
 
-    cache_key = (
-        "synergy-score",
-        anchor_hero_id,
-        language,
-        _analysis_cache_scope(settings),
-    )
+    cache_key = _synergy_score_cache_key(anchor_hero_id, settings, language)
     cached = _cache_get(cache_key, settings, AnalyzeSynergyScoresResponse)
     if cached is not None:
         return cached
@@ -375,13 +453,7 @@ def run_synergy_detail_analysis(
 ) -> AnalyzeSynergyDetailResponse:
     _ensure_ai_ready(settings)
 
-    cache_key = (
-        "synergy-detail",
-        anchor_hero_id,
-        synergy_hero_id,
-        language,
-        _analysis_cache_scope(settings),
-    )
+    cache_key = _synergy_detail_cache_key(anchor_hero_id, synergy_hero_id, settings, language)
     cached = _cache_get(cache_key, settings, AnalyzeSynergyDetailResponse)
     if cached is not None:
         return cached
