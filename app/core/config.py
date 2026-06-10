@@ -30,6 +30,16 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("AI_PROVIDERS", "AI_PROVIDER"),
     )
     ai_timeout_seconds: int = Field(default=20, validation_alias="AI_TIMEOUT_SECONDS")
+    ai_analysis_cache_ttl_seconds: int = Field(
+        default=600,
+        ge=0,
+        validation_alias="AI_ANALYSIS_CACHE_TTL_SECONDS",
+    )
+    ai_analysis_cache_max_entries: int = Field(
+        default=256,
+        ge=0,
+        validation_alias="AI_ANALYSIS_CACHE_MAX_ENTRIES",
+    )
 
     openai_api_key: str | None = Field(default=None, validation_alias="OPENAI_API_KEY")
     openai_model: str | None = Field(default=None, validation_alias="OPENAI_MODEL")

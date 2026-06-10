@@ -80,31 +80,42 @@ def _hero_context(hero: Hero) -> dict[str, Any]:
     }
 
 
-def _proof_context(proof: Proof) -> dict[str, Any]:
-    return {
+def _proof_context(proof: Proof, *, include_detail: bool = True) -> dict[str, Any]:
+    context: dict[str, Any] = {
         "id": proof.id,
         "category": proof.category,
         "priority": proof.priority,
         "impact": proof.impact,
         "summary": proof.summary,
-        "worksBestWhen": proof.worksBestWhen,
-        "failureCases": proof.failureCases,
     }
+    if include_detail:
+        context["worksBestWhen"] = proof.worksBestWhen
+        context["failureCases"] = proof.failureCases
+    return context
 
 
 def _matchup_context(
     matchup: CounterMatchup,
     counter_hero: Hero | None,
+    *,
+    include_detail: bool = True,
 ) -> dict[str, Any]:
     context: dict[str, Any] = {
         "counterHeroId": matchup.counterHeroId,
         "reasons": matchup.reasons,
         "counterTypes": matchup.counterTypes,
-        "proof": [_proof_context(proof) for proof in matchup.proof],
+        "proof": [
+            _proof_context(proof, include_detail=include_detail)
+            for proof in matchup.proof
+        ],
     }
     if counter_hero is not None:
         context["counterHero"] = _hero_context(counter_hero)
     return context
+
+
+def _json_context(payload: dict[str, Any]) -> str:
+    return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
 
 
 def build_scoring_messages(
@@ -116,7 +127,11 @@ def build_scoring_messages(
     payload = {
         "targetHero": _hero_context(target_hero),
         "matchups": [
-            _matchup_context(matchup, heroes_by_id.get(matchup.counterHeroId))
+            _matchup_context(
+                matchup,
+                heroes_by_id.get(matchup.counterHeroId),
+                include_detail=False,
+            )
             for matchup in matchups
         ],
         "outputLanguage": language,
@@ -127,7 +142,7 @@ def build_scoring_messages(
             "role": "user",
             "content": (
                 f"{language_instruction(language)}\n\n"
-                f"Dataset context:\n{json.dumps(payload, indent=2)}"
+                f"Dataset context:\n{_json_context(payload)}"
             ),
         },
     ]
@@ -150,7 +165,7 @@ def build_detail_messages(
             "role": "user",
             "content": (
                 f"{language_instruction(language)}\n\n"
-                f"Dataset context:\n{json.dumps(payload, indent=2)}"
+                f"Dataset context:\n{_json_context(payload)}"
             ),
         },
     ]
@@ -208,12 +223,17 @@ evidenceIds must only list proof ids present in the input."""
 def _synergy_context(
     synergy: SynergyMatchup,
     synergy_hero: Hero | None,
+    *,
+    include_detail: bool = True,
 ) -> dict[str, Any]:
     context: dict[str, Any] = {
         "synergyHeroId": synergy.synergyHeroId,
         "reasons": synergy.reasons,
         "synergyTypes": synergy.synergyTypes,
-        "proof": [_proof_context(proof) for proof in synergy.proof],
+        "proof": [
+            _proof_context(proof, include_detail=include_detail)
+            for proof in synergy.proof
+        ],
     }
     if synergy_hero is not None:
         context["synergyHero"] = _hero_context(synergy_hero)
@@ -229,7 +249,11 @@ def build_synergy_scoring_messages(
     payload = {
         "anchorHero": _hero_context(anchor_hero),
         "synergies": [
-            _synergy_context(synergy, heroes_by_id.get(synergy.synergyHeroId))
+            _synergy_context(
+                synergy,
+                heroes_by_id.get(synergy.synergyHeroId),
+                include_detail=False,
+            )
             for synergy in synergies
         ],
         "outputLanguage": language,
@@ -240,7 +264,7 @@ def build_synergy_scoring_messages(
             "role": "user",
             "content": (
                 f"{language_instruction(language)}\n\n"
-                f"Dataset context:\n{json.dumps(payload, indent=2)}"
+                f"Dataset context:\n{_json_context(payload)}"
             ),
         },
     ]
@@ -263,7 +287,7 @@ def build_synergy_detail_messages(
             "role": "user",
             "content": (
                 f"{language_instruction(language)}\n\n"
-                f"Dataset context:\n{json.dumps(payload, indent=2)}"
+                f"Dataset context:\n{_json_context(payload)}"
             ),
         },
     ]

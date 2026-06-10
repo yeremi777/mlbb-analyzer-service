@@ -45,6 +45,31 @@ def test_scoring_analysis_uses_ai_when_provider_returns_valid_json() -> None:
     mock_provider.close.assert_called_once()
 
 
+def test_scoring_analysis_reuses_cached_response_for_same_settings() -> None:
+    dataset = Dataset(DATA_DIR)
+    settings = _openrouter_settings()
+    payload = {
+        "recommendations": [
+            {"counterHeroId": "diggie", "score": 96, "confidence": 92},
+            {"counterHeroId": "valir", "score": 88, "confidence": 85},
+            {"counterHeroId": "karrie", "score": 80, "confidence": 78},
+            {"counterHeroId": "akai", "score": 74, "confidence": 70},
+            {"counterHeroId": "lunox", "score": 70, "confidence": 68},
+        ]
+    }
+
+    with patch("app.analyzer.ai.create_chat_provider") as mock_factory:
+        mock_provider = mock_factory.return_value
+        mock_provider.complete_json.return_value = payload
+        first_response = run_scoring_analysis(dataset, "tigreal", settings, "en")
+        second_response = run_scoring_analysis(dataset, "tigreal", settings, "en")
+
+    assert first_response == second_response
+    assert first_response is not second_response
+    mock_provider.complete_json.assert_called_once()
+    mock_provider.close.assert_called_once()
+
+
 def test_scoring_analysis_raises_when_provider_fails() -> None:
     dataset = Dataset(DATA_DIR)
     settings = _openrouter_settings()

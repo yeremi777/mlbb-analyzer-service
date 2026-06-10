@@ -1,3 +1,5 @@
+import json
+
 from app.analyzer.prompt import (
     DETAIL_SYSTEM_INSTRUCTION,
     SCORING_SYSTEM_INSTRUCTION,
@@ -22,6 +24,10 @@ def test_scoring_prompt_includes_guardrails_and_tigreal_context() -> None:
     assert "diggie" in combined
     assert '"proof"' in combined
     assert "counterHeroId" in combined
+    dataset_context = json.loads(messages[1]["content"].split("Dataset context:\n", maxsplit=1)[1])
+    first_proof = dataset_context["matchups"][0]["proof"][0]
+    assert "failureCases" not in first_proof
+    assert "worksBestWhen" not in first_proof
 
 
 def test_detail_prompt_includes_single_matchup_context() -> None:
