@@ -253,7 +253,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/staticdata.Hero"
+                            "$ref": "#/definitions/domain.Hero"
                         }
                     },
                     "404": {
@@ -727,7 +727,7 @@
             "type": "object",
             "properties": {
                 "counterHero": {
-                    "$ref": "#/definitions/staticdata.Hero"
+                    "$ref": "#/definitions/domain.Hero"
                 },
                 "counterTypes": {
                     "type": "array",
@@ -738,7 +738,7 @@
                 "proof": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/staticdata.Proof"
+                        "$ref": "#/definitions/domain.Proof"
                     }
                 },
                 "reasons": {
@@ -810,7 +810,7 @@
                 "items": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/staticdata.Hero"
+                        "$ref": "#/definitions/domain.Hero"
                     }
                 },
                 "page": {
@@ -841,7 +841,7 @@
                 "proof": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/staticdata.Proof"
+                        "$ref": "#/definitions/domain.Proof"
                     }
                 },
                 "reasons": {
@@ -851,7 +851,7 @@
                     }
                 },
                 "synergyHero": {
-                    "$ref": "#/definitions/staticdata.Hero"
+                    "$ref": "#/definitions/domain.Hero"
                 },
                 "synergyTypes": {
                     "type": "array",
@@ -882,7 +882,7 @@
                 }
             }
         },
-        "staticdata.Hero": {
+        "domain.Hero": {
             "type": "object",
             "properties": {
                 "images": {
@@ -913,7 +913,7 @@
                 }
             }
         },
-        "staticdata.Proof": {
+        "domain.Proof": {
             "type": "object",
             "properties": {
                 "category": {

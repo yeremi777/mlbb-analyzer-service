@@ -260,7 +260,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/staticdata.Hero"
+                            "$ref": "#/definitions/domain.Hero"
                         }
                     },
                     "404": {
@@ -734,7 +734,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "counterHero": {
-                    "$ref": "#/definitions/staticdata.Hero"
+                    "$ref": "#/definitions/domain.Hero"
                 },
                 "counterTypes": {
                     "type": "array",
@@ -745,7 +745,7 @@ const docTemplate = `{
                 "proof": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/staticdata.Proof"
+                        "$ref": "#/definitions/domain.Proof"
                     }
                 },
                 "reasons": {
@@ -817,7 +817,7 @@ const docTemplate = `{
                 "items": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/staticdata.Hero"
+                        "$ref": "#/definitions/domain.Hero"
                     }
                 },
                 "page": {
@@ -848,7 +848,7 @@ const docTemplate = `{
                 "proof": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/staticdata.Proof"
+                        "$ref": "#/definitions/domain.Proof"
                     }
                 },
                 "reasons": {
@@ -858,7 +858,7 @@ const docTemplate = `{
                     }
                 },
                 "synergyHero": {
-                    "$ref": "#/definitions/staticdata.Hero"
+                    "$ref": "#/definitions/domain.Hero"
                 },
                 "synergyTypes": {
                     "type": "array",
@@ -889,7 +889,7 @@ const docTemplate = `{
                 }
             }
         },
-        "staticdata.Hero": {
+        "domain.Hero": {
             "type": "object",
             "properties": {
                 "images": {
@@ -920,7 +920,7 @@ const docTemplate = `{
                 }
             }
         },
-        "staticdata.Proof": {
+        "domain.Proof": {
             "type": "object",
             "properties": {
                 "category": {

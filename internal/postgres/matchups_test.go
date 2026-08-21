@@ -1,18 +1,18 @@
-package store
+package postgres
 
 import (
 	"context"
 	"testing"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 )
 
-func matchup(first, second, proofID string) staticdata.Matchup {
-	return staticdata.Matchup{
+func matchup(first, second, proofID string) domain.Matchup {
+	return domain.Matchup{
 		First: first, Second: second,
 		Reasons: []string{"r"}, Types: []string{"t"},
-		Proof: []staticdata.Proof{{
+		Proof: []domain.Proof{{
 			ID: proofID, Category: "skill-interaction", Priority: "primary",
 			Impact: "high", Summary: "s",
 		}},
@@ -33,7 +33,7 @@ func TestSyncCountersInsertsAndCascadesDelete(t *testing.T) {
 	tx := testTx(t)
 	ctx := context.Background()
 
-	ms := []staticdata.Matchup{
+	ms := []domain.Matchup{
 		matchup("tigreal", "diggie", "t-p1"),
 		matchup("tigreal", "valir", "t-p2"),
 	}
@@ -56,7 +56,7 @@ func TestSyncCountersRejectsInvalidCategory(t *testing.T) {
 	tx := testTx(t)
 	bad := matchup("tigreal", "diggie", "t-p1")
 	bad.Proof[0].Category = "not-a-category"
-	if err := SyncCounters(context.Background(), tx, []staticdata.Matchup{bad}); err == nil {
+	if err := SyncCounters(context.Background(), tx, []domain.Matchup{bad}); err == nil {
 		t.Fatal("want CHECK violation for invalid category, got nil")
 	}
 }
@@ -65,7 +65,7 @@ func TestSyncSynergiesIdempotent(t *testing.T) {
 	tx := testTx(t)
 	ctx := context.Background()
 
-	ms := []staticdata.Matchup{matchup("tigreal", "pharsa", "s-p1")}
+	ms := []domain.Matchup{matchup("tigreal", "pharsa", "s-p1")}
 	if err := SyncSynergies(ctx, tx, ms); err != nil {
 		t.Fatal(err)
 	}

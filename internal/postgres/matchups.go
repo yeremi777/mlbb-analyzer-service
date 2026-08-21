@@ -1,11 +1,11 @@
-package store
+package postgres
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 )
 
 type matchupTables struct {
@@ -29,16 +29,16 @@ var synergyTables = matchupTables{
 // SyncCounters makes counters and counter_proofs match the source
 // exactly, with the same delete-first-then-upsert semantics as SyncHeroes.
 // Deleting a matchup cascades to its proofs.
-func SyncCounters(ctx context.Context, tx pgx.Tx, ms []staticdata.Matchup) error {
+func SyncCounters(ctx context.Context, tx pgx.Tx, ms []domain.Matchup) error {
 	return syncMatchups(ctx, tx, counterTables, ms)
 }
 
 // SyncSynergies is SyncCounters for synergies and synergy_proofs.
-func SyncSynergies(ctx context.Context, tx pgx.Tx, ms []staticdata.Matchup) error {
+func SyncSynergies(ctx context.Context, tx pgx.Tx, ms []domain.Matchup) error {
 	return syncMatchups(ctx, tx, synergyTables, ms)
 }
 
-func syncMatchups(ctx context.Context, tx pgx.Tx, t matchupTables, ms []staticdata.Matchup) error {
+func syncMatchups(ctx context.Context, tx pgx.Tx, t matchupTables, ms []domain.Matchup) error {
 	firsts := make([]string, len(ms))
 	seconds := make([]string, len(ms))
 	var proofIDs []string

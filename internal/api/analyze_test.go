@@ -13,9 +13,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
 	"github.com/yeremi777/mlbb-analyzer-service/internal/analyzer"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 	"github.com/yeremi777/mlbb-analyzer-service/internal/ratelimit"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/store"
 )
 
 type fakeAnalyzer struct {
@@ -23,7 +22,7 @@ type fakeAnalyzer struct {
 	cached bool
 }
 
-func (f *fakeAnalyzer) ScoreCounters(_ context.Context, _ staticdata.Hero, ms []store.HeroMatchup, _ string) (*analyzer.ScoresResult, error) {
+func (f *fakeAnalyzer) ScoreCounters(_ context.Context, _ domain.Hero, ms []domain.HeroMatchup, _ string) (*analyzer.ScoresResult, error) {
 	if f.fail != nil {
 		return nil, f.fail
 	}
@@ -34,11 +33,11 @@ func (f *fakeAnalyzer) ScoreCounters(_ context.Context, _ staticdata.Hero, ms []
 	return &analyzer.ScoresResult{Recommendations: recs}, nil
 }
 
-func (f *fakeAnalyzer) ScoreSynergies(ctx context.Context, h staticdata.Hero, ms []store.HeroMatchup, l string) (*analyzer.ScoresResult, error) {
+func (f *fakeAnalyzer) ScoreSynergies(ctx context.Context, h domain.Hero, ms []domain.HeroMatchup, l string) (*analyzer.ScoresResult, error) {
 	return f.ScoreCounters(ctx, h, ms, l)
 }
 
-func (f *fakeAnalyzer) CounterDetail(_ context.Context, _ staticdata.Hero, m store.HeroMatchup, _ string) (*analyzer.DetailResult, error) {
+func (f *fakeAnalyzer) CounterDetail(_ context.Context, _ domain.Hero, m domain.HeroMatchup, _ string) (*analyzer.DetailResult, error) {
 	if f.fail != nil {
 		return nil, f.fail
 	}
@@ -46,7 +45,7 @@ func (f *fakeAnalyzer) CounterDetail(_ context.Context, _ staticdata.Hero, m sto
 		Conditions: []string{}, FailureCases: []string{}, EvidenceIDs: []string{m.Proof[0].ID}}, nil
 }
 
-func (f *fakeAnalyzer) SynergyDetail(ctx context.Context, h staticdata.Hero, m store.HeroMatchup, l string) (*analyzer.DetailResult, error) {
+func (f *fakeAnalyzer) SynergyDetail(ctx context.Context, h domain.Hero, m domain.HeroMatchup, l string) (*analyzer.DetailResult, error) {
 	return f.CounterDetail(ctx, h, m, l)
 }
 

@@ -1,3 +1,6 @@
+// Package ratelimit counts request quota per client over a fixed window. It is
+// storage for a number and a deadline, with no knowledge of what is being
+// limited.
 package ratelimit
 
 import (

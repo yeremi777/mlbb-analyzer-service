@@ -9,9 +9,9 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/yeremi777/mlbb-analyzer-service/internal/analyzer"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/postgres"
 	"github.com/yeremi777/mlbb-analyzer-service/internal/ratelimit"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/store"
 )
 
 func writeAnalyzerError(w http.ResponseWriter, err error) {
@@ -84,10 +84,10 @@ func normalizeLanguage(w http.ResponseWriter, language string) (string, bool) {
 // 404 codes and returns the hero with its matchups.
 func (s *Server) analyzeContext(
 	w http.ResponseWriter, r *http.Request, heroID string,
-	fetch func(context.Context, store.Querier, string) ([]store.HeroMatchup, error),
+	fetch func(context.Context, postgres.Querier, string) ([]domain.HeroMatchup, error),
 	heroCode, dataCode, dataMessage string,
-) (staticdata.Hero, []store.HeroMatchup, bool) {
-	hero, err := store.GetHero(r.Context(), s.db, heroID)
+) (domain.Hero, []domain.HeroMatchup, bool) {
+	hero, err := postgres.GetHero(r.Context(), s.db, heroID)
 	if errors.Is(err, pgx.ErrNoRows) {
 		writeError(w, http.StatusNotFound, heroCode, "Hero was not found in the dataset.")
 		return hero, nil, false
@@ -132,7 +132,7 @@ func (s *Server) analyzeCounterScore(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	hero, ms, ok := s.analyzeContext(w, r, req.TargetHeroID, store.CountersForTarget,
+	hero, ms, ok := s.analyzeContext(w, r, req.TargetHeroID, postgres.CountersForTarget,
 		"target_hero_not_found", "counter_data_not_found", "Counter data was not found for the target hero.")
 	if !ok {
 		return
@@ -182,7 +182,7 @@ func (s *Server) analyzeSynergyScore(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	hero, ms, ok := s.analyzeContext(w, r, req.AnchorHeroID, store.SynergiesForAnchor,
+	hero, ms, ok := s.analyzeContext(w, r, req.AnchorHeroID, postgres.SynergiesForAnchor,
 		"anchor_hero_not_found", "synergy_data_not_found", "Synergy data was not found for the anchor hero.")
 	if !ok {
 		return
@@ -207,13 +207,13 @@ func (s *Server) analyzeSynergyScore(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func findMatchup(ms []store.HeroMatchup, partnerID string) (store.HeroMatchup, bool) {
+func findMatchup(ms []domain.HeroMatchup, partnerID string) (domain.HeroMatchup, bool) {
 	for _, m := range ms {
 		if m.Second.UID == partnerID {
 			return m, true
 		}
 	}
-	return store.HeroMatchup{}, false
+	return domain.HeroMatchup{}, false
 }
 
 // analyzeCounterDetail godoc
@@ -241,12 +241,12 @@ func (s *Server) analyzeCounterDetail(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	hero, ms, ok := s.analyzeContext(w, r, req.TargetHeroID, store.CountersForTarget,
+	hero, ms, ok := s.analyzeContext(w, r, req.TargetHeroID, postgres.CountersForTarget,
 		"target_hero_not_found", "counter_data_not_found", "Counter data was not found for the target hero.")
 	if !ok {
 		return
 	}
-	if _, err := store.GetHero(r.Context(), s.db, req.CounterHeroID); errors.Is(err, pgx.ErrNoRows) {
+	if _, err := postgres.GetHero(r.Context(), s.db, req.CounterHeroID); errors.Is(err, pgx.ErrNoRows) {
 		writeError(w, http.StatusNotFound, "counter_hero_not_found", "Counter hero was not found in the dataset.")
 		return
 	} else if err != nil {
@@ -299,12 +299,12 @@ func (s *Server) analyzeSynergyDetail(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	hero, ms, ok := s.analyzeContext(w, r, req.AnchorHeroID, store.SynergiesForAnchor,
+	hero, ms, ok := s.analyzeContext(w, r, req.AnchorHeroID, postgres.SynergiesForAnchor,
 		"anchor_hero_not_found", "synergy_data_not_found", "Synergy data was not found for the anchor hero.")
 	if !ok {
 		return
 	}
-	if _, err := store.GetHero(r.Context(), s.db, req.SynergyHeroID); errors.Is(err, pgx.ErrNoRows) {
+	if _, err := postgres.GetHero(r.Context(), s.db, req.SynergyHeroID); errors.Is(err, pgx.ErrNoRows) {
 		writeError(w, http.StatusNotFound, "synergy_hero_not_found", "Synergy hero was not found in the dataset.")
 		return
 	} else if err != nil {

@@ -1,3 +1,7 @@
+// Package api serves the public HTTP surface: hero lookups read straight from
+// Postgres, analyze endpoints hand a matchup to the analyzer. Handlers hold no
+// business rules — they parse a request, call one function, and shape the
+// response. Every request is read-only.
 package api
 
 import (
@@ -9,31 +13,31 @@ import (
 	"strings"
 
 	"github.com/yeremi777/mlbb-analyzer-service/internal/analyzer"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/postgres"
 	"github.com/yeremi777/mlbb-analyzer-service/internal/ratelimit"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/store"
 )
 
 // Analyzer scores and explains matchups via an AI provider chain. Nil disables
 // the analyze endpoints (they respond 504 ai_provider_not_configured).
 type Analyzer interface {
-	ScoreCounters(ctx context.Context, target staticdata.Hero, ms []store.HeroMatchup, language string) (*analyzer.ScoresResult, error)
-	ScoreSynergies(ctx context.Context, anchor staticdata.Hero, ms []store.HeroMatchup, language string) (*analyzer.ScoresResult, error)
-	CounterDetail(ctx context.Context, target staticdata.Hero, m store.HeroMatchup, language string) (*analyzer.DetailResult, error)
-	SynergyDetail(ctx context.Context, anchor staticdata.Hero, m store.HeroMatchup, language string) (*analyzer.DetailResult, error)
+	ScoreCounters(ctx context.Context, target domain.Hero, ms []domain.HeroMatchup, language string) (*analyzer.ScoresResult, error)
+	ScoreSynergies(ctx context.Context, anchor domain.Hero, ms []domain.HeroMatchup, language string) (*analyzer.ScoresResult, error)
+	CounterDetail(ctx context.Context, target domain.Hero, m domain.HeroMatchup, language string) (*analyzer.DetailResult, error)
+	SynergyDetail(ctx context.Context, anchor domain.Hero, m domain.HeroMatchup, language string) (*analyzer.DetailResult, error)
 	HasCachedScore(kind, heroID, language string) bool
 	HasCachedDetail(kind, heroID, partnerID, language string) bool
 }
 
 type Server struct {
-	db      store.Querier
+	db      postgres.Querier
 	ai      Analyzer
 	limiter *ratelimit.Limiter
 }
 
 // NewServer builds the gateway. ai may be nil (analyze endpoints answer 504);
 // limiter may be nil (no rate limiting).
-func NewServer(db store.Querier, ai Analyzer, limiter *ratelimit.Limiter) *Server {
+func NewServer(db postgres.Querier, ai Analyzer, limiter *ratelimit.Limiter) *Server {
 	return &Server{db: db, ai: ai, limiter: limiter}
 }
 
@@ -82,8 +86,8 @@ func intParam(raw string, fallback, lo, hi int) int {
 	return n
 }
 
-func filterHeroes(heroes []staticdata.Hero, keep func(staticdata.Hero) bool) []staticdata.Hero {
-	out := make([]staticdata.Hero, 0, len(heroes))
+func filterHeroes(heroes []domain.Hero, keep func(domain.Hero) bool) []domain.Hero {
+	out := make([]domain.Hero, 0, len(heroes))
 	for _, h := range heroes {
 		if keep(h) {
 			out = append(out, h)

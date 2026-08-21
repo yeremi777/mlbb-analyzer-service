@@ -1,11 +1,11 @@
-package store
+package postgres
 
 import (
 	"context"
 	"testing"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 )
 
 func testTx(t *testing.T) pgx.Tx {
@@ -35,10 +35,10 @@ func count(t *testing.T, tx pgx.Tx) int {
 	return n
 }
 
-func heroes(uids ...string) []staticdata.Hero {
-	out := make([]staticdata.Hero, len(uids))
+func heroes(uids ...string) []domain.Hero {
+	out := make([]domain.Hero, len(uids))
 	for i, uid := range uids {
-		out[i] = staticdata.Hero{UID: uid, MLID: 1000 + i, Name: uid, Roles: []string{"tank"}, Lanes: []string{"roam"}}
+		out[i] = domain.Hero{UID: uid, MLID: 1000 + i, Name: uid, Roles: []string{"tank"}, Lanes: []string{"roam"}}
 	}
 	return out
 }

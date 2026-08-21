@@ -1,6 +1,6 @@
 package api
 
-import "github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
+import "github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 
 // ErrorBody is the payload of every non-2xx response.
 type ErrorBody struct {
@@ -15,29 +15,29 @@ type ErrorResponse struct {
 
 // HeroListResponse is one page of the hero catalog.
 type HeroListResponse struct {
-	Items []staticdata.Hero `json:"items"`
-	Page  int               `json:"page" example:"1"`
-	Size  int               `json:"size" example:"10"`
-	Total int               `json:"total" example:"132"`
-	Pages int               `json:"pages" example:"14"`
+	Items []domain.Hero `json:"items"`
+	Page  int           `json:"page" example:"1"`
+	Size  int           `json:"size" example:"10"`
+	Total int           `json:"total" example:"132"`
+	Pages int           `json:"pages" example:"14"`
 }
 
 // CounterMatchup is one authored counter relation with the counter hero joined in.
 type CounterMatchup struct {
-	TargetHeroID string             `json:"targetHeroId" example:"tigreal"`
-	CounterHero  staticdata.Hero    `json:"counterHero"`
-	Reasons      []string           `json:"reasons"`
-	CounterTypes []string           `json:"counterTypes"`
-	Proof        []staticdata.Proof `json:"proof"`
+	TargetHeroID string         `json:"targetHeroId" example:"tigreal"`
+	CounterHero  domain.Hero    `json:"counterHero"`
+	Reasons      []string       `json:"reasons"`
+	CounterTypes []string       `json:"counterTypes"`
+	Proof        []domain.Proof `json:"proof"`
 }
 
 // SynergyMatchup is one authored synergy pairing with the partner hero joined in.
 type SynergyMatchup struct {
-	AnchorHeroID string             `json:"anchorHeroId" example:"tigreal"`
-	SynergyHero  staticdata.Hero    `json:"synergyHero"`
-	Reasons      []string           `json:"reasons"`
-	SynergyTypes []string           `json:"synergyTypes"`
-	Proof        []staticdata.Proof `json:"proof"`
+	AnchorHeroID string         `json:"anchorHeroId" example:"tigreal"`
+	SynergyHero  domain.Hero    `json:"synergyHero"`
+	Reasons      []string       `json:"reasons"`
+	SynergyTypes []string       `json:"synergyTypes"`
+	Proof        []domain.Proof `json:"proof"`
 }
 
 // AnalyzeCounterScoreRequest asks for AI scores across every counter of one target hero.

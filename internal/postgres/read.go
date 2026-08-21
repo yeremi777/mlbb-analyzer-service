@@ -1,36 +1,30 @@
-package store
+package postgres
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 )
-
-// Querier is the read-only surface shared by pgxpool.Pool, pgx.Conn, and pgx.Tx.
-type Querier interface {
-	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
-	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
-}
 
 const heroColumns = "uid, mlid, name, roles, lanes, images"
 
-func scanHero(row pgx.Row) (staticdata.Hero, error) {
-	var h staticdata.Hero
+func scanHero(row pgx.Row) (domain.Hero, error) {
+	var h domain.Hero
 	err := row.Scan(&h.UID, &h.MLID, &h.Name, &h.Roles, &h.Lanes, &h.Images)
 	return h, err
 }
 
 // ListHeroes returns every hero ordered by mlid, matching the authored file order.
-func ListHeroes(ctx context.Context, q Querier) ([]staticdata.Hero, error) {
+func ListHeroes(ctx context.Context, q Querier) ([]domain.Hero, error) {
 	rows, err := q.Query(ctx, "SELECT "+heroColumns+" FROM public.heroes ORDER BY mlid")
 	if err != nil {
 		return nil, fmt.Errorf("list heroes: %w", err)
 	}
 	defer rows.Close()
 
-	var heroes []staticdata.Hero
+	var heroes []domain.Hero
 	for rows.Next() {
 		h, err := scanHero(rows)
 		if err != nil {
@@ -42,32 +36,23 @@ func ListHeroes(ctx context.Context, q Querier) ([]staticdata.Hero, error) {
 }
 
 // GetHero returns one hero by uid; pgx.ErrNoRows when absent.
-func GetHero(ctx context.Context, q Querier, uid string) (staticdata.Hero, error) {
+func GetHero(ctx context.Context, q Querier, uid string) (domain.Hero, error) {
 	return scanHero(q.QueryRow(ctx, "SELECT "+heroColumns+" FROM public.heroes WHERE uid = $1", uid))
-}
-
-// HeroMatchup is one counter or synergy relation with the partner hero joined in.
-type HeroMatchup struct {
-	First   string
-	Second  staticdata.Hero
-	Reasons []string
-	Types   []string
-	Proof   []staticdata.Proof
 }
 
 // CountersForTarget returns the target hero's counter matchups with proofs,
 // ordered by counter hero id.
-func CountersForTarget(ctx context.Context, q Querier, target string) ([]HeroMatchup, error) {
+func CountersForTarget(ctx context.Context, q Querier, target string) ([]domain.HeroMatchup, error) {
 	return matchupsFor(ctx, q, counterTables, target)
 }
 
 // SynergiesForAnchor returns the anchor hero's synergy pairings with proofs,
 // ordered by synergy hero id.
-func SynergiesForAnchor(ctx context.Context, q Querier, anchor string) ([]HeroMatchup, error) {
+func SynergiesForAnchor(ctx context.Context, q Querier, anchor string) ([]domain.HeroMatchup, error) {
 	return matchupsFor(ctx, q, synergyTables, anchor)
 }
 
-func matchupsFor(ctx context.Context, q Querier, t matchupTables, first string) ([]HeroMatchup, error) {
+func matchupsFor(ctx context.Context, q Querier, t matchupTables, first string) ([]domain.HeroMatchup, error) {
 	rows, err := q.Query(ctx, fmt.Sprintf(
 		`SELECT m.%s, m.reasons, m.%s, %s
 		 FROM %s m JOIN public.heroes h ON h.uid = m.%s
@@ -79,16 +64,16 @@ func matchupsFor(ctx context.Context, q Querier, t matchupTables, first string) 
 	}
 	defer rows.Close()
 
-	var ms []HeroMatchup
+	var ms []domain.HeroMatchup
 	byPartner := map[string]int{}
 	for rows.Next() {
-		m := HeroMatchup{First: first}
+		m := domain.HeroMatchup{First: first}
 		var partner string
 		if err := rows.Scan(&partner, &m.Reasons, &m.Types,
 			&m.Second.UID, &m.Second.MLID, &m.Second.Name, &m.Second.Roles, &m.Second.Lanes, &m.Second.Images); err != nil {
 			return nil, fmt.Errorf("scan matchup: %w", err)
 		}
-		m.Proof = []staticdata.Proof{}
+		m.Proof = []domain.Proof{}
 		byPartner[partner] = len(ms)
 		ms = append(ms, m)
 	}
@@ -110,7 +95,7 @@ func matchupsFor(ctx context.Context, q Querier, t matchupTables, first string) 
 
 	for proofRows.Next() {
 		var partner string
-		var p staticdata.Proof
+		var p domain.Proof
 		if err := proofRows.Scan(&partner, &p.ID, &p.Category, &p.Priority, &p.Impact,
 			&p.Summary, &p.WorksBestWhen, &p.FailureCases); err != nil {
 			return nil, fmt.Errorf("scan proof: %w", err)

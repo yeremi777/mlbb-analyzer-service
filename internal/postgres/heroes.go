@@ -1,11 +1,11 @@
-package store
+package postgres
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 )
 
 // SyncHeroes makes public.heroes match the given source exactly: rows absent
@@ -13,7 +13,7 @@ import (
 // survivor on a unique column like mlid), then present heroes are upserted,
 // touching updated_at only on real change. Callers own the transaction, so a
 // failure anywhere leaves the table untouched.
-func SyncHeroes(ctx context.Context, tx pgx.Tx, heroes []staticdata.Hero) error {
+func SyncHeroes(ctx context.Context, tx pgx.Tx, heroes []domain.Hero) error {
 	batch := &pgx.Batch{}
 	uids := make([]string, len(heroes))
 	for i, h := range heroes {

@@ -1,3 +1,6 @@
+// Package analyzer turns a matchup into a score or a written explanation by
+// prompting an AI provider, with a cache in front and a fallback chain behind.
+// It is called by api and speaks only in domain types.
 package analyzer
 
 import (
@@ -9,8 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/store"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 )
 
 // Error is a structured analyzer failure carrying the API error code.
@@ -199,7 +201,7 @@ func rank(items []scoringItem) []ScoreRecommendation {
 	return out
 }
 
-func (a *Analyzer) score(ctx context.Context, cacheKey, idKey string, messages []Message, ms []store.HeroMatchup) (*ScoresResult, error) {
+func (a *Analyzer) score(ctx context.Context, cacheKey, idKey string, messages []Message, ms []domain.HeroMatchup) (*ScoresResult, error) {
 	if cached, ok := a.cacheGet(cacheKey); ok {
 		return cached.(*ScoresResult), nil
 	}
@@ -221,13 +223,13 @@ func (a *Analyzer) score(ctx context.Context, cacheKey, idKey string, messages [
 }
 
 // ScoreCounters scores every counter matchup of the target hero in one call.
-func (a *Analyzer) ScoreCounters(ctx context.Context, target staticdata.Hero, ms []store.HeroMatchup, language string) (*ScoresResult, error) {
+func (a *Analyzer) ScoreCounters(ctx context.Context, target domain.Hero, ms []domain.HeroMatchup, language string) (*ScoresResult, error) {
 	return a.score(ctx, "counter-score:"+target.UID+":"+language, "counterHeroId",
 		buildScoringMessages(target, ms, language), ms)
 }
 
 // ScoreSynergies scores every synergy pairing of the anchor hero in one call.
-func (a *Analyzer) ScoreSynergies(ctx context.Context, anchor staticdata.Hero, ms []store.HeroMatchup, language string) (*ScoresResult, error) {
+func (a *Analyzer) ScoreSynergies(ctx context.Context, anchor domain.Hero, ms []domain.HeroMatchup, language string) (*ScoresResult, error) {
 	return a.score(ctx, "synergy-score:"+anchor.UID+":"+language, "synergyHeroId",
 		buildSynergyScoringMessages(anchor, ms, language), ms)
 }
@@ -266,7 +268,7 @@ func validateDetail(payload map[string]any, allowedIDs map[string]bool) (*Detail
 	}, nil
 }
 
-func (a *Analyzer) detail(ctx context.Context, cacheKey string, messages []Message, m store.HeroMatchup, language string) (*DetailResult, error) {
+func (a *Analyzer) detail(ctx context.Context, cacheKey string, messages []Message, m domain.HeroMatchup, language string) (*DetailResult, error) {
 	if cached, ok := a.cacheGet(cacheKey); ok {
 		return cached.(*DetailResult), nil
 	}
@@ -303,13 +305,13 @@ func (a *Analyzer) detail(ctx context.Context, cacheKey string, messages []Messa
 
 // CounterDetail explains one counter matchup, retrying once with a repair
 // prompt when the model's first JSON fails validation.
-func (a *Analyzer) CounterDetail(ctx context.Context, target staticdata.Hero, m store.HeroMatchup, language string) (*DetailResult, error) {
+func (a *Analyzer) CounterDetail(ctx context.Context, target domain.Hero, m domain.HeroMatchup, language string) (*DetailResult, error) {
 	return a.detail(ctx, "counter-detail:"+target.UID+":"+m.Second.UID+":"+language,
 		buildDetailMessages(target, m, language), m, language)
 }
 
 // SynergyDetail is CounterDetail for one synergy pairing.
-func (a *Analyzer) SynergyDetail(ctx context.Context, anchor staticdata.Hero, m store.HeroMatchup, language string) (*DetailResult, error) {
+func (a *Analyzer) SynergyDetail(ctx context.Context, anchor domain.Hero, m domain.HeroMatchup, language string) (*DetailResult, error) {
 	return a.detail(ctx, "synergy-detail:"+anchor.UID+":"+m.Second.UID+":"+language,
 		buildSynergyDetailMessages(anchor, m, language), m, language)
 }

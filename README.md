@@ -55,8 +55,8 @@ cmd/seed         seeder binary: data/static -> Postgres, idempotent
 cmd/api          REST API binary: the gateway the frontend consumes
 internal/api     HTTP gateway: routes, handlers, middleware, Swagger annotations
 internal/analyzer AI scoring: prompts, provider chain, cache
-internal/store   Postgres access: sync + read queries
-internal/staticdata  dataset types, loading, file-level validation
+internal/mlbb    domain types, dataset loading, file-level validation
+internal/postgres  Postgres adapter: sync + read queries
 internal/ratelimit   Redis-backed analyze rate limiting
 internal/config  environment configuration helpers
 internal/docs    generated OpenAPI spec (make docs)

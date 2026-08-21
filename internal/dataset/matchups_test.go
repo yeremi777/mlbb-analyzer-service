@@ -1,4 +1,4 @@
-package staticdata
+package dataset
 
 import (
 	"os"
@@ -28,7 +28,7 @@ const validMatchup = `[{"targetHeroId":"tigreal","counterHeroId":"diggie",
 	"proof":[{"id":"p1","category":"skill-interaction","priority":"primary","impact":"high","summary":"s"}]}]`
 
 func TestLoadCountersReal(t *testing.T) {
-	ms, err := LoadCounters(filepath.Join("..", "..", "data", "static"))
+	ms, err := loadCounters(filepath.Join("..", "..", "data", "static"))
 	if err != nil {
 		t.Fatalf("load real counters: %v", err)
 	}
@@ -45,7 +45,7 @@ func TestLoadCountersReal(t *testing.T) {
 }
 
 func TestLoadSynergiesReal(t *testing.T) {
-	ms, err := LoadSynergies(filepath.Join("..", "..", "data", "static"))
+	ms, err := loadSynergies(filepath.Join("..", "..", "data", "static"))
 	if err != nil {
 		t.Fatalf("load real synergies: %v", err)
 	}
@@ -58,7 +58,7 @@ func TestLoadCountersRejectsFilenameMismatch(t *testing.T) {
 	dir := writeDataset(t,
 		`{"files":["counters/miya.json"]}`,
 		map[string]string{"counters/miya.json": validMatchup}) // targetHeroId is tigreal
-	if _, err := LoadCounters(dir); err == nil {
+	if _, err := loadCounters(dir); err == nil {
 		t.Fatal("want filename/target mismatch error, got nil")
 	}
 }
@@ -69,7 +69,7 @@ func TestLoadCountersRejectsDuplicatePair(t *testing.T) {
 		{"targetHeroId":"tigreal","counterHeroId":"diggie","reasons":["r"],"counterTypes":["t"],
 		"proof":[{"id":"p2","category":"skill-interaction","priority":"primary","impact":"high","summary":"s"}]}]`
 	dir := writeDataset(t, `{"files":["counters/tigreal.json"]}`, map[string]string{"counters/tigreal.json": dup})
-	if _, err := LoadCounters(dir); err == nil {
+	if _, err := loadCounters(dir); err == nil {
 		t.Fatal("want duplicate pair error, got nil")
 	}
 }
@@ -81,7 +81,7 @@ func TestLoadCountersRejectsDuplicateProofID(t *testing.T) {
 		"proof":[{"id":"same","category":"skill-interaction","priority":"primary","impact":"high","summary":"s"}]}]`
 	dir := writeDataset(t, `{"files":["counters/tigreal.json","counters/miya.json"]}`,
 		map[string]string{"counters/tigreal.json": a, "counters/miya.json": b})
-	if _, err := LoadCounters(dir); err == nil {
+	if _, err := loadCounters(dir); err == nil {
 		t.Fatal("want duplicate proof id error, got nil")
 	}
 }

@@ -9,8 +9,8 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
 	"github.com/yeremi777/mlbb-analyzer-service/internal/config"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/store"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/dataset"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/postgres"
 )
 
 func run() error {
@@ -19,15 +19,7 @@ func run() error {
 
 	_ = godotenv.Load()
 
-	heroes, err := staticdata.LoadHeroes(*dataDir)
-	if err != nil {
-		return err
-	}
-	counters, err := staticdata.LoadCounters(*dataDir)
-	if err != nil {
-		return err
-	}
-	synergies, err := staticdata.LoadSynergies(*dataDir)
+	ds, err := dataset.Load(*dataDir)
 	if err != nil {
 		return err
 	}
@@ -40,19 +32,19 @@ func run() error {
 	defer conn.Close(ctx)
 
 	if err := pgx.BeginFunc(ctx, conn, func(tx pgx.Tx) error {
-		if err := store.SyncHeroes(ctx, tx, heroes); err != nil {
+		if err := postgres.SyncHeroes(ctx, tx, ds.Heroes); err != nil {
 			return err
 		}
-		if err := store.SyncCounters(ctx, tx, counters); err != nil {
+		if err := postgres.SyncCounters(ctx, tx, ds.Counters); err != nil {
 			return err
 		}
-		return store.SyncSynergies(ctx, tx, synergies)
+		return postgres.SyncSynergies(ctx, tx, ds.Synergies)
 	}); err != nil {
 		return err
 	}
 
 	log.Printf("synced %d heroes, %d counter matchups, %d synergy matchups",
-		len(heroes), len(counters), len(synergies))
+		len(ds.Heroes), len(ds.Counters), len(ds.Synergies))
 	return nil
 }
 

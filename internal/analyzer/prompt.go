@@ -4,8 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/store"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 )
 
 const scoringSystemInstruction = `You are scoring Mobile Legends hero counter recommendations.
@@ -140,7 +139,7 @@ type heroContext struct {
 	Lanes []string `json:"lanes"`
 }
 
-func heroCtx(h staticdata.Hero) heroContext {
+func heroCtx(h domain.Hero) heroContext {
 	return heroContext{UID: h.UID, Name: h.Name, Roles: h.Roles, Lanes: h.Lanes}
 }
 
@@ -154,7 +153,7 @@ type proofContext struct {
 	FailureCases  *[]string `json:"failureCases,omitempty"`
 }
 
-func proofCtx(p staticdata.Proof, includeDetail bool) proofContext {
+func proofCtx(p domain.Proof, includeDetail bool) proofContext {
 	ctx := proofContext{ID: p.ID, Category: p.Category, Priority: p.Priority, Impact: p.Impact, Summary: p.Summary}
 	if includeDetail {
 		wbw, fc := orEmpty(p.WorksBestWhen), orEmpty(p.FailureCases)
@@ -170,7 +169,7 @@ func orEmpty(s []string) []string {
 	return s
 }
 
-func proofCtxs(proofs []staticdata.Proof, includeDetail bool) []proofContext {
+func proofCtxs(proofs []domain.Proof, includeDetail bool) []proofContext {
 	out := make([]proofContext, len(proofs))
 	for i, p := range proofs {
 		out[i] = proofCtx(p, includeDetail)
@@ -200,7 +199,7 @@ type counterMatchupContext struct {
 	CounterHero   heroContext    `json:"counterHero"`
 }
 
-func buildScoringMessages(target staticdata.Hero, ms []store.HeroMatchup, language string) []Message {
+func buildScoringMessages(target domain.Hero, ms []domain.HeroMatchup, language string) []Message {
 	ctxs := make([]counterMatchupContext, len(ms))
 	for i, m := range ms {
 		ctxs[i] = counterMatchupContext{
@@ -212,7 +211,7 @@ func buildScoringMessages(target staticdata.Hero, ms []store.HeroMatchup, langua
 	return []Message{{Role: "system", Content: scoringSystemInstruction}, userMessage(language, payload)}
 }
 
-func buildDetailMessages(target staticdata.Hero, m store.HeroMatchup, language string) []Message {
+func buildDetailMessages(target domain.Hero, m domain.HeroMatchup, language string) []Message {
 	ctx := counterMatchupContext{
 		CounterHeroID: m.Second.UID, Reasons: m.Reasons, CounterTypes: m.Types,
 		Proof: proofCtxs(m.Proof, true), CounterHero: heroCtx(m.Second),
@@ -229,7 +228,7 @@ type synergyMatchupContext struct {
 	SynergyHero   heroContext    `json:"synergyHero"`
 }
 
-func buildSynergyScoringMessages(anchor staticdata.Hero, ms []store.HeroMatchup, language string) []Message {
+func buildSynergyScoringMessages(anchor domain.Hero, ms []domain.HeroMatchup, language string) []Message {
 	ctxs := make([]synergyMatchupContext, len(ms))
 	for i, m := range ms {
 		ctxs[i] = synergyMatchupContext{
@@ -241,7 +240,7 @@ func buildSynergyScoringMessages(anchor staticdata.Hero, ms []store.HeroMatchup,
 	return []Message{{Role: "system", Content: synergyScoringSystemInstruction}, userMessage(language, payload)}
 }
 
-func buildSynergyDetailMessages(anchor staticdata.Hero, m store.HeroMatchup, language string) []Message {
+func buildSynergyDetailMessages(anchor domain.Hero, m domain.HeroMatchup, language string) []Message {
 	ctx := synergyMatchupContext{
 		SynergyHeroID: m.Second.UID, Reasons: m.Reasons, SynergyTypes: m.Types,
 		Proof: proofCtxs(m.Proof, true), SynergyHero: heroCtx(m.Second),

@@ -155,14 +155,14 @@ definitions:
   api.CounterMatchup:
     properties:
       counterHero:
-        $ref: '#/definitions/staticdata.Hero'
+        $ref: '#/definitions/domain.Hero'
       counterTypes:
         items:
           type: string
         type: array
       proof:
         items:
-          $ref: '#/definitions/staticdata.Proof'
+          $ref: '#/definitions/domain.Proof'
         type: array
       reasons:
         items:
@@ -211,7 +211,7 @@ definitions:
     properties:
       items:
         items:
-          $ref: '#/definitions/staticdata.Hero'
+          $ref: '#/definitions/domain.Hero'
         type: array
       page:
         example: 1
@@ -233,14 +233,14 @@ definitions:
         type: string
       proof:
         items:
-          $ref: '#/definitions/staticdata.Proof'
+          $ref: '#/definitions/domain.Proof'
         type: array
       reasons:
         items:
           type: string
         type: array
       synergyHero:
-        $ref: '#/definitions/staticdata.Hero'
+        $ref: '#/definitions/domain.Hero'
       synergyTypes:
         items:
           type: string
@@ -261,7 +261,7 @@ definitions:
         example: pharsa
         type: string
     type: object
-  staticdata.Hero:
+  domain.Hero:
     properties:
       images:
         description: Open-ended image URLs by variant, currently "head".
@@ -282,7 +282,7 @@ definitions:
       uid:
         type: string
     type: object
-  staticdata.Proof:
+  domain.Proof:
     properties:
       category:
         type: string
@@ -476,7 +476,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/staticdata.Hero'
+            $ref: '#/definitions/domain.Hero'
         "404":
           description: Not Found
           schema:

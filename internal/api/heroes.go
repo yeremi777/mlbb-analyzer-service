@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/store"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/postgres"
 )
 
 // listHeroes godoc
@@ -31,7 +31,7 @@ func (s *Server) listHeroes(w http.ResponseWriter, r *http.Request) {
 	page := intParam(q.Get("page"), 1, 1, math.MaxInt)
 	size := intParam(q.Get("size"), 10, 1, 100)
 
-	heroes, err := store.ListHeroes(r.Context(), s.db)
+	heroes, err := postgres.ListHeroes(r.Context(), s.db)
 	if err != nil {
 		s.internalError(w, "list heroes", err)
 		return
@@ -39,17 +39,17 @@ func (s *Server) listHeroes(w http.ResponseWriter, r *http.Request) {
 
 	filtered := heroes
 	if search := strings.ToLower(strings.TrimSpace(q.Get("search"))); search != "" {
-		filtered = filterHeroes(filtered, func(h staticdata.Hero) bool {
+		filtered = filterHeroes(filtered, func(h domain.Hero) bool {
 			return strings.Contains(strings.ToLower(h.Name), search)
 		})
 	}
 	if role := strings.ToLower(strings.TrimSpace(q.Get("role"))); role != "" {
-		filtered = filterHeroes(filtered, func(h staticdata.Hero) bool {
+		filtered = filterHeroes(filtered, func(h domain.Hero) bool {
 			return containsFold(h.Roles, role)
 		})
 	}
 	if lane := strings.ToLower(strings.TrimSpace(q.Get("lane"))); lane != "" {
-		filtered = filterHeroes(filtered, func(h staticdata.Hero) bool {
+		filtered = filterHeroes(filtered, func(h domain.Hero) bool {
 			return containsFold(h.Lanes, lane)
 		})
 	}
@@ -74,11 +74,11 @@ func (s *Server) listHeroes(w http.ResponseWriter, r *http.Request) {
 //	@Tags			heroes
 //	@Produce		json
 //	@Param			heroId	path		string	true	"Hero UID"	example(tigreal)
-//	@Success		200		{object}	staticdata.Hero
+//	@Success		200		{object}	domain.Hero
 //	@Failure		404		{object}	ErrorResponse
 //	@Router			/api/heroes/{heroId} [get]
 func (s *Server) getHero(w http.ResponseWriter, r *http.Request) {
-	hero, err := store.GetHero(r.Context(), s.db, r.PathValue("heroId"))
+	hero, err := postgres.GetHero(r.Context(), s.db, r.PathValue("heroId"))
 	if errors.Is(err, pgx.ErrNoRows) {
 		writeError(w, http.StatusNotFound, "hero_not_found", "Hero was not found in the dataset.")
 		return
@@ -101,7 +101,7 @@ func (s *Server) getHero(w http.ResponseWriter, r *http.Request) {
 //	@Failure		404		{object}	ErrorResponse
 //	@Router			/api/heroes/{heroId}/counters [get]
 func (s *Server) listCounters(w http.ResponseWriter, r *http.Request) {
-	ms, ok := s.matchupsForHero(w, r, store.CountersForTarget, "counter_data_not_found",
+	ms, ok := s.matchupsForHero(w, r, postgres.CountersForTarget, "counter_data_not_found",
 		"Counter data was not found for the target hero.")
 	if !ok {
 		return
@@ -127,7 +127,7 @@ func (s *Server) listCounters(w http.ResponseWriter, r *http.Request) {
 //	@Failure		404		{object}	ErrorResponse
 //	@Router			/api/heroes/{heroId}/synergies [get]
 func (s *Server) listSynergies(w http.ResponseWriter, r *http.Request) {
-	ms, ok := s.matchupsForHero(w, r, store.SynergiesForAnchor, "synergy_data_not_found",
+	ms, ok := s.matchupsForHero(w, r, postgres.SynergiesForAnchor, "synergy_data_not_found",
 		"Synergy data was not found for the anchor hero.")
 	if !ok {
 		return
@@ -144,11 +144,11 @@ func (s *Server) listSynergies(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) matchupsForHero(
 	w http.ResponseWriter, r *http.Request,
-	fetch func(context.Context, store.Querier, string) ([]store.HeroMatchup, error),
+	fetch func(context.Context, postgres.Querier, string) ([]domain.HeroMatchup, error),
 	emptyCode, emptyMessage string,
-) ([]store.HeroMatchup, bool) {
+) ([]domain.HeroMatchup, bool) {
 	id := r.PathValue("heroId")
-	if _, err := store.GetHero(r.Context(), s.db, id); errors.Is(err, pgx.ErrNoRows) {
+	if _, err := postgres.GetHero(r.Context(), s.db, id); errors.Is(err, pgx.ErrNoRows) {
 		writeError(w, http.StatusNotFound, "hero_not_found", "Hero was not found in the dataset.")
 		return nil, false
 	} else if err != nil {

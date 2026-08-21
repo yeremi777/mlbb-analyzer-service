@@ -6,8 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yeremi777/mlbb-analyzer-service/internal/staticdata"
-	"github.com/yeremi777/mlbb-analyzer-service/internal/store"
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 )
 
 type fakeProvider struct {
@@ -30,16 +29,16 @@ func (f *fakeProvider) CompleteJSON(_ context.Context, _ []Message) (map[string]
 	return nil, errors.New("fake exhausted")
 }
 
-func hero(uid string) staticdata.Hero {
-	return staticdata.Hero{UID: uid, MLID: 1, Name: uid, Roles: []string{"tank"}}
+func hero(uid string) domain.Hero {
+	return domain.Hero{UID: uid, MLID: 1, Name: uid, Roles: []string{"tank"}}
 }
 
-func matchups() []store.HeroMatchup {
-	return []store.HeroMatchup{
+func matchups() []domain.HeroMatchup {
+	return []domain.HeroMatchup{
 		{First: "tigreal", Second: hero("diggie"), Reasons: []string{"r"}, Types: []string{"anti-cc"},
-			Proof: []staticdata.Proof{{ID: "p1", Category: "skill-interaction", Priority: "primary", Impact: "high", Summary: "s"}}},
+			Proof: []domain.Proof{{ID: "p1", Category: "skill-interaction", Priority: "primary", Impact: "high", Summary: "s"}}},
 		{First: "tigreal", Second: hero("valir"), Reasons: []string{"r"}, Types: []string{"burst"},
-			Proof: []staticdata.Proof{{ID: "p2", Category: "skill-interaction", Priority: "primary", Impact: "high", Summary: "s"}}},
+			Proof: []domain.Proof{{ID: "p2", Category: "skill-interaction", Priority: "primary", Impact: "high", Summary: "s"}}},
 	}
 }
 

@@ -31,8 +31,7 @@ TASKS.md
 .claude/
 .pi/
 
-/docs/research/*
-/docs/specs/*
 # Local-only project knowledge (kept out of the repo by design)
+docs/adr/
 docs/research/
 docs/specs/
