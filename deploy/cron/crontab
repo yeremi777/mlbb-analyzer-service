@@ -1,0 +1,16 @@
+# MLBB analyzer — daily ingest into the raw zone.
+#
+# Install:  crontab -l 2>/dev/null | cat - deploy/cron/crontab | crontab -
+# Verify:   crontab -l
+#
+# CRON_TZ applies to every entry below it. A VPS clock is usually UTC, so
+# without this the hour below means 07:00 UTC, not 07:00 local.
+CRON_TZ=Asia/Jakarta
+
+# "all" fetches the patch calendar first, so a patch released today is known
+# before today's statistics land; a failed patch fetch still lets statistics
+# through, because patch attribution is a read-time join that the next
+# successful run repairs retroactively.
+#
+# flock keeps a slow run from overlapping the next one; -n skips rather than queues.
+0 7 * * * /usr/bin/flock -n /tmp/mlbb-collector.lock /srv/mlbb-analyzer-service/deploy/cron/collector.sh all
