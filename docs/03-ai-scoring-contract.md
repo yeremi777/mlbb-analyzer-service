@@ -66,7 +66,7 @@ More context increases confidence, not necessarily score.
 Providers live under `app/analyzer/providers/`:
 
 - `base.py` — shared `ChatProvider` protocol, JSON parsing, errors
-- `openrouter.py` — [OpenRouter Python SDK](https://openrouter.ai/sdk)
+- `openrouter.py` — [OpenRouter Go SDK](https://openrouter.ai/sdk)
 - `openai.py` — placeholder for direct OpenAI (not wired yet)
 
 `create_chat_provider()` in `providers/__init__.py` selects the implementation from `AI_PROVIDER`.

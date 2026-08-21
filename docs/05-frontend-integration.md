@@ -1,11 +1,11 @@
 # Frontend Integration
 
-The frontend should call the Python service instead of importing counter datasets directly.
+The frontend should call the analyzer service instead of importing counter datasets directly.
 
 ## Environment Variable
 
 ```txt
-NEXT_PUBLIC_ANALYZER_API_URL=http://localhost:8000
+NEXT_PUBLIC_ANALYZER_API_URL=http://localhost:8080
 ```
 
 ## Request Flow

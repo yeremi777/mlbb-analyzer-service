@@ -1,29 +1,16 @@
-# Python cache
-__pycache__/
-*.py[cod]
-*$py.class
+# Binaries and build output
+/bin/
+*.exe
+*.test
+*.out
 
-# Virtual environments
-.venv/
-venv/
-env/
+# Coverage
+coverage.*
+*.coverprofile
 
 # Environment files
-.env*.local
 .env
-
-# Build/package output
-build/
-dist/
-*.egg-info/
-
-# Test/type/lint cache
-.pytest_cache/
-.coverage
-.coverage.*
-htmlcov/
-.mypy_cache/
-.ruff_cache/
+.env*.local
 
 # Logs and local runtime files
 *.log
@@ -43,3 +30,9 @@ TASKS.md
 .agent/
 .claude/
 .pi/
+
+/docs/research/*
+/docs/specs/*
+# Local-only project knowledge (kept out of the repo by design)
+docs/research/
+docs/specs/

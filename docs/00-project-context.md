@@ -1,8 +1,8 @@
-# Python Analyzer Project Context
+# Analyzer Service Project Context
 
-The Python analyzer service is a separate backend project for `mlbb-analyzer`.
+The analyzer service is a separate Go backend project for `mlbb-analyzer`.
 
-The frontend Next.js app should focus on browser UI, hero selection, reveal animation, and rendering analysis results. The Python service should focus on dataset ownership, deterministic validation, AI-assisted scoring, and explanation output.
+The frontend Next.js app should focus on browser UI, hero selection, reveal animation, and rendering analysis results. The service should focus on dataset ownership, deterministic validation, AI-assisted scoring, and explanation output.
 
 ## Goal
 
@@ -10,12 +10,12 @@ Provide an API that receives a selected enemy hero and returns ranked counter re
 
 ## Initial Scope
 
-- FastAPI HTTP service.
-- Static JSON dataset owned by the Python project.
+- Go HTTP service.
+- Static JSON dataset owned by this project, seeded into Postgres.
 - One target hero analysis.
 - AI scoring from reviewed dataset context.
 - Structured JSON response for the frontend.
-- No database.
+- Postgres as the dataset store.
 - No authentication.
 - No scraping.
 - No player profile or match history analysis.
@@ -47,6 +47,6 @@ Other heroes can exist as counter heroes, but only these seven target heroes are
 - Render hero selector and result cards.
 - Show score default value `0` before analysis completes.
 - Show loading or number ticker animation while the API is analyzing.
-- Render final `score`, `summary`, conditions, and failure cases returned by the Python service.
+- Render final `score`, `summary`, conditions, and failure cases returned by the service.
 - Avoid duplicating AI scoring logic in the frontend.
 

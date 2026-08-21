@@ -1,172 +1,77 @@
 # MLBB Analyzer Service
 
-FastAPI backend service for an MLBB counter-pick analyzer.
+Go backend service for an MLBB counter-pick analyzer.
 
-The service loads a local hero and counter dataset, validates it on startup, and exposes API endpoints for the frontend hero selector and counter recommendation flow.
+The service seeds a hand-authored hero, counter, and synergy dataset from `data/static/` into Postgres, validates it through database constraints, and exposes a REST API for the frontend hero selector, counter reveal, and AI analysis flow.
 
 ## Features
 
 - Hero list API with search, role, lane, and pagination filters
 - Hero detail API
 - Hero counter matchup API
-- Dataset validation at startup
-- Swagger/OpenAPI documentation
-- Fast AI scoring endpoint for all counters (`POST /api/counters/analyze-score`)
-- On-demand AI detail endpoint per counter card (`POST /api/counters/analyze-detail`)
-- Hero synergy matchup API (`GET /api/heroes/{id}/synergies`)
+- Hero synergy matchup API
+- AI counter scoring and detail endpoints (`POST /api/counters/analyze-score`, `POST /api/counters/analyze-detail`)
 - AI synergy scoring and detail endpoints (`POST /api/synergies/analyze-score`, `POST /api/synergies/analyze-detail`)
+- Idempotent dataset seeding (`cmd/seed`) with sync-to-git semantics
+- Versioned SQL migrations via goose
+- Swagger UI at `/docs`
 
 ## Tech Stack
 
-- Python 3.12+
-- FastAPI
-- Pydantic v2
-- uv
-- pytest
+- Go 1.26+
+- PostgreSQL 15+
+- pgx/v5 (hand-written SQL, no ORM)
+- goose (migrations, run via `go tool goose`)
 
 ## Getting Started
 
-Install dependencies:
+Create `.env` from the example and point it at your local Postgres:
 
 ```bash
-uv sync --extra dev
+cp .env.example .env
 ```
 
-Run the development server:
+Apply migrations and seed the dataset:
 
 ```bash
-uv run python -m app.server
+make migrate-up
+make seed
 ```
 
-The API runs at:
-
-```txt
-http://127.0.0.1:8000
-```
-
-Host, port, and reload behavior can be changed in `.env`:
-
-```txt
-HOST=127.0.0.1
-PORT=8000
-RELOAD=true
-```
-
-Use `RELOAD=true` for local development. Use `RELOAD=false` when running without hot reload.
-
-Swagger docs:
-
-```txt
-http://127.0.0.1:8000/docs
-```
-
-## Tests
+Run the API:
 
 ```bash
-uv run pytest
+make api
 ```
 
-## Dataset validation
+The API runs at `http://127.0.0.1:8080` (override with `API_HOST` / `API_PORT`).
 
-Validate the bundled static dataset without starting the API server:
+Swagger docs: `http://127.0.0.1:8080/docs`
+
+## Project Layout
+
+```
+cmd/seed         seeder binary: data/static -> Postgres, idempotent
+cmd/api          REST API binary: the gateway the frontend consumes
+internal/api     HTTP gateway: routes, handlers, middleware, Swagger annotations
+internal/analyzer AI scoring: prompts, provider chain, cache
+internal/store   Postgres access: sync + read queries
+internal/staticdata  dataset types, loading, file-level validation
+internal/ratelimit   Redis-backed analyze rate limiting
+internal/config  environment configuration helpers
+internal/docs    generated OpenAPI spec (make docs)
+data/static      hand-authored hero/counter/synergy dataset (source of truth in git)
+migrations       forward-only SQL migrations (goose)
+```
+
+## Testing
 
 ```bash
-uv run mlbb-validate-dataset
+make test
 ```
 
-Validate another dataset directory:
+Store and API tests run against the local Postgres in rolled-back transactions.
 
-```bash
-uv run mlbb-validate-dataset --data-dir app/data/static
-```
+## Notice
 
-The command exits non-zero and prints validation errors when hero or counter data is invalid.
-
-## API Endpoints
-
-- `GET /health`
-- `GET /api/heroes`
-- `GET /api/heroes/{hero_id}`
-- `GET /api/heroes/{hero_id}/counters`
-- `GET /api/heroes/{hero_id}/synergies`
-- `POST /api/counters/analyze-score`
-- `POST /api/counters/analyze-detail`
-- `POST /api/synergies/analyze-score`
-- `POST /api/synergies/analyze-detail`
-
-Hero list filters:
-
-- `search`
-- `role`
-- `lane`
-- `page`
-- `size`
-
-Example:
-
-```bash
-curl "http://127.0.0.1:8000/api/heroes?search=tig&role=tank&lane=roam&page=1&size=10"
-```
-
-## Deploy to Vercel
-
-1. Import the GitHub repo in Vercel and choose the **FastAPI** preset.
-2. Set **Install Command** to `uv sync` (no `--extra dev` needed in production).
-3. Add environment variables in the Vercel dashboard:
-
-| Variable | Required | Example |
-|----------|----------|---------|
-| `FRONTEND_ORIGIN` | Yes (production) | `https://your-frontend.vercel.app` |
-| `AI_PROVIDERS` | Yes (for AI scoring) | `openrouter` |
-| `<AI_PROVIDER>_API_KEY` | Yes (for AI scoring) | `sk-or-...` |
-| `<AI_PROVIDER>_MODEL` | Recommended | `openrouter/free` |
-| `AI_TIMEOUT_SECONDS` | Optional | `20` |
-
-**Provider env naming:** set `AI_PROVIDERS` to the provider slug in lowercase (for example `openrouter` or `openai`). For fallback, use a comma-separated priority list such as `openrouter,opencode_zen,openai`; the service tries them left to right. `AI_PROVIDER` still works as a backward-compatible alias for one provider. Build the other AI variables by uppercasing that slug:
-
-- `AI_PROVIDERS=openrouter` → `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`
-- `AI_PROVIDERS=opencode_zen` → `OPENCODE_ZEN_API_KEY`, `OPENCODE_ZEN_MODEL`
-- `AI_PROVIDERS=openai` → `OPENAI_API_KEY`, `OPENAI_MODEL`
-
-Optional provider-specific settings (see `.env.example`) follow the same uppercase prefix, such as `OPENROUTER_SERVER_URL`.
-
-`HOST`, `PORT`, and `RELOAD` are for local `uvicorn` only; Vercel does not need them.
-
-The hero dataset lives in `app/data/static/` and is packaged with the FastAPI app so serverless cold starts can validate and load it.
-
-After deploy:
-
-```bash
-curl https://<your-api>.vercel.app/health
-curl "https://<your-api>.vercel.app/api/heroes?page=1&size=5"
-```
-
-Point the frontend at the API with `NEXT_PUBLIC_ANALYZER_API_URL=https://<your-api>.vercel.app`.
-
-## AI scoring
-
-Copy `.env.example` to `.env`, set `AI_PROVIDERS`, then set `<AI_PROVIDER>_API_KEY` in uppercase (for OpenRouter: `OPENROUTER_API_KEY` from [OpenRouter keys](https://openrouter.ai/settings/keys)).
-
-```bash
-curl -X POST http://127.0.0.1:8000/api/counters/analyze-score \
-  -H "Content-Type: application/json" \
-  -d '{"targetHeroId":"tigreal"}'
-
-curl -X POST http://127.0.0.1:8000/api/counters/analyze-detail \
-  -H "Content-Type: application/json" \
-  -d '{"targetHeroId":"tigreal","counterHeroId":"diggie"}'
-```
-
-Synergy analysis mirrors the counter endpoints, keyed by `anchorHeroId` / `synergyHeroId`:
-
-```bash
-curl -X POST http://127.0.0.1:8000/api/synergies/analyze-score \
-  -H "Content-Type: application/json" \
-  -d '{"anchorHeroId":"tigreal"}'
-
-curl -X POST http://127.0.0.1:8000/api/synergies/analyze-detail \
-  -H "Content-Type: application/json" \
-  -d '{"anchorHeroId":"tigreal","synergyHeroId":"pharsa"}'
-```
-
-Without a configured provider, both endpoints return an error JSON payload (no fallback scores).
+This is a fan-made project. Not affiliated with or endorsed by Moonton.

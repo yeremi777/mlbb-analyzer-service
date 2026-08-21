@@ -1,0 +1,967 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Serves the MLBB hero, counter, and synergy dataset from Postgres and returns AI-scored counter recommendations for frontend consumption.",
+        "title": "MLBB Analyzer Service",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/",
+    "paths": {
+        "/": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Root",
+                "responses": {
+                    "200": {
+                        "description": "Hello, World!",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/counters/analyze-detail": {
+            "post": {
+                "description": "Returns summary, strengths, conditions, and failure cases for one target/counter pair, grounded only in authored proof evidence.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "counters"
+                ],
+                "summary": "Explain one counter matchup in detail",
+                "parameters": [
+                    {
+                        "description": "Target hero, counter hero, and output language",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AnalyzeCounterDetailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AnalyzeCounterDetailResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "target_hero_not_found, counter_hero_not_found, counter_matchup_not_found",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "invalid_request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "rate_limit_exceeded",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "502": {
+                        "description": "ai_provider_error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "rate_limit_unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "ai_provider_not_configured",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/counters/analyze-score": {
+            "post": {
+                "description": "Returns AI-produced score and confidence for every counter matchup of the target hero, ranked best-first. Cached results do not consume rate-limit quota.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "counters"
+                ],
+                "summary": "Score all counter matchups for one target hero",
+                "parameters": [
+                    {
+                        "description": "Target hero and output language",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AnalyzeCounterScoreRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AnalyzeCounterScoreResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "target_hero_not_found, counter_data_not_found",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "invalid_request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "rate_limit_exceeded",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "502": {
+                        "description": "ai_provider_error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "rate_limit_unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "ai_provider_not_configured",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/heroes": {
+            "get": {
+                "description": "Returns heroes from the dataset with search, role, lane, and pagination filters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "heroes"
+                ],
+                "summary": "List heroes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Case-insensitive search by hero name",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "tank",
+                        "description": "Case-insensitive role filter",
+                        "name": "role",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "roam",
+                        "description": "Case-insensitive lane filter",
+                        "name": "lane",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "1-based page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Heroes per page (1-100)",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.HeroListResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/heroes/{heroId}": {
+            "get": {
+                "description": "Returns one hero by dataset UID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "heroes"
+                ],
+                "summary": "Get hero detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "tigreal",
+                        "description": "Hero UID",
+                        "name": "heroId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/staticdata.Hero"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/heroes/{heroId}/counters": {
+            "get": {
+                "description": "Returns authored counter matchups for one target hero, with counter hero details joined in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "heroes"
+                ],
+                "summary": "List hero counters",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "tigreal",
+                        "description": "Target hero UID",
+                        "name": "heroId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.CounterMatchup"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/heroes/{heroId}/synergies": {
+            "get": {
+                "description": "Returns authored synergy pairings for one anchor hero, with partner hero details joined in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "heroes"
+                ],
+                "summary": "List hero synergies",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "tigreal",
+                        "description": "Anchor hero UID",
+                        "name": "heroId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.SynergyMatchup"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/synergies/analyze-detail": {
+            "post": {
+                "description": "Returns summary, strengths, conditions, and failure cases for one anchor/synergy pair, grounded only in authored proof evidence.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "synergies"
+                ],
+                "summary": "Explain one synergy pairing in detail",
+                "parameters": [
+                    {
+                        "description": "Anchor hero, synergy hero, and output language",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AnalyzeSynergyDetailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AnalyzeSynergyDetailResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "anchor_hero_not_found, synergy_hero_not_found, synergy_matchup_not_found",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "invalid_request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "rate_limit_exceeded",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "502": {
+                        "description": "ai_provider_error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "rate_limit_unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "ai_provider_not_configured",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/synergies/analyze-score": {
+            "post": {
+                "description": "Returns AI-produced score and confidence for every synergy pairing of the anchor hero, ranked best-first. Cached results do not consume rate-limit quota.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "synergies"
+                ],
+                "summary": "Score all synergy pairings for one anchor hero",
+                "parameters": [
+                    {
+                        "description": "Anchor hero and output language",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AnalyzeSynergyScoreRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AnalyzeSynergyScoreResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "anchor_hero_not_found, synergy_data_not_found",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "invalid_request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "rate_limit_exceeded",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "502": {
+                        "description": "ai_provider_error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "rate_limit_unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "ai_provider_not_configured",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Lightweight service health status.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.HealthResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.AnalyzeCounterDetailRequest": {
+            "type": "object",
+            "properties": {
+                "counterHeroId": {
+                    "type": "string",
+                    "example": "diggie"
+                },
+                "language": {
+                    "type": "string",
+                    "enum": [
+                        "en",
+                        "id"
+                    ],
+                    "example": "en"
+                },
+                "targetHeroId": {
+                    "type": "string",
+                    "example": "tigreal"
+                }
+            }
+        },
+        "api.AnalyzeCounterDetailResponse": {
+            "type": "object",
+            "properties": {
+                "conditions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "confidence": {
+                    "type": "integer",
+                    "example": 85
+                },
+                "counterHeroId": {
+                    "type": "string",
+                    "example": "diggie"
+                },
+                "evidenceIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "failureCases": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "score": {
+                    "type": "integer",
+                    "example": 90
+                },
+                "source": {
+                    "type": "string",
+                    "example": "ai"
+                },
+                "strengths": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "targetHeroId": {
+                    "type": "string",
+                    "example": "tigreal"
+                }
+            }
+        },
+        "api.AnalyzeCounterScoreRequest": {
+            "type": "object",
+            "properties": {
+                "language": {
+                    "type": "string",
+                    "enum": [
+                        "en",
+                        "id"
+                    ],
+                    "example": "en"
+                },
+                "targetHeroId": {
+                    "type": "string",
+                    "example": "tigreal"
+                }
+            }
+        },
+        "api.AnalyzeCounterScoreResponse": {
+            "type": "object",
+            "properties": {
+                "recommendations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.CounterScoreRecommendation"
+                    }
+                },
+                "source": {
+                    "type": "string",
+                    "example": "ai"
+                },
+                "targetHeroId": {
+                    "type": "string",
+                    "example": "tigreal"
+                }
+            }
+        },
+        "api.AnalyzeSynergyDetailRequest": {
+            "type": "object",
+            "properties": {
+                "anchorHeroId": {
+                    "type": "string",
+                    "example": "tigreal"
+                },
+                "language": {
+                    "type": "string",
+                    "enum": [
+                        "en",
+                        "id"
+                    ],
+                    "example": "en"
+                },
+                "synergyHeroId": {
+                    "type": "string",
+                    "example": "pharsa"
+                }
+            }
+        },
+        "api.AnalyzeSynergyDetailResponse": {
+            "type": "object",
+            "properties": {
+                "anchorHeroId": {
+                    "type": "string",
+                    "example": "tigreal"
+                },
+                "conditions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "confidence": {
+                    "type": "integer",
+                    "example": 85
+                },
+                "evidenceIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "failureCases": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "score": {
+                    "type": "integer",
+                    "example": 90
+                },
+                "source": {
+                    "type": "string",
+                    "example": "ai"
+                },
+                "strengths": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "synergyHeroId": {
+                    "type": "string",
+                    "example": "pharsa"
+                }
+            }
+        },
+        "api.AnalyzeSynergyScoreRequest": {
+            "type": "object",
+            "properties": {
+                "anchorHeroId": {
+                    "type": "string",
+                    "example": "tigreal"
+                },
+                "language": {
+                    "type": "string",
+                    "enum": [
+                        "en",
+                        "id"
+                    ],
+                    "example": "en"
+                }
+            }
+        },
+        "api.AnalyzeSynergyScoreResponse": {
+            "type": "object",
+            "properties": {
+                "anchorHeroId": {
+                    "type": "string",
+                    "example": "tigreal"
+                },
+                "recommendations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.SynergyScoreRecommendation"
+                    }
+                },
+                "source": {
+                    "type": "string",
+                    "example": "ai"
+                }
+            }
+        },
+        "api.CounterMatchup": {
+            "type": "object",
+            "properties": {
+                "counterHero": {
+                    "$ref": "#/definitions/staticdata.Hero"
+                },
+                "counterTypes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "proof": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/staticdata.Proof"
+                    }
+                },
+                "reasons": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "targetHeroId": {
+                    "type": "string",
+                    "example": "tigreal"
+                }
+            }
+        },
+        "api.CounterScoreRecommendation": {
+            "type": "object",
+            "properties": {
+                "confidence": {
+                    "type": "integer",
+                    "example": 85
+                },
+                "counterHeroId": {
+                    "type": "string",
+                    "example": "diggie"
+                },
+                "rank": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "score": {
+                    "type": "integer",
+                    "example": 90
+                }
+            }
+        },
+        "api.ErrorBody": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "hero_not_found"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Hero was not found in the dataset."
+                }
+            }
+        },
+        "api.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/api.ErrorBody"
+                }
+            }
+        },
+        "api.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "ok"
+                }
+            }
+        },
+        "api.HeroListResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/staticdata.Hero"
+                    }
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pages": {
+                    "type": "integer",
+                    "example": 14
+                },
+                "size": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 132
+                }
+            }
+        },
+        "api.SynergyMatchup": {
+            "type": "object",
+            "properties": {
+                "anchorHeroId": {
+                    "type": "string",
+                    "example": "tigreal"
+                },
+                "proof": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/staticdata.Proof"
+                    }
+                },
+                "reasons": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "synergyHero": {
+                    "$ref": "#/definitions/staticdata.Hero"
+                },
+                "synergyTypes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "api.SynergyScoreRecommendation": {
+            "type": "object",
+            "properties": {
+                "confidence": {
+                    "type": "integer",
+                    "example": 85
+                },
+                "rank": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "score": {
+                    "type": "integer",
+                    "example": 90
+                },
+                "synergyHeroId": {
+                    "type": "string",
+                    "example": "pharsa"
+                }
+            }
+        },
+        "staticdata.Hero": {
+            "type": "object",
+            "properties": {
+                "images": {
+                    "description": "Open-ended image URLs by variant, currently \"head\".",
+                    "type": "object"
+                },
+                "lanes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "mlid": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "uid": {
+                    "type": "string"
+                }
+            }
+        },
+        "staticdata.Proof": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "failureCases": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "impact": {
+                    "type": "string"
+                },
+                "priority": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "worksBestWhen": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "description": "Service health endpoints.",
+            "name": "health"
+        },
+        {
+            "description": "Hero catalog, counter, and synergy matchup endpoints.",
+            "name": "heroes"
+        },
+        {
+            "description": "AI scoring and detail endpoints for counter matchups.",
+            "name": "counters"
+        },
+        {
+            "description": "AI scoring and detail endpoints for synergy pairings.",
+            "name": "synergies"
+        }
+    ]
+}
