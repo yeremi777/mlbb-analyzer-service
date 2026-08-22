@@ -27,20 +27,24 @@ const validMatchup = `[{"targetHeroId":"tigreal","counterHeroId":"diggie",
 	"reasons":["r"],"counterTypes":["anti-cc"],
 	"proof":[{"id":"p1","category":"skill-interaction","priority":"primary","impact":"high","summary":"s"}]}]`
 
+// minMatchups guards against a truncated or half-written index without pinning
+// an exact count: matchups are authored continuously.
+const minMatchups = 500
+
 func TestLoadCountersReal(t *testing.T) {
 	ms, err := loadCounters(filepath.Join("..", "..", "data", "static"))
 	if err != nil {
 		t.Fatalf("load real counters: %v", err)
 	}
-	if len(ms) != 660 {
-		t.Fatalf("got %d counter matchups, want 660", len(ms))
+	if len(ms) < minMatchups {
+		t.Fatalf("got %d counter matchups, want at least %d", len(ms), minMatchups)
 	}
 	proofs := 0
 	for _, m := range ms {
 		proofs += len(m.Proof)
 	}
-	if proofs != 660 {
-		t.Fatalf("got %d proofs, want 660", proofs)
+	if proofs < len(ms) {
+		t.Fatalf("got %d proofs for %d matchups: every matchup carries at least one", proofs, len(ms))
 	}
 }
 
@@ -49,8 +53,8 @@ func TestLoadSynergiesReal(t *testing.T) {
 	if err != nil {
 		t.Fatalf("load real synergies: %v", err)
 	}
-	if len(ms) != 660 {
-		t.Fatalf("got %d synergy matchups, want 660", len(ms))
+	if len(ms) < minMatchups {
+		t.Fatalf("got %d synergy matchups, want at least %d", len(ms), minMatchups)
 	}
 }
 

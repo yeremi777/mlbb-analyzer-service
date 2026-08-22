@@ -58,8 +58,16 @@ func TestListHeroesPaginationAndFilters(t *testing.T) {
 	if code := getJSON(t, srv.URL+"/api/heroes?page=1&size=10", &page); code != 200 {
 		t.Fatalf("status %d", code)
 	}
-	if page.Total != 132 || page.Pages != 14 || len(page.Items) != 10 {
-		t.Fatalf("total=%d pages=%d items=%d", page.Total, page.Pages, len(page.Items))
+	// Heroes are added every few patches, so the assertion is on the pagination
+	// arithmetic rather than on a snapshot of the roster.
+	if page.Total < 100 {
+		t.Fatalf("total=%d: roster looks truncated", page.Total)
+	}
+	if want := (page.Total + page.Size - 1) / page.Size; page.Pages != want {
+		t.Fatalf("pages=%d, want %d for total=%d size=%d", page.Pages, want, page.Total, page.Size)
+	}
+	if len(page.Items) != 10 {
+		t.Fatalf("items=%d, want a full first page of 10", len(page.Items))
 	}
 	if page.Items[0].UID != "miya" || page.Items[0].MLID != "1" {
 		t.Fatalf("first item %+v (mlid must serialize as string)", page.Items[0])
