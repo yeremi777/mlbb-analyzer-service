@@ -1,10 +1,13 @@
 package dataset
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 )
 
 const twoHeroes = `[
@@ -49,15 +52,81 @@ func synergyRow(second string) string {
 		"priority":"primary","impact":"high","summary":"s"}]}]`
 }
 
+// indexedSlugs returns the hero slug of every file an index lists, e.g.
+// "counters/akai.json" -> "akai".
+func indexedSlugs(t *testing.T, dataDir, indexFile string) map[string]bool {
+	t.Helper()
+	raw, err := os.ReadFile(filepath.Join(dataDir, indexFile))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var idx index
+	if err := json.Unmarshal(raw, &idx); err != nil {
+		t.Fatal(err)
+	}
+	slugs := make(map[string]bool, len(idx.Files))
+	for _, f := range idx.Files {
+		slugs[strings.TrimSuffix(filepath.Base(f), ".json")] = true
+	}
+	return slugs
+}
+
+// subjects returns the first hero of every matchup: the hero whose file it came
+// from.
+func subjects(ms []domain.Matchup) map[string]bool {
+	out := make(map[string]bool, len(ms))
+	for _, m := range ms {
+		out[m.First] = true
+	}
+	return out
+}
+
+// assertIndexFullyLoaded checks the loader turned every indexed file into
+// matchups, and that no file on disk is missing from the index. An unindexed
+// file is the dangerous case: the loader never opens it, so its matchups are
+// silently absent rather than reported as an error.
+func assertIndexFullyLoaded(t *testing.T, dataDir, indexFile, dir string, loaded map[string]bool) {
+	t.Helper()
+	indexed := indexedSlugs(t, dataDir, indexFile)
+
+	for slug := range indexed {
+		if !loaded[slug] {
+			t.Errorf("%s lists %q but no matchups were loaded for it", indexFile, slug)
+		}
+	}
+	for slug := range loaded {
+		if !indexed[slug] {
+			t.Errorf("matchups loaded for %q which %s does not list", slug, indexFile)
+		}
+	}
+
+	entries, err := os.ReadDir(filepath.Join(dataDir, dir))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range entries {
+		slug := strings.TrimSuffix(e.Name(), ".json")
+		if !e.IsDir() && strings.HasSuffix(e.Name(), ".json") && !indexed[slug] {
+			t.Errorf("%s/%s exists on disk but %s does not list it, so it never loads",
+				dir, e.Name(), indexFile)
+		}
+	}
+}
+
+// TestLoadReal asserts what must hold for any roster rather than today's
+// counts: adding a hero or authoring new matchups must not fail this test.
 func TestLoadReal(t *testing.T) {
-	ds, err := Load(filepath.Join("..", "..", "data", "static"))
+	dataDir := filepath.Join("..", "..", "data", "static")
+	ds, err := Load(dataDir)
 	if err != nil {
 		t.Fatalf("load real dataset: %v", err)
 	}
-	if len(ds.Heroes) != 132 || len(ds.Counters) != 660 || len(ds.Synergies) != 660 {
-		t.Fatalf("got %d heroes, %d counters, %d synergies",
-			len(ds.Heroes), len(ds.Counters), len(ds.Synergies))
+	if len(ds.Heroes) < minHeroes {
+		t.Fatalf("got %d heroes, want at least %d", len(ds.Heroes), minHeroes)
 	}
+
+	assertIndexFullyLoaded(t, dataDir, "counters.json", "counters", subjects(ds.Counters))
+	assertIndexFullyLoaded(t, dataDir, "synergies.json", "synergies", subjects(ds.Synergies))
 }
 
 func TestLoadAcceptsKnownHeroes(t *testing.T) {

@@ -16,19 +16,38 @@ func writeFile(t *testing.T, content string) string {
 	return dir
 }
 
+// minHeroes guards against a truncated or half-written roster without pinning
+// an exact count: heroes are added every few patches, and an exact number turns
+// every roster change into a test failure that says nothing about correctness.
+const minHeroes = 100
+
 func TestLoadHeroesReal(t *testing.T) {
 	heroes, err := loadHeroes(filepath.Join("..", "..", "data", "static"))
 	if err != nil {
 		t.Fatalf("load real dataset: %v", err)
 	}
-	if len(heroes) != 132 {
-		t.Fatalf("got %d heroes, want 132", len(heroes))
+	if len(heroes) < minHeroes {
+		t.Fatalf("got %d heroes, want at least %d: the roster looks truncated", len(heroes), minHeroes)
 	}
-	if heroes[0].UID == "" || heroes[0].MLID <= 0 || heroes[0].Name == "" {
-		t.Fatalf("first hero has empty identity: %+v", heroes[0])
-	}
-	if len(heroes[0].Roles) == 0 {
-		t.Fatalf("first hero has no roles")
+
+	// Identity must hold for every hero, not just the first: a malformed entry
+	// anywhere is what actually breaks the service.
+	uids := make(map[string]bool, len(heroes))
+	mlids := make(map[int]bool, len(heroes))
+	for i, h := range heroes {
+		if h.UID == "" || h.Name == "" || h.MLID <= 0 {
+			t.Errorf("hero %d has incomplete identity: %+v", i, h)
+		}
+		if len(h.Roles) == 0 {
+			t.Errorf("hero %q has no roles", h.UID)
+		}
+		if uids[h.UID] {
+			t.Errorf("duplicate hero uid %q", h.UID)
+		}
+		if mlids[h.MLID] {
+			t.Errorf("duplicate hero mlid %d (%s)", h.MLID, h.UID)
+		}
+		uids[h.UID], mlids[h.MLID] = true, true
 	}
 }
 

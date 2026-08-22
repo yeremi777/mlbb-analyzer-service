@@ -1318,5 +1318,15 @@
     "images": {
       "head": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_2_1_42/100_df7603c292198bf4aa7b551d401ea5c1.png"
     }
+  },
+  {
+    "uid": "hirara",
+    "mlid": "133",
+    "name": "Hirara",
+    "roles": ["assassin"],
+    "lanes": ["jungle"],
+    "images": {
+      "head": "https://akmweb.youngjoygame.com/web/svnres/img/test/homepage_2_1_88_1205_1/100_71224844b111f09367df00e4f9b97753.png"
+    }
   }
 ]
