@@ -11,6 +11,7 @@ coverage.*
 # Environment files
 .env
 .env*.local
+.env*.dev
 
 # Logs and local runtime files
 *.log

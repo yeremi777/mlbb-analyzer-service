@@ -28,6 +28,7 @@ import (
 
 const (
 	moontonUAEnvKey    = "COLLECTOR_USER_AGENT"
+	moontonURLEnvKey   = "COLLECTOR_BASE_URL"
 	liquipediaURLEnv   = "LIQUIPEDIA_BASE_URL"
 	liquipediaUAEnvKey = "LIQUIPEDIA_USER_AGENT"
 )
@@ -173,6 +174,10 @@ func collectStats(ctx context.Context, date string, force bool) error {
 	defer conn.Close(ctx)
 
 	var clientOpts []moonton.Option
+	if base := os.Getenv(moontonURLEnvKey); base != "" {
+		slog.Warn("using non-default moonton base URL", "base_url", base)
+		clientOpts = append(clientOpts, moonton.WithBaseURL(base))
+	}
 	if ua := os.Getenv(moontonUAEnvKey); ua != "" {
 		clientOpts = append(clientOpts, moonton.WithUserAgent(ua))
 	}
