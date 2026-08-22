@@ -29,6 +29,19 @@ collect-stats:
 build-collector:
 	go build -o bin/collector ./cmd/collector
 
+# Installs the cron entry from deploy/cron/crontab, replacing a previous copy of
+# it rather than appending a duplicate on every run. Requires the binary to be
+# built and APP_DIR to match the path inside the crontab template.
+collector-install: build-collector
+	@test -x bin/collector || { echo "bin/collector missing"; exit 1; }
+	@crontab -l 2>/dev/null | sed '/^# >>> mlbb-analyzer collector >>>$$/,/^# <<< mlbb-analyzer collector <<<$$/d' > /tmp/mlbb-crontab || true
+	@cat deploy/cron/crontab >> /tmp/mlbb-crontab
+	@crontab /tmp/mlbb-crontab && rm -f /tmp/mlbb-crontab
+	@echo "installed; verify with: make collector-status"
+
+collector-status:
+	@crontab -l 2>/dev/null | sed -n '/^# >>> mlbb-analyzer collector >>>$$/,/^# <<< mlbb-analyzer collector <<<$$/p' | grep . || echo "not installed"
+
 # Destructive: empties the raw zone and restarts id sequences, for a clean
 # development reset. Sequences are non-transactional, so rolled-back test
 # inserts leave permanent gaps; this is how you start over, not a way to keep

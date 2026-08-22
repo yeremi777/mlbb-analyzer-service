@@ -1,3 +1,4 @@
+# >>> mlbb-analyzer collector >>>
 # MLBB analyzer — daily ingest into the raw zone.
 #
 # Install:  crontab -l 2>/dev/null | cat - deploy/cron/crontab | crontab -
@@ -14,3 +15,4 @@ CRON_TZ=Asia/Jakarta
 #
 # flock keeps a slow run from overlapping the next one; -n skips rather than queues.
 0 7 * * * /usr/bin/flock -n /tmp/mlbb-collector.lock /srv/mlbb-analyzer-service/deploy/cron/collector.sh all
+# <<< mlbb-analyzer collector <<<
