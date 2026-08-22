@@ -1,0 +1,47 @@
+# Application services. Default compose file, so plain `docker compose` works:
+#   docker compose build
+#   docker compose up -d
+#
+# Rebuild + restart on every code change:
+#   docker compose build && docker compose up -d
+#
+# Uses host networking so containers talk to the Postgres and Redis already
+# published on 127.0.0.1 of the host (Linux-only, fine on a VPS).
+name: mlbb-app
+
+services:
+  api:
+    image: mlbb-analyzer-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mlbb-api
+    restart: unless-stopped
+    network_mode: host
+    env_file: .env
+    # DB_HOST/REDIS_HOST default to 127.0.0.1 (host network) already, but make
+    # it explicit so it survives accidental .env edits.
+    environment:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
+
+  # Scheduled daily data ingest. Shares the same image as api (which contains
+  # the collector binary) but overrides the entrypoint to run the scheduler.
+  collector:
+    image: mlbb-analyzer-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mlbb-collector
+    restart: unless-stopped
+    network_mode: host
+    env_file: .env
+    entrypoint: ["./cron.sh"]
+    environment:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
+      COLLECT_TIME: "07:00"
