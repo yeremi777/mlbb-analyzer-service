@@ -151,3 +151,86 @@ func TestParseErrorDistinguishesStructureFromOddBody(t *testing.T) {
 		t.Errorf("want an unexpected-body diagnosis, got %q", pe.Error())
 	}
 }
+
+func TestParsePatchesReadsHighlightsAsList(t *testing.T) {
+	html := `<table class="wikitable"><tbody>
+<tr><th>Patch</th><th>Release Date</th><th>Release Highlights</th></tr>
+<tr><td><a title="Patch 2.1.95">Patch 2.1.95</a> (latest)</td>
+    <td>August 4, 2026</td>
+    <td><ul><li>Revamped Hero  <a>Kaja</a>, Nazar King</li><li>Hero Adjustments</li></ul></td></tr>
+</tbody></table>`
+	got, err := ParsePatches(strings.NewReader(html))
+	if err != nil {
+		t.Fatalf("ParsePatches: %v", err)
+	}
+	want := []string{"Revamped Hero Kaja, Nazar King", "Hero Adjustments"}
+	if len(got[0].Highlights) != len(want) {
+		t.Fatalf("got %d highlights %q, want %d", len(got[0].Highlights), got[0].Highlights, len(want))
+	}
+	for i := range want {
+		// Nested markup leaves doubled spaces in the raw text; entries are
+		// stored as a reader would see them.
+		if got[0].Highlights[i] != want[i] {
+			t.Errorf("highlight %d = %q, want %q", i, got[0].Highlights[i], want[i])
+		}
+	}
+}
+
+func TestParsePatchesHighlightsFallBackToPlainCell(t *testing.T) {
+	html := `<table class="wikitable"><tbody>
+<tr><td><a title="Patch 2.1.67a">Patch 2.1.67a</a></td><td>May 13, 2026</td><td>Hero adjustments</td></tr>
+</tbody></table>`
+	got, err := ParsePatches(strings.NewReader(html))
+	if err != nil {
+		t.Fatalf("ParsePatches: %v", err)
+	}
+	if len(got[0].Highlights) != 1 || got[0].Highlights[0] != "Hero adjustments" {
+		t.Errorf("want one plain highlight, got %q", got[0].Highlights)
+	}
+}
+
+func TestParsePatchesMissingHighlightsCellIsNotAnError(t *testing.T) {
+	// A two-column row still yields a patch: the date is what the calendar needs.
+	html := `<table class="wikitable"><tbody>
+<tr><td><a title="Patch 2.1.90">Patch 2.1.90</a></td><td>July 2, 2026</td></tr>
+</tbody></table>`
+	got, err := ParsePatches(strings.NewReader(html))
+	if err != nil {
+		t.Fatalf("ParsePatches: %v", err)
+	}
+	if got[0].Version != "2.1.90" {
+		t.Fatalf("version = %q", got[0].Version)
+	}
+	if len(got[0].Highlights) != 0 {
+		t.Errorf("want no highlights, got %q", got[0].Highlights)
+	}
+}
+
+func TestParsePatchesRealPageCarriesHighlights(t *testing.T) {
+	f, err := os.Open("testdata/patches.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	got, err := ParsePatches(f)
+	if err != nil {
+		t.Fatal(err)
+	}
+	withHighlights := 0
+	for _, p := range got {
+		for _, h := range p.Highlights {
+			if strings.Contains(h, "  ") {
+				t.Fatalf("patch %s highlight not whitespace-normalised: %q", p.Version, h)
+			}
+		}
+		if len(p.Highlights) > 0 {
+			withHighlights++
+		}
+	}
+	// The real page carries a bullet list on the overwhelming majority of rows.
+	if withHighlights < len(got)/2 {
+		t.Errorf("only %d of %d patches carry highlights", withHighlights, len(got))
+	}
+	t.Logf("%d of %d patches carry highlights; newest %s: %q",
+		withHighlights, len(got), got[0].Version, got[0].Highlights)
+}

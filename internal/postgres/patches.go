@@ -8,7 +8,8 @@ import (
 	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 )
 
-const insertPatch = `INSERT INTO raw.patch_snapshots (release_date, version) VALUES ($1, $2)`
+const insertPatch = `INSERT INTO raw.patch_snapshots (release_date, version, highlights)
+	VALUES ($1, $2, COALESCE($3::text[], '{}'))`
 
 // InsertPatches appends one fetch of the patch calendar and reports how many
 // rows it wrote. Append-only by design: raw records what Liquipedia said, and
@@ -21,7 +22,7 @@ func InsertPatches(ctx context.Context, tx pgx.Tx, patches []domain.Patch) (int,
 
 	batch := &pgx.Batch{}
 	for _, p := range patches {
-		batch.Queue(insertPatch, p.ReleaseDate, p.Version)
+		batch.Queue(insertPatch, p.ReleaseDate, p.Version, p.Highlights)
 	}
 	results := tx.SendBatch(ctx, batch)
 	defer results.Close()

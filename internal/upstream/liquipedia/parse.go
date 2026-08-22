@@ -93,25 +93,63 @@ func (e *ParseError) Retryable() bool { return e.Tables == 0 }
 // names a patch and its second cell parses as a release date; header rows,
 // anchor rows and unrelated tables all fail one of those and are skipped.
 func patchFromRow(tr *html.Node) (domain.Patch, bool) {
-	var cells []string
+	var cells []*html.Node
 	for c := tr.FirstChild; c != nil; c = c.NextSibling {
 		if c.Type == html.ElementNode && c.Data == "td" {
-			cells = append(cells, strings.TrimSpace(textOf(c)))
+			cells = append(cells, c)
 		}
 	}
 	if len(cells) < 2 {
 		return domain.Patch{}, false
 	}
-	m := patchCell.FindStringSubmatch(cells[0])
+	m := patchCell.FindStringSubmatch(strings.TrimSpace(textOf(cells[0])))
 	if m == nil {
 		return domain.Patch{}, false
 	}
-	released, err := time.Parse(releaseDateLayout, cells[1])
+	released, err := time.Parse(releaseDateLayout, strings.TrimSpace(textOf(cells[1])))
 	if err != nil {
 		return domain.Patch{}, false
 	}
-	return domain.Patch{Version: m[1], ReleaseDate: released}, true
+	p := domain.Patch{Version: m[1], ReleaseDate: released}
+	// The highlights column is presentational: a row without it is still a
+	// patch, and the calendar's job is the date.
+	if len(cells) > 2 {
+		p.Highlights = highlightsOf(cells[2])
+	}
+	return p, true
 }
+
+// highlightsOf reads a release-highlights cell. The page renders it as a bullet
+// list, so each item becomes one entry; a cell carrying plain text yields that
+// text as a single entry, and an empty cell yields nothing.
+func highlightsOf(td *html.Node) []string {
+	var out []string
+	var walk func(*html.Node)
+	walk = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "li" {
+			// Nested lists collapse into their parent item rather than
+			// producing an entry that repeats its parent's text.
+			if s := normalizeSpace(textOf(n)); s != "" {
+				out = append(out, s)
+			}
+			return
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			walk(c)
+		}
+	}
+	walk(td)
+	if len(out) == 0 {
+		if s := normalizeSpace(textOf(td)); s != "" {
+			out = append(out, s)
+		}
+	}
+	return out
+}
+
+// normalizeSpace collapses the runs of whitespace that nested markup leaves
+// behind, so an entry reads the way the page displays it.
+func normalizeSpace(s string) string { return strings.Join(strings.Fields(s), " ") }
 
 func textOf(n *html.Node) string {
 	var b strings.Builder

@@ -10,4 +10,7 @@ import "time"
 type Patch struct {
 	Version     string
 	ReleaseDate time.Time
+	// Release highlights as the source lists them, one entry per bullet:
+	// what changed, not how much. Empty when the source names no changes.
+	Highlights []string
 }

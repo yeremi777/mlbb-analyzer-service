@@ -122,3 +122,41 @@ func TestInsertPatchesEmptyIsNoop(t *testing.T) {
 		t.Errorf("empty input must change nothing")
 	}
 }
+
+func TestInsertPatchesStoresHighlights(t *testing.T) {
+	tx := testTx(t)
+	ctx := context.Background()
+
+	want := []string{"Revamped Hero Kaja", "Hero Adjustments"}
+	patches := []domain.Patch{
+		{Version: "9.9.99", ReleaseDate: time.Date(2999, 1, 2, 0, 0, 0, 0, time.UTC), Highlights: want},
+		// A patch the source lists no changes for: empty array, never NULL.
+		{Version: "9.9.98", ReleaseDate: time.Date(2999, 1, 1, 0, 0, 0, 0, time.UTC)},
+	}
+	if _, err := InsertPatches(ctx, tx, patches); err != nil {
+		t.Fatal(err)
+	}
+
+	var got []string
+	if err := tx.QueryRow(ctx,
+		"SELECT highlights FROM raw.patch_snapshots WHERE version = '9.9.99'").Scan(&got); err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != len(want) {
+		t.Fatalf("got %d highlights %q, want %q", len(got), got, want)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Errorf("highlight %d = %q, want %q", i, got[i], want[i])
+		}
+	}
+
+	var empty []string
+	if err := tx.QueryRow(ctx,
+		"SELECT highlights FROM raw.patch_snapshots WHERE version = '9.9.98'").Scan(&empty); err != nil {
+		t.Fatalf("a patch with no highlights must store an empty array, not NULL: %v", err)
+	}
+	if len(empty) != 0 {
+		t.Errorf("want empty highlights, got %q", empty)
+	}
+}
