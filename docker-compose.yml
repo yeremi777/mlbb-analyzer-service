@@ -19,13 +19,6 @@ services:
     restart: unless-stopped
     network_mode: host
     env_file: .env
-    # DB_HOST/REDIS_HOST default to 127.0.0.1 (host network) already, but make
-    # it explicit so it survives accidental .env edits.
-    environment:
-      DB_HOST: 127.0.0.1
-      DB_PORT: 5432
-      REDIS_HOST: 127.0.0.1
-      REDIS_PORT: 6379
 
   # Scheduled daily data ingest. Shares the same image as api (which contains
   # the collector binary) but overrides the entrypoint to run the scheduler.
@@ -40,8 +33,4 @@ services:
     env_file: .env
     entrypoint: ["./cron.sh"]
     environment:
-      DB_HOST: 127.0.0.1
-      DB_PORT: 5432
-      REDIS_HOST: 127.0.0.1
-      REDIS_PORT: 6379
       COLLECT_TIME: "07:00"
