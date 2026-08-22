@@ -14,5 +14,5 @@ CRON_TZ=Asia/Jakarta
 # successful run repairs retroactively.
 #
 # flock keeps a slow run from overlapping the next one; -n skips rather than queues.
-0 7 * * * /usr/bin/flock -n /tmp/mlbb-collector.lock /srv/mlbb-analyzer-service/deploy/cron/collector.sh all
+0 7 * * * /usr/bin/flock -n /tmp/mlbb-collector.lock /var/opt/mlbb-analyzer/deploy/cron/collector.sh all
 # <<< mlbb-analyzer collector <<<

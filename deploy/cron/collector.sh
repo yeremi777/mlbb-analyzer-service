@@ -6,7 +6,7 @@
 # relative to the process working directory.
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/srv/mlbb-analyzer-service}"
+APP_DIR="${APP_DIR:-/var/opt/mlbb-analyzer}"
 LOG_DIR="${LOG_DIR:-/var/log/mlbb-analyzer}"
 
 cd "$APP_DIR"
