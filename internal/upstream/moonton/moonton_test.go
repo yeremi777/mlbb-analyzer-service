@@ -34,8 +34,8 @@ func TestFetchPopulatesRecordsAndRaw(t *testing.T) {
 		writeJSON(t, w, map[string]any{
 			"code": 0, "message": "OK",
 			"data": map[string]any{
-				"total": 2,
-				"records": []map[string]any{
+				"total": 133,
+				"records": padToFullRoster([]map[string]any{
 					{"data": map[string]any{
 						"main_heroid": 60, "main_hero_win_rate": 0.528754,
 						"main_hero_appearance_rate": 0.034504, "main_hero_ban_rate": 0.110542,
@@ -45,7 +45,7 @@ func TestFetchPopulatesRecordsAndRaw(t *testing.T) {
 						"main_heroid": 132, "main_hero_win_rate": 0.589272,
 						"main_hero_appearance_rate": 0.001679, "main_hero_ban_rate": 0.11355,
 						"main_hero": map[string]any{"data": map[string]any{"name": "Marcel"}}}},
-				},
+				}),
 			},
 		})
 	})
@@ -55,8 +55,8 @@ func TestFetchPopulatesRecordsAndRaw(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Fetch: %v", err)
 	}
-	if len(resp.Records) != 2 {
-		t.Fatalf("want 2 records, got %d", len(resp.Records))
+	if len(resp.Records) != 133 {
+		t.Fatalf("want 133 records, got %d", len(resp.Records))
 	}
 	// Typed fields decoded.
 	if resp.Records[0].MainHeroID != 60 || resp.Records[0].WinRate != 0.528754 {
@@ -169,5 +169,124 @@ func TestFetchTruncatedResponseIsError(t *testing.T) {
 	// unlike the silent-empty case.
 	if IsEmpty(err) {
 		t.Errorf("truncation must not be EmptyError (would skip retry), got %v", err)
+	}
+}
+
+func TestFetchImplausiblySmallRosterIsError(t *testing.T) {
+	// A self-consistent response for a roster far smaller than the game has.
+	// Nothing is truncated and nothing is empty, so the other guards pass it;
+	// stored, it would look like a clean run and skew every rank downstream.
+	records := make([]map[string]any, 12)
+	for i := range records {
+		records[i] = map[string]any{"data": map[string]any{"main_heroid": i + 1}}
+	}
+	client, _ := stubClient(t, func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(t, w, map[string]any{
+			"code": 0, "message": "OK",
+			"data": map[string]any{"total": len(records), "records": records},
+		})
+	})
+
+	combo := Combo{WindowDays: 1, RankTier: "all", EndpointID: 2756567, BigRank: "101"}
+	_, err := client.Fetch(context.Background(), combo)
+	if err == nil {
+		t.Fatal("expected error for an implausibly small roster, got nil")
+	}
+	// Authoritative, not transient: the endpoint changed shape, so retrying
+	// only doubles the load for the same answer.
+	if !IsEmpty(err) {
+		t.Errorf("small roster must be EmptyError so the caller skips retry, got %v", err)
+	}
+}
+
+func TestFetchAcceptsFullRoster(t *testing.T) {
+	records := padToFullRoster(nil)
+	client, _ := stubClient(t, func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(t, w, map[string]any{
+			"code": 0, "message": "OK",
+			"data": map[string]any{"total": len(records), "records": records},
+		})
+	})
+
+	combo := Combo{WindowDays: 1, RankTier: "all", EndpointID: 2756567, BigRank: "101"}
+	resp, err := client.Fetch(context.Background(), combo)
+	if err != nil {
+		t.Fatalf("full roster must be accepted: %v", err)
+	}
+	if len(resp.Records) != 133 {
+		t.Errorf("got %d records, want 133", len(resp.Records))
+	}
+}
+
+// padToFullRoster appends filler heroes so a stub response clears the roster
+// floor in Fetch, leaving the caller's own records at the front.
+func padToFullRoster(records []map[string]any) []map[string]any {
+	for id := len(records) + 1; len(records) < 133; id++ {
+		records = append(records, map[string]any{"data": map[string]any{"main_heroid": id}})
+	}
+	return records
+}
+
+func TestBuildBodyRequestsServerDefaultProjection(t *testing.T) {
+	// The raw zone records what the source said, so the request names no
+	// fields: an explicit list silently drops anything upstream adds, which is
+	// how sub_hero_last and the per-duration win rates went unrecorded.
+	var body map[string]any
+	if err := json.Unmarshal(buildBody(AllCombos()[0]), &body); err != nil {
+		t.Fatalf("buildBody produced invalid JSON: %v", err)
+	}
+
+	fields, ok := body["fields"]
+	if !ok {
+		t.Fatal("request must carry a fields key")
+	}
+	list, ok := fields.([]any)
+	if !ok {
+		t.Fatalf("fields must be a JSON array, got %T (%v)", fields, fields)
+	}
+	if len(list) != 0 {
+		t.Errorf("fields must be empty to get the server default projection, got %v", list)
+	}
+}
+
+func TestFetchPreservesUnrequestedFieldsInRaw(t *testing.T) {
+	// Whatever the server adds must survive into Raw untouched, even though no
+	// Go field is typed for it.
+	records := padToFullRoster([]map[string]any{
+		{"data": map[string]any{
+			"main_heroid": 60, "main_hero_win_rate": 0.5,
+			"main_hero_appearance_rate": 0.01, "main_hero_ban_rate": 0.02,
+			"sub_hero_last": []map[string]any{{"heroid": 55, "increase_win_rate": -0.052685}},
+			"sub_hero": []map[string]any{
+				{"heroid": 124, "increase_win_rate": 0.048673, "min_win_rate20": 0.454545}},
+		}},
+	})
+	client, _ := stubClient(t, func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(t, w, map[string]any{
+			"code": 0, "message": "OK",
+			"data": map[string]any{"total": len(records), "records": records},
+		})
+	})
+
+	resp, err := client.Fetch(context.Background(), Combo{
+		WindowDays: 1, RankTier: "all", EndpointID: 2756567, BigRank: "101"})
+	if err != nil {
+		t.Fatalf("Fetch: %v", err)
+	}
+	var raw map[string]any
+	if err := json.Unmarshal(resp.Records[0].Raw, &raw); err != nil {
+		t.Fatalf("raw is not valid JSON: %v", err)
+	}
+	inner := raw["data"].(map[string]any)
+	if _, ok := inner["sub_hero_last"]; !ok {
+		t.Errorf("raw dropped sub_hero_last: %s", resp.Records[0].Raw)
+	}
+	sub := inner["sub_hero"].([]any)[0].(map[string]any)
+	if _, ok := sub["min_win_rate20"]; !ok {
+		t.Errorf("raw dropped per-duration win rate: %s", resp.Records[0].Raw)
+	}
+	// Typed extraction still works alongside the untyped extras.
+	if resp.Records[0].MainHeroID != 60 || resp.Records[0].WinRate != 0.5 {
+		t.Errorf("typed decode broke: %+v", resp.Records[0])
 	}
 }

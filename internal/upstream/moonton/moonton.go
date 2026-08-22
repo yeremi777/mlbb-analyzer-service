@@ -40,6 +40,10 @@ var RankTier = map[string]string{
 const (
 	projectID = "2669606"
 	defaultUA = "mlbb-analyzer-collector/1.0 (+github.com/yeremi777/mlbb-analyzer-service; kuroganehunter99@gmail.com)"
+
+	// Success floor from docs/specs/collector-raw-zone.md: a combo is only
+	// accepted when upstream reports more than this many heroes.
+	minPlausibleTotal = 100
 )
 
 // Combo is one (window, rank tier) pull.
@@ -194,6 +198,15 @@ func (c *Client) Fetch(ctx context.Context, combo Combo) (*Response, error) {
 	if len(wire.Data.Records) == 0 {
 		return nil, &EmptyError{Combo: combo.Key(), Reason: "records=null/empty (silent empty upstream result)"}
 	}
+	// The roster is 133 heroes and only ever grows. A self-consistent response
+	// for a fraction of it is the endpoint changing shape, not a smaller game:
+	// it passes the empty and truncation guards, and stored it would skew every
+	// rank in the marts. Authoritative like EmptyError, so the caller does not
+	// retry it.
+	if wire.Data.Total <= minPlausibleTotal {
+		return nil, &EmptyError{Combo: combo.Key(), Reason: fmt.Sprintf(
+			"implausibly small roster: total=%d, want more than %d", wire.Data.Total, minPlausibleTotal)}
+	}
 	// A short read is a partial page, not a smaller roster: storing it would
 	// look like a clean run while dropping heroes. Stays a plain error so the
 	// caller retries it, unlike EmptyError.
@@ -224,12 +237,13 @@ func buildBody(combo Combo) []byte {
 		"sorts": []map[string]any{
 			{"data": map[string]string{"field": "main_hero_win_rate", "order": "desc"}, "type": "sequence"},
 		},
-		"fields": []string{
-			"main_hero", "main_hero_appearance_rate", "main_hero_ban_rate",
-			"main_hero_channel", "main_hero_win_rate", "main_heroid",
-			"data.sub_hero.hero", "data.sub_hero.hero_channel",
-			"data.sub_hero.increase_win_rate", "data.sub_hero.heroid",
-		},
+		// Empty means the server's own default projection. The raw zone records
+		// what the source said, so the request never narrows it: an explicit
+		// list silently drops whatever upstream adds, and cannot be repaired
+		// later because the fields never arrive. Extra keys cost nothing to
+		// decode — Record types only what it needs — and land in payload,
+		// where a JSONB above the TOAST threshold is compressed on the way in.
+		"fields": []string{},
 	}
 	b, _ := json.Marshal(payload)
 	return b
