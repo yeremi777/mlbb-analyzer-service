@@ -80,39 +80,48 @@ func GetHeroRankStat(ctx context.Context, q Querier, heroID int, tier string, wi
 		WHERE main_hero_id = $1 AND rank_tier = $2 AND window_days = $3`, heroID, tier, window))
 }
 
-// HeroSynergyStats returns one hero's observed pairings for a tier and window,
-// best partner first. A hero with no pairings yields an empty slice.
-func HeroSynergyStats(ctx context.Context, q Querier, heroID int, tier string, window int) ([]domain.HeroSynergyStat, error) {
-	rows, err := q.Query(ctx, `SELECT main_hero_id, hero_name, partner_hero_id, partner_uid,
-			partner_name, win_rate_lift, partner_rank, rank_tier, window_days, snapshot_date
-		FROM marts.hero_synergy_current
-		WHERE main_hero_id = $1 AND rank_tier = $2 AND window_days = $3
-		ORDER BY partner_rank`, heroID, tier, window)
+// HeroCounterStats returns the heroes that currently beat one hero at a tier
+// and window, strongest first. A hero nothing is observed to beat yields an
+// empty slice, not an error.
+//
+// It keys on the upstream hero id for the same reason GetHeroRankStat does: the
+// mart carries heroes the dataset has no uid for.
+func HeroCounterStats(ctx context.Context, q Querier, targetHeroID int, tier string, window int) ([]domain.HeroCounterStat, error) {
+	rows, err := q.Query(ctx, `SELECT target_heroid, target_uid, target_name,
+			counter_heroid, counter_uid, counter_name,
+			win_rate_delta, source, source_rank, rank_tier, window_days, snapshot_date
+		FROM marts.hero_counter_current
+		WHERE target_heroid = $1 AND rank_tier = $2 AND window_days = $3
+		ORDER BY win_rate_delta DESC, counter_heroid`, targetHeroID, tier, window)
 	if err != nil {
-		return nil, fmt.Errorf("hero synergy %d %s/%dd: %w", heroID, tier, window, err)
+		return nil, fmt.Errorf("hero counters %d %s/%dd: %w", targetHeroID, tier, window, err)
 	}
 	defer rows.Close()
 
-	pairs := []domain.HeroSynergyStat{}
+	counters := []domain.HeroCounterStat{}
 	for rows.Next() {
 		var (
-			p                 domain.HeroSynergyStat
-			name, pUID, pName *string
+			c                        domain.HeroCounterStat
+			tUID, tName, cUID, cName *string
 		)
-		if err := rows.Scan(&p.MainHeroID, &name, &p.PartnerHeroID, &pUID, &pName,
-			&p.WinRateLift, &p.PartnerRank, &p.RankTier, &p.WindowDays, &p.SnapshotDate); err != nil {
-			return nil, fmt.Errorf("scan synergy stat: %w", err)
+		if err := rows.Scan(&c.TargetHeroID, &tUID, &tName,
+			&c.CounterHeroID, &cUID, &cName,
+			&c.WinRateDelta, &c.Source, &c.SourceRank,
+			&c.RankTier, &c.WindowDays, &c.SnapshotDate); err != nil {
+			return nil, fmt.Errorf("scan counter stat: %w", err)
 		}
-		if name != nil {
-			p.HeroName = *name
-		}
-		if pUID != nil {
-			p.PartnerUID = *pUID
-		}
-		if pName != nil {
-			p.PartnerName = *pName
-		}
-		pairs = append(pairs, p)
+		c.TargetUID, c.TargetName = deref(tUID), deref(tName)
+		c.CounterUID, c.CounterName = deref(cUID), deref(cName)
+		counters = append(counters, c)
 	}
-	return pairs, rows.Err()
+	return counters, rows.Err()
+}
+
+// deref reads a nullable text column: an unnamed hero is one upstream carries
+// and the dataset does not, which reads as empty rather than as an error.
+func deref(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
 }

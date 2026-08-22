@@ -31,33 +31,59 @@ SELECT main_hero_id,
        fetched_at
   FROM staging.hero_rank_snapshot_latest;
 
--- One row per (hero, partner) pairing, exploded out of the payload's sub_hero
--- array. Upstream returns five partners already ordered best-first, so
--- partner_rank carries upstream's own ranking.
+-- One row per directed counter matchup, exploded out of the payload's sub_hero
+-- and sub_hero_last arrays and oriented so counter_heroid always beats
+-- target_heroid by win_rate_delta.
 --
--- win_rate_lift is upstream's increase_win_rate: an additive delta on the
--- main hero's win rate when the pair appears together, not a multiplier.
+-- Upstream reports this from the main hero's point of view: sub_hero holds the
+-- five heroes with the largest positive win-rate delta against it, sub_hero_last
+-- the five with the largest negative delta. The relation is antisymmetric --
+-- across a full 133-hero pull, none of the 665 sub_hero pairs are mutual and 52%
+-- appear in the partner's sub_hero_last -- so sub_hero_last rows are flipped and
+-- negated rather than stored as a second kind of thing.
 --
--- The CASE guards the array: payload is untrusted upstream JSON, and a
--- sub_hero that ever arrives as null or a scalar would otherwise error the
--- whole view rather than yield no pairs for that hero.
-CREATE VIEW staging.hero_synergy_daily AS
-SELECT l.main_hero_id,
-       (s.elem->>'heroid')::integer                 AS partner_hero_id,
-       (s.elem->>'increase_win_rate')::numeric(9,6) AS win_rate_lift,
-       s.ord::smallint                              AS partner_rank,
-       l.rank_tier,
-       l.window_days,
-       l.snapshot_date
+-- source keeps the two halves separable. Snapshots collected before the request
+-- stopped narrowing its field list carry no sub_hero_last at all, and that
+-- history cannot be backfilled.
+--
+-- The CASE guards each array: payload is untrusted upstream JSON, and a value
+-- arriving as null or a scalar would otherwise error the whole view rather than
+-- yield no rows for that hero.
+CREATE VIEW staging.hero_counter_daily AS
+SELECT l.main_hero_id                                  AS target_heroid,
+       (s.elem->>'heroid')::integer                    AS counter_heroid,
+       (s.elem->>'increase_win_rate')::numeric(9,6)    AS win_rate_delta,
+       'sub_hero'::text                                AS source,
+       s.ord::smallint                                 AS source_rank,
+       l.rank_tier, l.window_days, l.snapshot_date
   FROM staging.hero_rank_snapshot_latest l
   CROSS JOIN LATERAL jsonb_array_elements(
          CASE WHEN jsonb_typeof(l.payload->'data'->'sub_hero') = 'array'
               THEN l.payload->'data'->'sub_hero'
               ELSE '[]'::jsonb
          END) WITH ORDINALITY AS s(elem, ord)
- WHERE s.elem->>'heroid' IS NOT NULL;
+ WHERE s.elem->>'heroid' IS NOT NULL
+   AND (s.elem->>'increase_win_rate')::numeric > 0
+
+UNION ALL
+
+-- The same relation seen from the losing end: the main hero counters these.
+SELECT (s.elem->>'heroid')::integer                    AS target_heroid,
+       l.main_hero_id                                  AS counter_heroid,
+       -(s.elem->>'increase_win_rate')::numeric(9,6)   AS win_rate_delta,
+       'sub_hero_last'::text                           AS source,
+       s.ord::smallint                                 AS source_rank,
+       l.rank_tier, l.window_days, l.snapshot_date
+  FROM staging.hero_rank_snapshot_latest l
+  CROSS JOIN LATERAL jsonb_array_elements(
+         CASE WHEN jsonb_typeof(l.payload->'data'->'sub_hero_last') = 'array'
+              THEN l.payload->'data'->'sub_hero_last'
+              ELSE '[]'::jsonb
+         END) WITH ORDINALITY AS s(elem, ord)
+ WHERE s.elem->>'heroid' IS NOT NULL
+   AND (s.elem->>'increase_win_rate')::numeric < 0;
 
 -- +goose Down
-DROP VIEW staging.hero_synergy_daily;
-DROP VIEW staging.hero_rank_daily;
-DROP VIEW staging.hero_rank_snapshot_latest;
+DROP VIEW IF EXISTS staging.hero_counter_daily;
+DROP VIEW IF EXISTS staging.hero_rank_daily;
+DROP VIEW IF EXISTS staging.hero_rank_snapshot_latest;

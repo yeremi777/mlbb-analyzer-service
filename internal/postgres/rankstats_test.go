@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"errors"
+	"math"
 	"testing"
 
 	"github.com/jackc/pgx/v5"
@@ -108,7 +109,7 @@ func TestGetHeroRankStatUnknownHero(t *testing.T) {
 	}
 }
 
-func TestHeroSynergyStatsOrderedByPartnerRank(t *testing.T) {
+func TestHeroCounterStatsAreOrientedAndOrdered(t *testing.T) {
 	tx := testTx(t)
 	ctx := context.Background()
 	tier, window := latestTierWindow(t, tx)
@@ -119,37 +120,110 @@ func TestHeroSynergyStatsOrderedByPartnerRank(t *testing.T) {
 	}
 	hero := board[0].MainHeroID
 
-	pairs, err := HeroSynergyStats(ctx, tx, hero, tier, window)
+	counters, err := HeroCounterStats(ctx, tx, hero, tier, window)
 	if err != nil {
-		t.Fatalf("HeroSynergyStats: %v", err)
+		t.Fatalf("HeroCounterStats: %v", err)
 	}
-	if len(pairs) == 0 {
-		t.Fatal("want synergy partners for a hero present in the mart")
+	if len(counters) == 0 {
+		t.Fatal("want counters for a hero present in the mart")
 	}
-	for i, p := range pairs {
-		if p.PartnerRank != i+1 {
-			t.Errorf("partner %d has rank %d, want %d", i, p.PartnerRank, i+1)
+	prev := math.Inf(1)
+	for i, c := range counters {
+		if c.TargetHeroID != hero {
+			t.Errorf("row %d targets hero %d, want %d", i, c.TargetHeroID, hero)
 		}
-		if p.MainHeroID != hero {
-			t.Errorf("partner %d belongs to hero %d, want %d", i, p.MainHeroID, hero)
+		if c.CounterHeroID == hero {
+			t.Errorf("row %d has hero %d countering itself", i, hero)
 		}
-		if p.PartnerHeroID == p.MainHeroID {
-			t.Errorf("hero %d paired with itself", hero)
+		// The orientation invariant: staging flips sub_hero_last rows so every
+		// row reads "counter beats target", never the reverse.
+		if c.WinRateDelta <= 0 {
+			t.Errorf("row %d has non-positive delta %v: orientation is wrong", i, c.WinRateDelta)
 		}
+		if c.WinRateDelta > prev {
+			t.Errorf("row %d delta %v is above the previous %v: not strongest first", i, c.WinRateDelta, prev)
+		}
+		prev = c.WinRateDelta
 	}
 }
 
-func TestHeroSynergyStatsUnknownHeroIsEmptyNotError(t *testing.T) {
+func TestHeroCounterStatsUnknownHeroIsEmptyNotError(t *testing.T) {
 	tx := testTx(t)
 	ctx := context.Background()
 	tier, window := latestTierWindow(t, tx)
 
-	pairs, err := HeroSynergyStats(ctx, tx, 999999, tier, window)
+	counters, err := HeroCounterStats(ctx, tx, 999999, tier, window)
 	if err != nil {
 		t.Fatalf("an unknown hero is an empty result, not an error: %v", err)
 	}
-	if len(pairs) != 0 {
-		t.Errorf("want no pairs, got %d", len(pairs))
+	if len(counters) != 0 {
+		t.Errorf("want no counters, got %d", len(counters))
+	}
+}
+
+func TestCounterViewFlipsSubHeroLast(t *testing.T) {
+	// Upstream reports both lists from the main hero's point of view. A
+	// sub_hero row means "this hero beats main"; a sub_hero_last row means
+	// "main beats this hero" and must come back with the ids swapped and the
+	// sign flipped. Real history carries no sub_hero_last yet, so the payload
+	// is synthetic.
+	tx := testTx(t)
+	ctx := context.Background()
+
+	const (
+		main    = 900001
+		beatsUs = 900002
+		weBeat  = 900003
+	)
+	payload := `{"data":{"main_heroid":900001,
+		"sub_hero":[{"heroid":900002,"increase_win_rate":0.04}],
+		"sub_hero_last":[{"heroid":900003,"increase_win_rate":-0.06}]}}`
+	if _, err := tx.Exec(ctx, `
+		INSERT INTO raw.hero_rank_snapshots
+		  (main_heroid, rank_tier, window_days, snapshot_date, win_rate, appearance_share, ban_rate, payload)
+		VALUES ($1, 'mythic', 7, DATE '2999-01-01', 0.5, 0.01, 0.02, $2::jsonb)`,
+		main, payload); err != nil {
+		t.Fatal(err)
+	}
+
+	rows, err := tx.Query(ctx, `
+		SELECT target_heroid, counter_heroid, win_rate_delta, source
+		  FROM staging.hero_counter_daily
+		 WHERE snapshot_date = DATE '2999-01-01'
+		 ORDER BY source`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer rows.Close()
+
+	type row struct {
+		target, counter int
+		delta           float64
+		source          string
+	}
+	var got []row
+	for rows.Next() {
+		var r row
+		if err := rows.Scan(&r.target, &r.counter, &r.delta, &r.source); err != nil {
+			t.Fatal(err)
+		}
+		got = append(got, r)
+	}
+	if err := rows.Err(); err != nil {
+		t.Fatal(err)
+	}
+	want := []row{
+		{target: main, counter: beatsUs, delta: 0.04, source: "sub_hero"},
+		{target: weBeat, counter: main, delta: 0.06, source: "sub_hero_last"},
+	}
+	if len(got) != len(want) {
+		t.Fatalf("got %d rows %+v, want %d", len(got), got, len(want))
+	}
+	for i := range want {
+		if got[i].target != want[i].target || got[i].counter != want[i].counter ||
+			got[i].source != want[i].source || math.Abs(got[i].delta-want[i].delta) > 1e-9 {
+			t.Errorf("row %d = %+v, want %+v", i, got[i], want[i])
+		}
 	}
 }
 

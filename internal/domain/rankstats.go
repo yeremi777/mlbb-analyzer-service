@@ -40,19 +40,25 @@ type HeroRankStat struct {
 	WindowCrossesPatch *bool   `json:"windowCrossesPatch"`
 }
 
-// HeroSynergyStat is one observed pairing, as served from marts.hero_synergy_current.
-// WinRateLift is an additive delta on the main hero's win rate when the pair
-// appears together, not a multiplier. PartnerRank is upstream's own ordering,
-// best partner first.
-type HeroSynergyStat struct {
-	MainHeroID    int    `json:"mainHeroId"`
-	HeroName      string `json:"heroName,omitempty"`
-	PartnerHeroID int    `json:"partnerHeroId"`
-	PartnerUID    string `json:"partnerUid,omitempty"`
-	PartnerName   string `json:"partnerName,omitempty"`
+// HeroCounterStat is one observed counter matchup, as served from the counter
+// mart. CounterHeroID beats TargetHeroID, and WinRateDelta is how much the
+// counter hero's win rate rises when the two meet — an additive delta, always
+// positive, never a multiplier.
+//
+// Source names the upstream list a row came from. Snapshots taken before the
+// collector stopped narrowing its request carry only one of the two, so a
+// caller comparing days must expect the older ones to be half a matrix.
+type HeroCounterStat struct {
+	TargetHeroID  int    `json:"targetHeroId"`
+	TargetUID     string `json:"targetUid,omitempty"`
+	TargetName    string `json:"targetName,omitempty"`
+	CounterHeroID int    `json:"counterHeroId"`
+	CounterUID    string `json:"counterUid,omitempty"`
+	CounterName   string `json:"counterName,omitempty"`
 
-	WinRateLift float64 `json:"winRateLift"`
-	PartnerRank int     `json:"partnerRank"`
+	WinRateDelta float64 `json:"winRateDelta"`
+	Source       string  `json:"source"`
+	SourceRank   int     `json:"sourceRank"`
 
 	RankTier     string    `json:"rankTier"`
 	WindowDays   int       `json:"windowDays"`

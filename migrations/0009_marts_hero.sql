@@ -54,32 +54,41 @@ SELECT m.main_hero_id,
   LEFT JOIN public.heroes h ON h.mlid = m.main_hero_id
  WHERE m.recency = 1;
 
--- Current synergy pairings with both heroes named, best partner first.
+-- Current counter matchups, newest snapshot only, with both heroes named.
 --
--- win_rate_lift is an additive delta on the main hero's win rate when the pair
--- appears together, carried through from upstream unchanged.
-CREATE VIEW marts.hero_synergy_current AS
+-- win_rate_delta is how much the counter hero's win rate rises when it meets
+-- the target, carried through from upstream and always positive here: staging
+-- orients every row the same way. source says which upstream list it came from,
+-- since only sub_hero exists for snapshots collected before the collector
+-- stopped narrowing its field list.
+--
+-- Both joins are LEFT for the reason marts.hero_current uses one: upstream
+-- carries heroes the authored dataset does not, and dropping them would hide a
+-- live hero.
+CREATE VIEW marts.hero_counter_current AS
 WITH latest AS (
-    SELECT s.*,
-           dense_rank() OVER (PARTITION BY s.main_hero_id, s.rank_tier, s.window_days
-                              ORDER BY s.snapshot_date DESC) AS recency
-      FROM staging.hero_synergy_daily s
+    SELECT c.*,
+           dense_rank() OVER (PARTITION BY c.target_heroid, c.rank_tier, c.window_days
+                              ORDER BY c.snapshot_date DESC) AS recency
+      FROM staging.hero_counter_daily c
 )
-SELECT l.main_hero_id,
-       mh.name AS hero_name,
-       l.partner_hero_id,
-       ph.uid  AS partner_uid,
-       ph.name AS partner_name,
-       l.win_rate_lift,
-       l.partner_rank,
+SELECT l.target_heroid,
+       th.uid  AS target_uid,
+       th.name AS target_name,
+       l.counter_heroid,
+       ch.uid  AS counter_uid,
+       ch.name AS counter_name,
+       l.win_rate_delta,
+       l.source,
+       l.source_rank,
        l.rank_tier,
        l.window_days,
        l.snapshot_date
   FROM latest l
-  LEFT JOIN public.heroes mh ON mh.mlid = l.main_hero_id
-  LEFT JOIN public.heroes ph ON ph.mlid = l.partner_hero_id
+  LEFT JOIN public.heroes th ON th.mlid = l.target_heroid
+  LEFT JOIN public.heroes ch ON ch.mlid = l.counter_heroid
  WHERE l.recency = 1;
 
 -- +goose Down
-DROP VIEW marts.hero_synergy_current;
-DROP VIEW marts.hero_current;
+DROP VIEW IF EXISTS marts.hero_counter_current;
+DROP VIEW IF EXISTS marts.hero_current;
