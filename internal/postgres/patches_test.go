@@ -42,7 +42,7 @@ func calendarCount(t *testing.T, tx pgx.Tx) int {
 	return n
 }
 
-func TestInsertPatchesAppends(t *testing.T) {
+func TestInsertPatchesStoresNewPatches(t *testing.T) {
 	tx := testTx(t)
 	ctx := context.Background()
 
@@ -58,22 +58,66 @@ func TestInsertPatchesAppends(t *testing.T) {
 	}
 }
 
-func TestInsertPatchesIsAppendOnlyButCalendarDedupes(t *testing.T) {
+func TestInsertPatchesRerunChangesNothing(t *testing.T) {
 	tx := testTx(t)
 	ctx := context.Background()
 
-	for i := 0; i < 3; i++ {
-		if _, err := InsertPatches(ctx, tx, samplePatches()); err != nil {
-			t.Fatalf("run %d: %v", i, err)
+	if _, err := InsertPatches(ctx, tx, samplePatches()); err != nil {
+		t.Fatal(err)
+	}
+	for i := 0; i < 2; i++ {
+		n, err := InsertPatches(ctx, tx, samplePatches())
+		if err != nil {
+			t.Fatalf("re-run %d: %v", i, err)
+		}
+		// The daily case: nothing moved, nothing is written.
+		if n != 0 {
+			t.Errorf("re-run %d changed %d rows, want 0", i, n)
 		}
 	}
-	// raw keeps every fetch...
-	if got := rawPatchCount(t, tx); got != 6 {
-		t.Errorf("want 6 raw rows after three fetches, got %d", got)
+	if got := rawPatchCount(t, tx); got != 2 {
+		t.Errorf("want 2 raw rows after three fetches, got %d", got)
 	}
-	// ...while the calendar still expresses two facts.
 	if got := calendarCount(t, tx); got != 2 {
 		t.Errorf("want 2 calendar rows, got %d", got)
+	}
+}
+
+func TestInsertPatchesTakesEditedHighlights(t *testing.T) {
+	tx := testTx(t)
+	ctx := context.Background()
+
+	// Collected the morning it shipped, before editors filled in the
+	// Release Highlights column.
+	bare := []domain.Patch{{Version: "9.9.99", ReleaseDate: day(2999, time.August, 4)}}
+	if _, err := InsertPatches(ctx, tx, bare); err != nil {
+		t.Fatal(err)
+	}
+
+	filled := []domain.Patch{{
+		Version:     "9.9.99",
+		ReleaseDate: day(2999, time.August, 4),
+		Highlights:  []string{"New Hero: Nobody", "Hero Adjustments"},
+	}}
+	n, err := InsertPatches(ctx, tx, filled)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Errorf("edited highlights changed %d rows, want 1", n)
+	}
+	// Taken in place: a patch that shipped once holds one row.
+	if got := rawPatchCount(t, tx); got != 1 {
+		t.Errorf("want 1 raw row, got %d", got)
+	}
+
+	var got []string
+	if err := tx.QueryRow(ctx,
+		"SELECT highlights FROM raw.patch_snapshots WHERE version = '9.9.99'").Scan(&got); err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 2 || got[0] != "New Hero: Nobody" {
+		t.Errorf("highlights not updated, got %v", got)
 	}
 }
 

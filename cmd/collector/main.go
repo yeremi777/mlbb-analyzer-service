@@ -4,8 +4,11 @@
 //	collector stats     fetch hero rank statistics from Moonton
 //	collector all       both, patches first
 //
-// Every feed is append-only: a re-run adds rows, and the staging views resolve
-// repeated fetches to the newest answer. See docs/specs/collector-raw-zone.md.
+// Re-running either feed is safe. Hero statistics are append-only, and the
+// staging views resolve repeated fetches to the newest answer; the patch
+// calendar is keyed on (release_date, version) and refreshed in place, so a
+// re-run of an unchanged calendar writes nothing. See
+// docs/specs/collector-raw-zone.md and docs/adr/0002-patch-calendar-upsert.md.
 package main
 
 import (
@@ -151,17 +154,17 @@ func collectPatches(ctx context.Context) error {
 	}
 	defer conn.Close(ctx)
 
-	var written int
+	var changed int
 	if err := pgx.BeginFunc(ctx, conn, func(tx pgx.Tx) error {
 		n, err := postgres.InsertPatches(ctx, tx, patches)
-		written = n
+		changed = n
 		return err
 	}); err != nil {
 		return fmt.Errorf("store patch calendar: %w", err)
 	}
 
 	slog.Info("patch calendar collected",
-		"patches", written, "latest", patches[0].Version,
+		"fetched", len(patches), "changed", changed, "latest", patches[0].Version,
 		"released", patches[0].ReleaseDate.Format("2006-01-02"))
 	return nil
 }

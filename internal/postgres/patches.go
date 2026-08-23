@@ -8,13 +8,17 @@ import (
 	"github.com/yeremi777/mlbb-analyzer-service/internal/domain"
 )
 
+// The guard keeps an unchanged patch from being rewritten, so fetched_at marks
+// when a patch last changed rather than when it was last seen.
 const insertPatch = `INSERT INTO raw.patch_snapshots (release_date, version, highlights)
-	VALUES ($1, $2, COALESCE($3::text[], '{}'))`
+	VALUES ($1, $2, COALESCE($3::text[], '{}'))
+	ON CONFLICT (release_date, version) DO UPDATE
+	   SET highlights = EXCLUDED.highlights,
+	       fetched_at = now()
+	 WHERE raw.patch_snapshots.highlights IS DISTINCT FROM EXCLUDED.highlights`
 
-// InsertPatches appends one fetch of the patch calendar and reports how many
-// rows it wrote. Append-only by design: raw records what Liquipedia said, and
-// staging.patch_calendar resolves repeated fetches to the newest answer, so a
-// re-run adds rows without changing what downstream reads.
+// InsertPatches stores one fetch of the patch calendar and reports how many
+// rows it changed. An unchanged calendar reports zero.
 func InsertPatches(ctx context.Context, tx pgx.Tx, patches []domain.Patch) (int, error) {
 	if len(patches) == 0 {
 		return 0, nil
@@ -27,15 +31,16 @@ func InsertPatches(ctx context.Context, tx pgx.Tx, patches []domain.Patch) (int,
 	results := tx.SendBatch(ctx, batch)
 	defer results.Close()
 
-	written := 0
+	changed := 0
 	for i := range patches {
-		if _, err := results.Exec(); err != nil {
-			return written, fmt.Errorf("insert patch %s: %w", patches[i].Version, err)
+		tag, err := results.Exec()
+		if err != nil {
+			return changed, fmt.Errorf("insert patch %s: %w", patches[i].Version, err)
 		}
-		written++
+		changed += int(tag.RowsAffected())
 	}
 	if err := results.Close(); err != nil {
-		return written, fmt.Errorf("close patch batch: %w", err)
+		return changed, fmt.Errorf("close patch batch: %w", err)
 	}
-	return written, nil
+	return changed, nil
 }
