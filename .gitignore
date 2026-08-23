@@ -32,7 +32,5 @@ TASKS.md
 .claude/
 .pi/
 
-# Local-only project knowledge (kept out of the repo by design)
-docs/adr/
+# Dated surveys, not maintained. The decisions are in docs/adr/.
 docs/research/
-docs/specs/
